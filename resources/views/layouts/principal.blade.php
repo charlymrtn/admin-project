@@ -8,6 +8,7 @@
     <meta name="description" content="Sistema Ventas Laravel Vue Js- PajaroIT">
     <meta name="author" content="pajaro.com">
     <meta name="keyword" content="Sistema ventas Laravel Vue Js, Sistema compras Laravel Vue Js">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href={{asset("img/favicon.png")}}>
     <title>@yield('title')</title>
     <!-- Icons -->
@@ -15,12 +16,14 @@
 </head>
 
 <body class="app header-fixed sidebar-fixed aside-menu-fixed aside-menu-hidden">
-    @include('contenido.cabecera')
+    <div id="app">
+      @include('contenido.cabecera')
 
-    <div class="app-body">
-        @include('contenido.barra-lateral')
+      <div class="app-body">
+          @include('contenido.barra-lateral')
 
-        @yield('content')
+          @yield('content')
+      </div>
     </div>
 
     <footer class="app-footer">
@@ -29,6 +32,7 @@
     </footer>
 
     <!-- Bootstrap and necessary plugins -->
+    <script src={{asset("js/vue.js")}}></script>
     <script src={{asset("js/app.js")}}></script>
 </body>
 
