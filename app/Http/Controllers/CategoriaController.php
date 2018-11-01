@@ -27,7 +27,15 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $rules = [
+          'nombre' => 'required|string|min:5|max:50',
+          'descripcion' => 'sometimes|string|min:5|max:256',
+        ];
+        $this->validate($request, $rules);
+
+        $categoria = Categoria::create($request->only(['nombre','descripcion']));
+
+        return $categoria;
     }
 
     /**
@@ -39,18 +47,49 @@ class CategoriaController extends Controller
      */
     public function update(Request $request, Categoria $categoria)
     {
-        //
+      $rules = [
+        'nombre' => 'required|string|min:5|max:50',
+        'descripcion' => 'sometimes|string|min:5|max:256',
+      ];
+      $this->validate($request, $rules);
+
+      if (!$categoria->condicion) {
+        $categoria->condicion = 1;
+        $categoria->save();
+      }
+
+      $categoria->update($request->only('nombre','descripcion'));
+
+      return $categoria;
     }
 
     //Funciones personalizadas
 
     public function activar(Request $request)
     {
-      // code...
+      $this->validate($request,[
+        'id' => 'required|string|size:36'
+      ]);
+      
+      $categoria = Categoria::findOrFail($request->id);
+
+      if (!$categoria->condicion) {
+        $categoria->condicion = 1;
+        $categoria->save();
+      }
     }
 
     public function desactivar(Request $request)
     {
-      // code...
+      $this->validate($request,[
+        'id' => 'required|string|size:36'
+      ]);
+
+      $categoria = Categoria::findOrFail($request->id);
+
+      if ($categoria->condicion) {
+        $categoria->condicion = 0;
+        $categoria->save();
+      }
     }
 }

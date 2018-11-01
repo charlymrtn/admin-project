@@ -18,3 +18,6 @@ Route::get('/', function () {
 Route::resource('categorias', 'CategoriaController')->parameters([
     'categorias' => 'categoria'
 ])->only(['index','store','update']);
+
+Route::get('categorias/activar','CategoriaController@activar')->name('categorias.active');
+Route::get('categorias/desactivar','CategoriaController@desactivar')->name('categorias.desactive');

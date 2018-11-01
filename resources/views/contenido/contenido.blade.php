@@ -4,7 +4,7 @@
 
 @section('content')
   <template v-if="menu==0">
-    <example-component></example-component>
+    <content-component></content-component>
   </template>
   <template v-if="menu==1">
     <h1>contenido del menu 1</h1>
