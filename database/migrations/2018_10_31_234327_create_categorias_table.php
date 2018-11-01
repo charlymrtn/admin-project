@@ -16,6 +16,10 @@ class CreateCategoriasTable extends Migration
         Schema::create('categorias', function (Blueprint $table) {
             $table->uuid('uuid')->primary();
 
+            $table->string('nombre',50);
+            $table->string('description',256)->nullable();
+            $table->boolean('condicion')->default(1);
+
             $table->timestamps();
             $table->softDeletes();
         });
