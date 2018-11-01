@@ -17,7 +17,7 @@ class CreateCategoriasTable extends Migration
             $table->uuid('uuid')->primary();
 
             $table->string('nombre',50);
-            $table->string('description',256)->nullable();
+            $table->string('descripcion',256)->nullable();
             $table->boolean('condicion')->default(1);
 
             $table->timestamps();

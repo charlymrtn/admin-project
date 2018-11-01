@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('contenido.contenido');
 });
+
+Route::resource('categorias', 'CategoriaController')->parameters([
+    'categorias' => 'categoria'
+])->only(['index','store','update']);

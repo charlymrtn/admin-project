@@ -1,19 +1,17 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Webpatser\Uuid\Uuid;
 
-class User extends Authenticatable
+class Categoria extends Model
 {
-    use Notifiable, SoftDeletes;
+    use SoftDeletes;
 
-    protected $table = "usuarios";
+    protected $table = "categorias";
 
     public $incrementing = false;
     protected $primaryKey = 'uuid';
@@ -25,16 +23,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nombre', 'email', 'password',
-    ];
-
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
-    protected $hidden = [
-        'password', 'remember_token', 'deleted_at'
+        'nombre', 'descripcion', 'condicion'
     ];
 
     protected $dates = [
