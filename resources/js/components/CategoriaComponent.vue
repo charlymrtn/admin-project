@@ -118,7 +118,7 @@
                   </div>
                   <div class="modal-footer">
                       <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cerrar</button>
-                      <button type="button" v-if="tipoAccion==1" class="btn btn-primary">Guardar</button>
+                      <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCategoria()">Guardar</button>
                       <button type="button" v-if="tipoAccion==2" class="btn btn-primary">Actualizar</button>
                   </div>
               </div>
@@ -178,7 +178,17 @@
             });
           },
           registrarCategoria(){
-
+            let me = this;
+            axios.post('/categorias',{
+              'nombre': me.nombre,
+              'descripcion': me.descripcion
+            }).then(function (response){
+              me.cerrarModal();
+              me.listarCategoria();
+            })
+            .catch(function (error){
+              console.log(error);
+            });
           },
           abrirModal(modelo, accion, data = []){
             switch (modelo) {
