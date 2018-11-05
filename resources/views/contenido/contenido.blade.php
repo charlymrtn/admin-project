@@ -4,10 +4,10 @@
 
 @section('content')
   <template v-if="menu==0">
-    <categoria-component></categoria-component>
+    <h1>contenido del menu 0</h1>
   </template>
   <template v-if="menu==1">
-    <h1>contenido del menu 1</h1>
+    <categoria-component></categoria-component>
   </template>
   <template v-if="menu==2">
     <h1>contenido del menu 2</h1>
