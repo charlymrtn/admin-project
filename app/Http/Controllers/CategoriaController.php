@@ -12,11 +12,18 @@ class CategoriaController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        if (!request()->ajax()) return redirect('/');
+        if (!$request->ajax()) return redirect('/');
 
-        $categorias = Categoria::orderBy('nombre')->paginate(4);
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
+
+        if ($buscar == '') {
+          $categorias = Categoria::orderBy('nombre')->paginate(4);
+        }else{
+          $categorias = Categoria::where($criterio,'like','%'.$buscar.'%')->orderBy('nombre')->paginate(4);
+        }
 
         return [
           'pagination' => [
