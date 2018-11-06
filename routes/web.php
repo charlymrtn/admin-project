@@ -22,4 +22,11 @@ Route::resource('categorias', 'CategoriaController')->parameters([
 Route::put('categorias/activar/{categoria_uuid}','CategoriaController@activar')->name('categorias.active');
 Route::put('categorias/desactivar/{categoria_uuid}','CategoriaController@desactivar')->name('categorias.desactive');
 
-Route::get('categorias/{uuid}','CategoriaController@show')->name('categorias.show');
+//Route::get('categorias/{uuid}','CategoriaController@show')->name('categorias.show');
+
+Route::resource('articulos', 'ArticuloController')->parameters([
+    'articulos' => 'articulo'
+])->only(['index','store','update']);
+
+Route::put('articulos/activar/{articulo_uuid}','ArticuloController@activar')->name('articulos.active');
+Route::put('articulos/desactivar/{articulo_uuid}','ArticuloController@desactivar')->name('articulos.desactive');

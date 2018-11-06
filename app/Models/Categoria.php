@@ -44,4 +44,9 @@ class Categoria extends Model
         }
       });
     }
+
+    public function articulos()
+    {
+      return $this->hasMany('App\Models\Articulo','categoria_uud','uuid');
+    }
 }
