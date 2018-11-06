@@ -14,9 +14,21 @@ class CategoriaController extends Controller
      */
     public function index()
     {
-        $categorias = Categoria::all();
+        if (!request()->ajax()) return redirect('/');
 
-        return $categorias;
+        $categorias = Categoria::orderBy('nombre')->paginate(4);
+
+        return [
+          'pagination' => [
+            'total' => $categorias->total(),
+            'current_page' => $categorias->currentPage(),
+            'per_page' => $categorias->perPage(),
+            'last_page' => $categorias->lastPage(),
+            'from' => $categorias->firstItem(),
+            'to' => $categorias->lastItem(),
+          ],
+          'categorias' => $categorias
+        ];
     }
 
     /**
@@ -27,6 +39,7 @@ class CategoriaController extends Controller
      */
     public function store(Request $request)
     {
+        if (!request()->ajax()) return redirect('/');
         $rules = [
           'nombre' => 'required|string|min:5|max:50',
           'descripcion' => 'nullable|string|min:5|max:256',
@@ -47,6 +60,7 @@ class CategoriaController extends Controller
      */
     public function update(Request $request, Categoria $categoria)
     {
+      if (!request()->ajax()) return redirect('/');
       $rules = [
         'nombre' => 'required|string|min:5|max:50',
         'descripcion' => 'sometimes|string|min:5|max:256',
@@ -67,7 +81,7 @@ class CategoriaController extends Controller
 
     public function activar(String $categoria_uuid)
     {
-
+      if (!request()->ajax()) return redirect('/');
       $categoria = Categoria::findOrFail($categoria_uuid);
 
       if (!$categoria->condicion) {
@@ -78,7 +92,7 @@ class CategoriaController extends Controller
 
     public function desactivar(String $categoria_uuid)
     {
-
+      if (!request()->ajax()) return redirect('/');
       $categoria = Categoria::findOrFail($categoria_uuid);
 
       if ($categoria->condicion) {

@@ -30,6 +30,10 @@ class Categoria extends Model
         'created_at', 'updated_at', 'deleted_at'
     ];
 
+    protected $hidden = [
+        'deleted_at'
+    ];
+
     public static function boot()
     {
       parent::boot();
