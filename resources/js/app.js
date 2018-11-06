@@ -8,6 +8,7 @@
 require('./bootstrap');
 
 window.Vue = require('vue');
+window.swal = require('sweetalert2');
 
 /**
  * Next, we will create a fresh Vue application instance and attach it to
@@ -17,6 +18,7 @@ window.Vue = require('vue');
 
 //Vue.component('content-component', require('./components/ContentComponent.vue'));
 Vue.component('categoria-component', require('./components/CategoriaComponent.vue'));
+Vue.component('articulo-component', require('./components/ArticuloComponent.vue'));
 
 
 const app = new Vue({
