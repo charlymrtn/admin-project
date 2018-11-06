@@ -29,7 +29,7 @@ class CategoriaController extends Controller
     {
         $rules = [
           'nombre' => 'required|string|min:5|max:50',
-          'descripcion' => 'sometimes|string|min:5|max:256',
+          'descripcion' => 'nullable|string|min:5|max:256',
         ];
         $this->validate($request, $rules);
 
@@ -65,13 +65,10 @@ class CategoriaController extends Controller
 
     //Funciones personalizadas
 
-    public function activar(Request $request)
+    public function activar(String $categoria_uuid)
     {
-      $this->validate($request,[
-        'id' => 'required|string|size:36'
-      ]);
-      
-      $categoria = Categoria::findOrFail($request->id);
+
+      $categoria = Categoria::findOrFail($categoria_uuid);
 
       if (!$categoria->condicion) {
         $categoria->condicion = 1;
@@ -79,13 +76,10 @@ class CategoriaController extends Controller
       }
     }
 
-    public function desactivar(Request $request)
+    public function desactivar(String $categoria_uuid)
     {
-      $this->validate($request,[
-        'id' => 'required|string|size:36'
-      ]);
 
-      $categoria = Categoria::findOrFail($request->id);
+      $categoria = Categoria::findOrFail($categoria_uuid);
 
       if ($categoria->condicion) {
         $categoria->condicion = 0;
