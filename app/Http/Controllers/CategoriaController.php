@@ -38,6 +38,18 @@ class CategoriaController extends Controller
         ];
     }
 
+    public function select()
+    {
+      if (!request()->ajax()) return redirect('/');
+
+      $categorias = Categoria::where('condicion',1)
+                              ->select('uuid','nombre')
+                              ->orderBy('nombre')
+                              ->get();
+
+      return ['categorias' => $categorias];
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -47,6 +59,7 @@ class CategoriaController extends Controller
     public function store(Request $request)
     {
         if (!request()->ajax()) return redirect('/');
+
         $rules = [
           'nombre' => 'required|string|min:5|max:50',
           'descripcion' => 'nullable|string|min:5|max:256',

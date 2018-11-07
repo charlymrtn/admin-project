@@ -107,15 +107,42 @@
                   <div class="modal-body">
                       <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                           <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Categoría</label>
+                              <div class="col-md-9">
+                                  <select class="form-control" v-model="categoria_uuid">
+                                    <option value="" disabled>Seleccione</option>
+                                    <option v-for="categoria in categorias" :key="categoria.uuid" :value="categoria.uuid" v-text="categoria.nombre"></option>
+                                  </select>
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Código</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="codigo" class="form-control" placeholder="Código de barras">
+                              </div>
+                          </div>
+                          <div class="form-group row">
                               <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                               <div class="col-md-9">
-                                  <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de categoría">
+                                  <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de artículo">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Precio unitario</label>
+                              <div class="col-md-9">
+                                  <input type="number" v-model="precio" class="form-control" placeholder="">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Piezas existentes</label>
+                              <div class="col-md-9">
+                                  <input type="number" v-model="existencias" class="form-control" placeholder="">
                               </div>
                           </div>
                           <div class="form-group row">
                               <label class="col-md-3 form-control-label" for="text-input">Descripción</label>
                               <div class="col-md-9">
-                                  <input type="text" v-model="descripcion" class="form-control" placeholder="Descripción de la categoría">
+                                  <input type="text" v-model="descripcion" class="form-control" placeholder="Descripción del artículo">
                               </div>
                           </div>
                           <div v-show="error" class="form-group row div-error">
@@ -170,7 +197,8 @@
             },
             offset: 3,
             criterio: 'nombre',
-            buscar: ''
+            buscar: '',
+            categorias: []
           }
         },
         computed: {
@@ -206,6 +234,16 @@
             axios.get(url).then(function (response){
               me.articulos = response.data.articulos.data;
               me.pagination = response.data.pagination;
+            })
+            .catch(function (error){
+              console.log(error);
+            });
+          },
+          selectCategoria(){
+            let me = this;
+            var url = '/categorias/seleccionar';
+            axios.get(url).then(function (response){
+              me.categorias = response.data.categorias;
             })
             .catch(function (error){
               console.log(error);
@@ -276,6 +314,7 @@
                 }
               }
             }
+            this.selectCategoria();
           },
           cerrarModal(){
             this.modal = 0;
