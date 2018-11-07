@@ -20,12 +20,12 @@ class ArticuloController extends Controller
          $criterio = $request->criterio;
 
          if ($buscar == '') {
-           $articulos = Articulo::join('categorias','articulos.uuid','=','categorias.uuid')
-                                 ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion')
+           $articulos = Articulo::join('categorias','articulos.categoria_uuid','=','categorias.uuid')
+                                 ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
                                  ->orderBy('articulos.nombre')->paginate(4);
          }else{
            $articulos = Articulo::join('categorias','articulos.uuid','=','categorias.uuid')
-                                 ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion')
+                                 ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
                                  ->where('articulos.'.$criterio,'like','%'.$buscar.'%')
                                  ->orderBy('articulos.nombre')->paginate(4);
          }

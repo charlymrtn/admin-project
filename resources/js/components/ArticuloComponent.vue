@@ -156,8 +156,8 @@
                   </div>
                   <div class="modal-footer">
                       <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cerrar</button>
-                      <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCategoria()">Guardar</button>
-                      <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarCategoria()">Actualizar</button>
+                      <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarArticulo()">Guardar</button>
+                      <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarArticulo()">Actualizar</button>
                   </div>
               </div>
               <!-- /.modal-content -->
@@ -255,33 +255,41 @@
 
             me.listarArticulo(page,buscar,criterio);
           },
-          registrarCategoria(){
+          registrarArticulo(){
             if (this.validar()) {
               return;
             }
             let me = this;
-            axios.post('/categorias',{
+            axios.post('/articulos',{
+              'categoria_uuid': me.categoria_uuid,
+              'codigo': me.codigo,
+              'precio': me.precio,
+              'existencias': me.existencias,
               'nombre': me.nombre,
               'descripcion': me.descripcion
             }).then(function (response){
               me.cerrarModal();
-              me.listarCategoria(1,'','nombre');
+              me.listarArticulo(1,'','nombre');
             })
             .catch(function (error){
               console.log(error);
             });
           },
-          actualizarCategoria(){
+          actualizarArticulo(){
             if (this.validar()) {
               return;
             }
             let me = this;
-            axios.put('/categorias/'+this.categoria_uuid,{
+            axios.put('/articulos/'+this.articulo_uuid,{
+              'categoria_uuid': me.categoria_uuid,
+              'codigo': me.codigo,
+              'precio': me.precio,
+              'existencias': me.existencias,
               'nombre': me.nombre,
               'descripcion': me.descripcion
             }).then(function (response){
               me.cerrarModal();
-              me.listarCategoria(1,'','nombre');
+              me.listarArticulo(1,'','nombre');
             })
             .catch(function (error){
               console.log(error);
@@ -296,6 +304,11 @@
                   {
                     this.modal = 1;
                     this.tituloModal = 'Registrar Artículo';
+                    this.categoria_uuid = '';
+                    this.nombre_categoria = '';
+                    this.codigo = '';
+                    this.precio = 0;
+                    this.existencias = 0;
                     this.nombre = '';
                     this.descripcion = '';
                     this.tipoAccion = 1;
@@ -308,6 +321,10 @@
                     this.nombre = data.nombre;
                     this.descripcion = data.descripcion;
                     this.articulo_uuid = data.uuid;
+                    this.categoria_uuid = data.categoria_uuid;
+                    this.codigo = data.codigo;
+                    this.precio = data.precio;
+                    this.existencias = data.existencias;
                     this.tipoAccion = 2;
                     break;
                   }
@@ -321,6 +338,12 @@
             this.tituloModal = "";
             this.nombre = "";
             this.descripcion = "";
+            this.categoria_uuid = "";
+            this.nombre_categoria = "";
+            this.codigo = "";
+            this.precio = 0;
+            this.existencias = 0;
+            this.error = 0;
           },
           desactivar(articulo_uuid){
             const swalWithBootstrapButtons = swal.mixin({
@@ -413,7 +436,10 @@
             this.error = 0;
             this.errors = [];
 
+            if(this.categoria_uuid == '') this.errors.push('Seleccione una categoría');
             if(!this.nombre) this.errors.push('El nombre es obligatorio');
+            if(!this.existencias) this.errors.push('las piezas debe ser un valor númerico y no puede estar vacío');
+            if(!this.precio) this.errors.push('el precio debe ser un valor númerico y no puede estar vacío');
 
             if (this.errors.length) {
               this.error = 1;

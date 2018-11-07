@@ -51649,32 +51649,40 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       me.listarArticulo(page, buscar, criterio);
     },
-    registrarCategoria: function registrarCategoria() {
+    registrarArticulo: function registrarArticulo() {
       if (this.validar()) {
         return;
       }
       var me = this;
-      axios.post('/categorias', {
+      axios.post('/articulos', {
+        'categoria_uuid': me.categoria_uuid,
+        'codigo': me.codigo,
+        'precio': me.precio,
+        'existencias': me.existencias,
         'nombre': me.nombre,
         'descripcion': me.descripcion
       }).then(function (response) {
         me.cerrarModal();
-        me.listarCategoria(1, '', 'nombre');
+        me.listarArticulo(1, '', 'nombre');
       }).catch(function (error) {
         console.log(error);
       });
     },
-    actualizarCategoria: function actualizarCategoria() {
+    actualizarArticulo: function actualizarArticulo() {
       if (this.validar()) {
         return;
       }
       var me = this;
-      axios.put('/categorias/' + this.categoria_uuid, {
+      axios.put('/articulos/' + this.articulo_uuid, {
+        'categoria_uuid': me.categoria_uuid,
+        'codigo': me.codigo,
+        'precio': me.precio,
+        'existencias': me.existencias,
         'nombre': me.nombre,
         'descripcion': me.descripcion
       }).then(function (response) {
         me.cerrarModal();
-        me.listarCategoria(1, '', 'nombre');
+        me.listarArticulo(1, '', 'nombre');
       }).catch(function (error) {
         console.log(error);
       });
@@ -51690,6 +51698,11 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 {
                   this.modal = 1;
                   this.tituloModal = 'Registrar Artículo';
+                  this.categoria_uuid = '';
+                  this.nombre_categoria = '';
+                  this.codigo = '';
+                  this.precio = 0;
+                  this.existencias = 0;
                   this.nombre = '';
                   this.descripcion = '';
                   this.tipoAccion = 1;
@@ -51702,6 +51715,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                   this.nombre = data.nombre;
                   this.descripcion = data.descripcion;
                   this.articulo_uuid = data.uuid;
+                  this.categoria_uuid = data.categoria_uuid;
+                  this.codigo = data.codigo;
+                  this.precio = data.precio;
+                  this.existencias = data.existencias;
                   this.tipoAccion = 2;
                   break;
                 }
@@ -51715,6 +51732,12 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.tituloModal = "";
       this.nombre = "";
       this.descripcion = "";
+      this.categoria_uuid = "";
+      this.nombre_categoria = "";
+      this.codigo = "";
+      this.precio = 0;
+      this.existencias = 0;
+      this.error = 0;
     },
     desactivar: function desactivar(articulo_uuid) {
       var _this = this;
@@ -51788,7 +51811,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.error = 0;
       this.errors = [];
 
+      if (this.categoria_uuid == '') this.errors.push('Seleccione una categoría');
       if (!this.nombre) this.errors.push('El nombre es obligatorio');
+      if (!this.existencias) this.errors.push('las piezas debe ser un valor númerico y no puede estar vacío');
+      if (!this.precio) this.errors.push('el precio debe ser un valor númerico y no puede estar vacío');
 
       if (this.errors.length) {
         this.error = 1;
@@ -52476,7 +52502,7 @@ var render = function() {
                         attrs: { type: "button" },
                         on: {
                           click: function($event) {
-                            _vm.registrarCategoria()
+                            _vm.registrarArticulo()
                           }
                         }
                       },
@@ -52492,7 +52518,7 @@ var render = function() {
                         attrs: { type: "button" },
                         on: {
                           click: function($event) {
-                            _vm.actualizarCategoria()
+                            _vm.actualizarArticulo()
                           }
                         }
                       },
