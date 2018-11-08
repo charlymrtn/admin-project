@@ -22,6 +22,7 @@
                               <select class="form-control col-md-3" v-model="criterio">
                                 <option value="nombre">Nombre</option>
                                 <option value="descripcion">Descripción</option>
+                                <option value="categoria">Categoría</option>
                               </select>
                               <input type="text" class="form-control" placeholder="Texto a buscar" v-model="buscar" @keyup.enter="listarArticulo(1,buscar,criterio)">
                               <button type="submit" @click="listarArticulo(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>

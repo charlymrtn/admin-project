@@ -24,10 +24,18 @@ class ArticuloController extends Controller
                                  ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
                                  ->orderBy('articulos.nombre')->paginate(4);
          }else{
-           $articulos = Articulo::join('categorias','articulos.uuid','=','categorias.uuid')
-                                 ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
-                                 ->where('articulos.'.$criterio,'like','%'.$buscar.'%')
-                                 ->orderBy('articulos.nombre')->paginate(4);
+           if ($criterio != 'categoria') {
+             $articulos = Articulo::join('categorias','articulos.categoria_uuid','=','categorias.uuid')
+                                   ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
+                                   ->where('articulos.'.$criterio,'like','%'.$buscar.'%')
+                                   ->orderBy('articulos.nombre')->paginate(4);
+           }else{
+             $articulos = Articulo::join('categorias','articulos.categoria_uuid','=','categorias.uuid')
+                                   ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
+                                   ->where('categorias.nombre','like','%'.$buscar.'%')
+                                   ->orderBy('articulos.nombre')->paginate(4);
+           }
+
          }
 
          return [
