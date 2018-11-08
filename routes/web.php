@@ -36,3 +36,7 @@ Route::put('articulos/desactivar/{articulo_uuid}','ArticuloController@desactivar
 Route::resource('clientes', 'ClienteController')->parameters([
     'clientes' => 'cliente'
 ])->only(['index','store','update']);
+
+Route::resource('proveedores', 'ProveedorController')->parameters([
+    'proveedores' => 'proveedor'
+])->only(['index','store','update']);
