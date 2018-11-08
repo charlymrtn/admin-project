@@ -39,4 +39,9 @@ class Persona extends Model
       }
     });
   }
+
+  public function proveedor()
+  {
+    return $this->hasOne('App\Models\Proveedor','uuid','uuid');
+  }
 }

@@ -56628,7 +56628,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }
       var me = this;
       var url = '/clientes/' + this.cliente_uuid;
-      console.log(url);
       axios.put(url, {
         'nombre': me.nombre,
         'email': me.email,

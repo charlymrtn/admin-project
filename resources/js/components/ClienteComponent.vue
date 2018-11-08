@@ -253,7 +253,6 @@
             }
             let me = this;
             var url = '/clientes/'+this.cliente_uuid;
-            console.log(url);
             axios.put(url,{
               'nombre': me.nombre,
               'email': me.email,
