@@ -74,7 +74,7 @@ class ProveedorController extends Controller
 
         DB::commit();
 
-        return $proveedor->with('persona');
+        return response()->json($proveedor->with('persona'));
 
       } catch (\Exception $e) {
         DB::rollback();
@@ -107,7 +107,7 @@ class ProveedorController extends Controller
 
       DB::commit();
 
-      return $proveedor->with('persona');
+      return response()->json($proveedor->with('persona'));
 
     } catch (\Exception $e) {
       DB::rollback();
