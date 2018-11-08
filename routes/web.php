@@ -40,3 +40,5 @@ Route::resource('clientes', 'ClienteController')->parameters([
 Route::resource('proveedores', 'ProveedorController')->parameters([
     'proveedores' => 'proveedor'
 ])->only(['index','store','update']);
+
+Route::get('roles','RolController@index')->name('roles.index');
