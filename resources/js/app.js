@@ -16,9 +16,9 @@ window.swal = require('sweetalert2');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 
-//Vue.component('content-component', require('./components/ContentComponent.vue'));
 Vue.component('categoria-component', require('./components/CategoriaComponent.vue'));
 Vue.component('articulo-component', require('./components/ArticuloComponent.vue'));
+Vue.component('cliente-component', require('./components/ClienteComponent.vue'));
 
 
 const app = new Vue({

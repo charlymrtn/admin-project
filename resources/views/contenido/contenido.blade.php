@@ -22,7 +22,7 @@
     <h1>contenido del menu 5</h1>
   </template>
   <template v-if="menu==6">
-    <h1>contenido del menu 6</h1>
+    <cliente-component></cliente-component>
   </template>
   <template v-if="menu==7">
     <h1>contenido del menu 7</h1>
