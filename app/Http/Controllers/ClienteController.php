@@ -51,7 +51,7 @@ class ClienteController extends Controller
       $rules = [
         'nombre' => 'required|string|min:5|max:100',
         'email' => 'required|email',
-        'tipo_documento' => 'sometimes|string|min:5|max:20',
+        'tipo_documento' => 'sometimes|string|min:3|max:20',
         'num_documento' => 'required_with:tipo_documento|string|min:5|max:20',
         'direccion' => 'sometimes|string|min:5|max:70',
         'telefono' => 'sometimes|string|min:10|max:20',
@@ -71,14 +71,14 @@ class ClienteController extends Controller
    * @param  \App\Models\Categoria  $categoria
    * @return \Illuminate\Http\Response
    */
-  public function update(Request $request, Persona $persona)
+  public function update(Request $request, Persona $cliente)
   {
     if (!request()->ajax()) return redirect('/');
 
     $rules = [
       'nombre' => 'required|string|min:5|max:100',
       'email' => 'required|email',
-      'tipo_documento' => 'sometimes|string|min:5|max:20',
+      'tipo_documento' => 'sometimes|string|min:3|max:20',
       'num_documento' => 'required_with:tipo_documento|string|min:5|max:20',
       'direccion' => 'sometimes|string|min:5|max:70',
       'telefono' => 'sometimes|string|min:10|max:20',
@@ -86,9 +86,9 @@ class ClienteController extends Controller
 
     $this->validate($request, $rules);
 
-    $persona->update($request->only('nombre','email','tipo_documento','num_documento','direccion','telefono'));
+    $cliente->update($request->only('nombre','email','tipo_documento','num_documento','direccion','telefono'));
 
-    return $persona;
+    return $cliente;
   }
 
 }

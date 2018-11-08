@@ -91,13 +91,42 @@
                           <div class="form-group row">
                               <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                               <div class="col-md-9">
-                                  <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de categoría">
+                                  <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de cliente">
                               </div>
                           </div>
                           <div class="form-group row">
-                              <label class="col-md-3 form-control-label" for="text-input">Descripción</label>
+                              <label class="col-md-3 form-control-label" for="text-input">Correo electrónico</label>
                               <div class="col-md-9">
-                                  <input type="text" v-model="descripcion" class="form-control" placeholder="Descripción de la categoría">
+                                  <input type="text" v-model="email" class="form-control" placeholder="Correo electrónico">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Tipo de documento</label>
+                              <div class="col-md-9">
+                                  <select v-model="tipo_documento" class="form-control">
+                                    <option value="INE">INE</option>
+                                    <option value="pasaporte">Pasaporte</option>
+                                    <option value="RFC">RFC</option>
+                                    <option value="cedula">Cédula Profesional</option>
+                                  </select>
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Número de documento</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="num_documento" class="form-control" placeholder="Número de documento">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Teléfono</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono">
                               </div>
                           </div>
                           <div v-show="error" class="form-group row div-error">
@@ -205,7 +234,11 @@
             let me = this;
             axios.post('/clientes',{
               'nombre': me.nombre,
-              'descripcion': me.descripcion
+              'email': me.email,
+              'tipo_documento': me.tipo_documento,
+              'num_documento': me.num_documento,
+              'direccion': me.direccion,
+              'telefono': me.telefono
             }).then(function (response){
               me.cerrarModal();
               me.listarCliente(1,'','nombre');
@@ -219,9 +252,15 @@
               return;
             }
             let me = this;
-            axios.put('/categorias/'+this.cliente_uuid,{
+            var url = '/clientes/'+this.cliente_uuid;
+            console.log(url);
+            axios.put(url,{
               'nombre': me.nombre,
-              'descripcion': me.descripcion
+              'email': me.email,
+              'tipo_documento': me.tipo_documento,
+              'num_documento': me.num_documento,
+              'direccion': me.direccion,
+              'telefono': me.telefono
             }).then(function (response){
               me.cerrarModal();
               me.listarCliente(1,'','nombre');
@@ -240,11 +279,11 @@
                     this.modal = 1;
                     this.tituloModal = 'Registrar Cliente';
                     this.nombre = '';
-                    this.tipo_documento = 'INE',
-                    this.num_documento = '',
-                    this.email = '',
-                    this.direccion = '',
-                    this.telefono = '',
+                    this.tipo_documento = 'INE';
+                    this.num_documento = '';
+                    this.email = '';
+                    this.direccion = '';
+                    this.telefono = '';
                     this.tipoAccion = 1;
                     break;
                   }
@@ -253,12 +292,12 @@
                     this.modal = 1;
                     this.tituloModal = 'Actualizar Cliente '+data.nombre;
                     this.nombre = data.nombre;
-                    this.tipo_documento = data.tipo_documento,
-                    this.num_documento = data.num_documento,
-                    this.email = data.email,
-                    this.direccion = data.direccion,
-                    this.telefono = data.telefono,
-                    this.categoria_uuid = data.uuid;
+                    this.tipo_documento = data.tipo_documento;
+                    this.num_documento = data.num_documento;
+                    this.email = data.email;
+                    this.direccion = data.direccion;
+                    this.telefono = data.telefono;
+                    this.cliente_uuid = data.uuid;
                     this.tipoAccion = 2;
                     break;
                   }
@@ -270,17 +309,19 @@
             this.modal = 0;
             this.tituloModal = "";
             this.nombre = '';
-            this.tipo_documento = 'INE',
-            this.num_documento = '',
-            this.email = '',
-            this.direccion = '',
-            this.telefono = ''
+            this.tipo_documento = 'INE';
+            this.num_documento = '';
+            this.email = '';
+            this.direccion = '';
+            this.telefono = '';
+            this.error = 0;
           },
           validar(){
             this.error = 0;
             this.errors = [];
 
             if(!this.nombre) this.errors.push('El nombre es obligatorio');
+            if(!this.email) this.errors.push('El correo es obligatorio');
 
             if (this.errors.length) {
               this.error = 1;
