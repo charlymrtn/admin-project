@@ -300,7 +300,7 @@
                     this.modal = 1;
                     this.tituloModal = 'Registrar Proveedor';
                     this.nombre = '';
-                    this.tipo_documento = 'INE';
+                    this.tipo_documento = 'RFC';
                     this.num_documento = '';
                     this.email = '';
                     this.direccion = '';
@@ -334,7 +334,7 @@
             this.modal = 0;
             this.tituloModal = "";
             this.nombre = '';
-            this.tipo_documento = 'INE';
+            this.tipo_documento = 'RFC';
             this.num_documento = '';
             this.email = '';
             this.direccion = '';
