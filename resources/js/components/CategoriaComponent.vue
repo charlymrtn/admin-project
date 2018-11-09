@@ -271,7 +271,6 @@
             this.descripcion = "";
           },
           desactivar(categoria_uuid){
-            console.log(categoria_uuid);
             const swalWithBootstrapButtons = swal.mixin({
               confirmButtonClass: 'btn btn-success',
               cancelButtonClass: 'btn btn-danger',
@@ -307,7 +306,7 @@
                 result.dismiss === swal.DismissReason.cancel
               ) {
                 swalWithBootstrapButtons(
-                  'Cancelado',
+                  'Cancelada',
                   'La categoría sigue activa',
                   'error'
                 )
@@ -315,7 +314,6 @@
             })
           },
           activar(categoria_uuid){
-            console.log(categoria_uuid);
             const swalWithBootstrapButtons = swal.mixin({
               confirmButtonClass: 'btn btn-success',
               cancelButtonClass: 'btn btn-danger',
