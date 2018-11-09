@@ -44,4 +44,9 @@ class Persona extends Model
   {
     return $this->hasOne('App\Models\Proveedor','uuid','uuid');
   }
+
+  public function usuario()
+  {
+    return $this->hasOne('App\User','uuid','uuid');
+  }
 }

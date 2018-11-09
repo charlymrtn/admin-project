@@ -30,4 +30,9 @@ class Rol extends Model
       }
     });
   }
+
+  public function usuarios()
+  {
+    return $this->hasMany('App\User','uuid','uuid');
+  }
 }

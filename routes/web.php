@@ -42,3 +42,10 @@ Route::resource('proveedores', 'ProveedorController')->parameters([
 ])->only(['index','store','update']);
 
 Route::get('roles','RolController@index')->name('roles.index');
+
+Route::resource('usuarios', 'UsuarioController')->parameters([
+    'usuarios' => 'usuario'
+])->only(['index','store','update']);
+
+Route::put('usuarios/activar/{usuario_uuid}','UsuarioController@activar')->name('usuarios.active');
+Route::put('usuarios/desactivar/{usuario_uuid}','UsuarioController@desactivar')->name('usuarios.desactive');
