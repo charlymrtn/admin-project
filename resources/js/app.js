@@ -20,6 +20,7 @@ Vue.component('categoria-component', require('./components/CategoriaComponent.vu
 Vue.component('articulo-component', require('./components/ArticuloComponent.vue'));
 Vue.component('cliente-component', require('./components/ClienteComponent.vue'));
 Vue.component('proveedor-component', require('./components/ProveedorComponent.vue'));
+Vue.component('usuario-component', require('./components/UsuarioComponent.vue'));
 Vue.component('rol-component', require('./components/RolComponent.vue'));
 
 

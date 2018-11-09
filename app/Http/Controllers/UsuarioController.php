@@ -123,10 +123,15 @@ class UsuarioController extends Controller
 
   //Funciones personalizadas
 
-  public function activar(String $usuario_uuid)
+  public function activar(Request $request)
   {
     if (!request()->ajax()) return redirect('/');
-    $usuario = User::findOrFail($usuario_uuid);
+
+    $this->validate($request,[
+      'uuid' => 'required|uuid'
+    ])
+
+    $usuario = User::findOrFail($request->uuid);
 
     if (!$usuario->condicion) {
       $usuario->condicion = 1;
@@ -134,10 +139,15 @@ class UsuarioController extends Controller
     }
   }
 
-  public function desactivar(String $usuario_uuid)
+  public function desactivar(Request $request)
   {
     if (!request()->ajax()) return redirect('/');
-    $usuario = Categoria::findOrFail($usuario_uuid);
+
+    $this->validate($request,[
+      'uuid' => 'required|uuid'
+    ])
+
+    $usuario = User::findOrFail($request->uuid);
 
     if ($usuario->condicion) {
       $usuario->condicion = 0;
