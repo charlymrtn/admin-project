@@ -25,7 +25,7 @@
     <cliente-component></cliente-component>
   </template>
   <template v-if="menu==7">
-    <h1>contenido del menu 7</h1>
+    <usuario-component></usuario-component>
   </template>
   <template v-if="menu==8">
     <rol-component></rol-component>

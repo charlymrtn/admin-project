@@ -42,6 +42,7 @@ Route::resource('proveedores', 'ProveedorController')->parameters([
 ])->only(['index','store','update']);
 
 Route::get('roles','RolController@index')->name('roles.index');
+Route::get('roles/select','RolController@select')->name('roles.select');
 
 Route::resource('usuarios', 'UsuarioController')->parameters([
     'usuarios' => 'usuario'
