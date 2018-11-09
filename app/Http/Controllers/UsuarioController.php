@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 
 use App\User;
+use App\Models\Persona;
+use DB;
 
 class UsuarioController extends Controller
 {
@@ -65,9 +67,9 @@ class UsuarioController extends Controller
 
         DB::beginTransaction();
 
-        $persona = User::create($request->only('nombre','tipo_documento','num_documento','direccion','telefono','email'));
+        $persona = Persona::create($request->only('nombre','tipo_documento','num_documento','direccion','telefono','email'));
 
-        $usuario = Proveedor::create([
+        $usuario = User::create([
           'uuid' => $persona->uuid,
           'usuario' => $request->usuario,
           'password' => bcrypt($request->password),
@@ -104,7 +106,9 @@ class UsuarioController extends Controller
       $persona->update($request->only('nombre','tipo_documento','num_documento','direccion','telefono','email'));
 
       $usuario->usuario = $request->usuario;
-      $usuario->password = bcrypt($request->password);
+      if ($request->has('password')) {
+        $usuario->password = bcrypt($request->password);
+      }
       $usuario->rol_uuid = $request->rol_uuid;
       $usuario->save();
 

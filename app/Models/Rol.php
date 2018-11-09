@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use Webpatser\Uuid\Uuid;
+use Uuid;
 
 class Rol extends Model
 {
