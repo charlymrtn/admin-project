@@ -96,6 +96,7 @@ class UsuarioController extends Controller
 
       } catch (\Exception $e) {
         DB::rollback();
+        return response()-json($e->getMessage());
       }
 
   }
@@ -149,20 +150,17 @@ class UsuarioController extends Controller
 
     } catch (\Exception $e) {
       DB::rollback();
+      return response()-json($e->getMessage());
     }
   }
 
   //Funciones personalizadas
 
-  public function activar(Request $request)
+  public function activar(String $usuario_uuid)
   {
     if (!request()->ajax()) return redirect('/');
 
-    $this->validate($request,[
-      'uuid' => 'required|uuid'
-    ]);
-
-    $usuario = User::findOrFail($request->uuid);
+    $usuario = User::findOrFail($usuario_uuid);
 
     if (!$usuario->condicion) {
       $usuario->condicion = 1;
@@ -170,15 +168,11 @@ class UsuarioController extends Controller
     }
   }
 
-  public function desactivar(Request $request)
+  public function desactivar(String $usuario_uuid)
   {
     if (!request()->ajax()) return redirect('/');
 
-    $this->validate($request,[
-      'uuid' => 'required|uuid'
-    ]);
-
-    $usuario = User::findOrFail($request->uuid);
+    $usuario = User::findOrFail($usuario_uuid);
 
     if ($usuario->condicion) {
       $usuario->condicion = 0;

@@ -58953,6 +58953,16 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
@@ -59144,6 +59154,75 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.rol_uuid = '';
       this.error = 0;
     },
+    desactivar: function desactivar(usuario_uuid) {
+      var _this = this;
+
+      var swalWithBootstrapButtons = swal.mixin({
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false
+      });
+
+      swalWithBootstrapButtons({
+        title: '¿Estás segur@?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      }).then(function (result) {
+        if (result.value) {
+
+          var me = _this;
+          axios.put('usuarios/desactivar/' + usuario_uuid).then(function (response) {
+            console.log(response);
+            me.listarUsuario(1, '', 'nombre');
+
+            swalWithBootstrapButtons('Desactivado!', 'El usuario ha sido desactivado.', 'success');
+          }).catch(function (error) {
+            console.log(error);
+          });
+        } else if (
+        // Read more about handling dismissals
+        result.dismiss === swal.DismissReason.cancel) {
+          swalWithBootstrapButtons('Cancelada', 'El usuario sigue activo', 'error');
+        }
+      });
+    },
+    activar: function activar(usuario_uuid) {
+      var _this2 = this;
+
+      var swalWithBootstrapButtons = swal.mixin({
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false
+      });
+
+      swalWithBootstrapButtons({
+        title: '¿Estás segur@?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      }).then(function (result) {
+        if (result.value) {
+
+          var me = _this2;
+          axios.put('usuarios/activar/' + usuario_uuid).then(function (response) {
+            me.listarUsuario(1, '', 'nombre');
+
+            swalWithBootstrapButtons('Activada!', 'El usuario ha sido activado.', 'success');
+          }).catch(function (error) {
+            console.log(error);
+          });
+        } else if (
+        // Read more about handling dismissals
+        result.dismiss === swal.DismissReason.cancel) {
+          swalWithBootstrapButtons('Cancelado', 'El usuario sigue desactivado', 'error');
+        }
+      });
+    },
     validar: function validar() {
       this.error = 0;
       this.errors = [];
@@ -59308,22 +59387,57 @@ var render = function() {
                 "tbody",
                 _vm._l(_vm.usuarios, function(usuario) {
                   return _c("tr", { key: usuario.uuid }, [
-                    _c("td", [
-                      _c(
-                        "button",
-                        {
-                          staticClass: "btn btn-warning btn-sm",
-                          attrs: { type: "button" },
-                          on: {
-                            click: function($event) {
-                              _vm.abrirModal("usuario", "actualizar", usuario)
+                    _c(
+                      "td",
+                      [
+                        _c(
+                          "button",
+                          {
+                            staticClass: "btn btn-warning btn-sm",
+                            attrs: { type: "button" },
+                            on: {
+                              click: function($event) {
+                                _vm.abrirModal("usuario", "actualizar", usuario)
+                              }
                             }
-                          }
-                        },
-                        [_c("i", { staticClass: "icon-pencil" })]
-                      ),
-                      _vm._v("  \n                            ")
-                    ]),
+                          },
+                          [_c("i", { staticClass: "icon-pencil" })]
+                        ),
+                        _vm._v("  \n                                "),
+                        usuario.condicion
+                          ? [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-danger btn-sm",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      _vm.desactivar(usuario.uuid)
+                                    }
+                                  }
+                                },
+                                [_c("i", { staticClass: "icon-trash" })]
+                              )
+                            ]
+                          : [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-success btn-sm",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      _vm.activar(usuario.uuid)
+                                    }
+                                  }
+                                },
+                                [_c("i", { staticClass: "icon-check" })]
+                              )
+                            ]
+                      ],
+                      2
+                    ),
                     _vm._v(" "),
                     _c("td", {
                       domProps: { textContent: _vm._s(usuario.nombre) }

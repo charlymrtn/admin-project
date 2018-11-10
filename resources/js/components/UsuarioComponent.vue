@@ -51,6 +51,16 @@
                                   <button type="button" @click="abrirModal('usuario','actualizar',usuario)" class="btn btn-warning btn-sm">
                                     <i class="icon-pencil"></i>
                                   </button> &nbsp;
+                                  <template v-if="usuario.condicion">
+                                    <button type="button" @click="desactivar(usuario.uuid)" class="btn btn-danger btn-sm">
+                                      <i class="icon-trash"></i>
+                                    </button>
+                                  </template>
+                                  <template v-else>
+                                    <button type="button" @click="activar(usuario.uuid)" class="btn btn-success btn-sm">
+                                      <i class="icon-check"></i>
+                                    </button>
+                                  </template>
                               </td>
                               <td v-text="usuario.nombre"></td>
                               <td v-text="usuario.email"></td>
@@ -380,6 +390,93 @@
             this.password = '';
             this.rol_uuid = '';
             this.error = 0;
+          },
+          desactivar(usuario_uuid){
+            const swalWithBootstrapButtons = swal.mixin({
+              confirmButtonClass: 'btn btn-success',
+              cancelButtonClass: 'btn btn-danger',
+              buttonsStyling: false,
+            })
+
+            swalWithBootstrapButtons({
+              title: '¿Estás segur@?',
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Aceptar',
+              cancelButtonText: 'Cancelar',
+              reverseButtons: true
+            }).then((result) => {
+              if (result.value) {
+
+                let me = this;
+                axios.put('usuarios/desactivar/'+usuario_uuid).then(function (response){
+                  console.log(response);
+                  me.listarUsuario(1,'','nombre');
+
+                  swalWithBootstrapButtons(
+                    'Desactivado!',
+                    'El usuario ha sido desactivado.',
+                    'success'
+                  )
+                })
+                .catch(function (error){
+                  console.log(error);
+                });
+
+              } else if (
+                // Read more about handling dismissals
+                result.dismiss === swal.DismissReason.cancel
+              ) {
+                swalWithBootstrapButtons(
+                  'Cancelada',
+                  'El usuario sigue activo',
+                  'error'
+                )
+              }
+            })
+          },
+          activar(usuario_uuid){
+            const swalWithBootstrapButtons = swal.mixin({
+              confirmButtonClass: 'btn btn-success',
+              cancelButtonClass: 'btn btn-danger',
+              buttonsStyling: false,
+            })
+
+            swalWithBootstrapButtons({
+              title: '¿Estás segur@?',
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Aceptar',
+              cancelButtonText: 'Cancelar',
+              reverseButtons: true
+            }).then((result) => {
+              if (result.value) {
+
+                let me = this;
+                axios.put('usuarios/activar/'+usuario_uuid).then(function (response){
+                  me.listarUsuario(1,'','nombre');
+
+                  swalWithBootstrapButtons(
+                    'Activada!',
+                    'El usuario ha sido activado.',
+                    'success'
+                  )
+                })
+                .catch(function (error){
+                  console.log(error);
+                });
+
+              } else if (
+                // Read more about handling dismissals
+                result.dismiss === swal.DismissReason.cancel
+              ) {
+                swalWithBootstrapButtons(
+                  'Cancelado',
+                  'El usuario sigue desactivado',
+                  'error'
+                )
+              }
+            })
           },
           validar(){
             this.error = 0;
