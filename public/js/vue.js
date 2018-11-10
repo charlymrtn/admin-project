@@ -59151,7 +59151,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       if (!this.nombre) this.errors.push('El nombre es obligatorio');
       if (!this.email) this.errors.push('El correo es obligatorio');
       if (!this.nombre_usuario) this.errors.push('El nombre de usuario es obligatorio');
-      if (!this.password) this.errors.push('La contraseña es obligatoria');
+      if (!this.password && this.tipoAccion == 1) this.errors.push('La contraseña es obligatoria');
       if (!this.rol_uuid) this.errors.push('El rol es obligatorio');
 
       if (this.errors.length) {

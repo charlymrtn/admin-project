@@ -65,8 +65,6 @@ class UsuarioController extends Controller
 
       try {
 
-        DB::beginTransaction();
-
         $rules = [
           'nombre' => 'required|string|min:5|max:100',
           'email' => 'required|email',
@@ -76,10 +74,12 @@ class UsuarioController extends Controller
           'telefono' => 'sometimes|string|min:10|max:20',
           'password' => 'required|string|min:3|max:10',
           'usuario' => 'required|string|min:3|max:10',
-          'rol_uuid' => 'required|uuid'
+          'rol_uuid' => 'required|uuid|exists:roles,uuid'
         ];
 
         $this->validate($request,$rules);
+
+        DB::beginTransaction();
 
         $persona = Persona::create($request->only('nombre','tipo_documento','num_documento','direccion','telefono','email'));
 
@@ -113,8 +113,6 @@ class UsuarioController extends Controller
 
     try {
 
-      DB::beginTransaction();
-
       $rules = [
         'nombre' => 'required|string|min:5|max:100',
         'email' => 'required|email',
@@ -129,16 +127,21 @@ class UsuarioController extends Controller
 
       $this->validate($request,$rules);
 
+      DB::beginTransaction();
+
       $persona = Persona::where('uuid',$usuario->uuid)->firstOrFail();
 
-      $persona->update($request->only('nombre','tipo_documento','num_documento','direccion','telefono','email'));
+      $persona->fill($request->only('nombre','tipo_documento','num_documento','direccion','telefono','email'));
+
+      if ($persona->isDirty()) $persona->save();
 
       $usuario->usuario = $request->usuario;
-      if ($request->has('password')) {
+      if ($request->has('password') && $request->password) {
         $usuario->password = bcrypt($request->password);
       }
       $usuario->rol_uuid = $request->rol_uuid;
-      $usuario->save();
+
+      if ($usuario->isDirty()) $usuario->save();
 
       DB::commit();
 
