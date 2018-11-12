@@ -59067,6 +59067,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         'rol_uuid': me.rol_uuid
       }).then(function (response) {
         me.cerrarModal();
+        swal('Exito!', 'Usuario Creado', 'success');
         me.listarUsuario(1, '', 'nombre');
       }).catch(function (error) {
         console.log(error);
@@ -59090,6 +59091,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         'rol_uuid': me.rol_uuid
       }).then(function (response) {
         me.cerrarModal();
+        swal('Exito!', 'Usuario Actualizado', 'success');
         me.listarUsuario(1, '', 'nombre');
       }).catch(function (error) {
         console.log(error);
@@ -59175,7 +59177,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
           var me = _this;
           axios.put('usuarios/desactivar/' + usuario_uuid).then(function (response) {
-            console.log(response);
             me.listarUsuario(1, '', 'nombre');
 
             swalWithBootstrapButtons('Desactivado!', 'El usuario ha sido desactivado.', 'success');
@@ -59185,7 +59186,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         } else if (
         // Read more about handling dismissals
         result.dismiss === swal.DismissReason.cancel) {
-          swalWithBootstrapButtons('Cancelada', 'El usuario sigue activo', 'error');
+          swalWithBootstrapButtons('Cancelado', 'El usuario sigue activo', 'error');
         }
       });
     },
@@ -59212,7 +59213,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
           axios.put('usuarios/activar/' + usuario_uuid).then(function (response) {
             me.listarUsuario(1, '', 'nombre');
 
-            swalWithBootstrapButtons('Activada!', 'El usuario ha sido activado.', 'success');
+            swalWithBootstrapButtons('Activado!', 'El usuario ha sido activado.', 'success');
           }).catch(function (error) {
             console.log(error);
           });

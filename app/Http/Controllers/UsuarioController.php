@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\User;
 use App\Models\Persona;
 use DB;
+use Log;
 
 class UsuarioController extends Controller
 {
@@ -96,7 +97,7 @@ class UsuarioController extends Controller
 
       } catch (\Exception $e) {
         DB::rollback();
-        return response()-json($e->getMessage());
+        Log::error($e->getMessage());
       }
 
   }

@@ -304,6 +304,11 @@
               'rol_uuid': me.rol_uuid,
             }).then(function (response){
               me.cerrarModal();
+              swal(
+                'Exito!',
+                'Usuario Creado',
+                'success'
+              );
               me.listarUsuario(1,'','nombre');
             })
             .catch(function (error){
@@ -328,6 +333,11 @@
               'rol_uuid': me.rol_uuid,
             }).then(function (response){
               me.cerrarModal();
+              swal(
+                'Exito!',
+                'Usuario Actualizado',
+                'success'
+              );
               me.listarUsuario(1,'','nombre');
             })
             .catch(function (error){
@@ -410,7 +420,6 @@
 
                 let me = this;
                 axios.put('usuarios/desactivar/'+usuario_uuid).then(function (response){
-                  console.log(response);
                   me.listarUsuario(1,'','nombre');
 
                   swalWithBootstrapButtons(
@@ -428,7 +437,7 @@
                 result.dismiss === swal.DismissReason.cancel
               ) {
                 swalWithBootstrapButtons(
-                  'Cancelada',
+                  'Cancelado',
                   'El usuario sigue activo',
                   'error'
                 )
@@ -457,7 +466,7 @@
                   me.listarUsuario(1,'','nombre');
 
                   swalWithBootstrapButtons(
-                    'Activada!',
+                    'Activado!',
                     'El usuario ha sido activado.',
                     'success'
                   )
