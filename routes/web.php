@@ -11,9 +11,9 @@
 |
 */
 
-Route::get('/', function () {
+Route::get('principal', function () {
     return view('contenido.contenido');
-});
+})->name('principal');
 
 Route::resource('categorias', 'CategoriaController')->parameters([
     'categorias' => 'categoria'
@@ -50,3 +50,11 @@ Route::put('usuarios/desactivar/{usuario_uuid}','UsuarioController@desactivar')-
 Route::resource('usuarios', 'UsuarioController')->parameters([
     'usuarios' => 'usuario'
 ])->only(['index','store','update']);
+
+Route::namespace('Auth')->group(function () {
+  Route::get('/', 'LoginController@showLoginForm')->name('home');
+  Route::post('ingresar', 'LoginController@login')->name('login');
+  Route::post('salir', 'LoginController@logout')->name('logout');
+});
+
+//Route::get('/home', 'HomeController@index')->name('home');
