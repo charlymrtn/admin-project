@@ -51642,9 +51642,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         'descripcion': me.descripcion
       }).then(function (response) {
         me.cerrarModal();
+        swal('Exito!', 'Operación exitosa', 'success');
         me.listarCategoria(1, '', 'nombre');
       }).catch(function (error) {
         console.log(error);
+        me.cerrarModal();
+        swal('Error!', 'Error interno contacte al administrador', 'error');
+        me.listarCategoria(1, '', 'nombre');
       });
     },
     actualizarCategoria: function actualizarCategoria() {
@@ -51657,9 +51661,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         'descripcion': me.descripcion
       }).then(function (response) {
         me.cerrarModal();
+        swal('Exito!', 'Operación exitosa', 'success');
         me.listarCategoria(1, '', 'nombre');
       }).catch(function (error) {
         console.log(error);
+        me.cerrarModal();
+        swal('Error!', 'Error interno contacte al administrador', 'error');
+        me.listarCategoria(1, '', 'nombre');
       });
     },
     abrirModal: function abrirModal(modelo, accion) {
@@ -52716,9 +52724,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         'descripcion': me.descripcion
       }).then(function (response) {
         me.cerrarModal();
+        swal('Exito!', 'Operación exitosa', 'success');
         me.listarArticulo(1, '', 'nombre');
       }).catch(function (error) {
         console.log(error);
+        me.cerrarModal();
+        swal('Error!', 'Error interno contacte al administrador', 'error');
+        me.listarArticulo(1, '', 'nombre');
       });
     },
     actualizarArticulo: function actualizarArticulo() {
@@ -52735,9 +52747,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         'descripcion': me.descripcion
       }).then(function (response) {
         me.cerrarModal();
+        swal('Exito!', 'Operación exitosa', 'success');
         me.listarArticulo(1, '', 'nombre');
       }).catch(function (error) {
         console.log(error);
+        me.cerrarModal();
+        swal('Error!', 'Error interno contacte al administrador', 'error');
+        me.listarArticulo(1, '', 'nombre');
       });
     },
     abrirModal: function abrirModal(modelo, accion) {
@@ -56618,9 +56634,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         'telefono': me.telefono
       }).then(function (response) {
         me.cerrarModal();
+        swal('Exito!', 'Operación exitosa', 'success');
         me.listarCliente(1, '', 'nombre');
       }).catch(function (error) {
         console.log(error);
+        me.cerrarModal();
+        swal('Error!', 'Error interno contacte al administrador', 'error');
+        me.listarCliente(1, '', 'nombre');
       });
     },
     actualizarCliente: function actualizarCliente() {
@@ -56638,9 +56658,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         'telefono': me.telefono
       }).then(function (response) {
         me.cerrarModal();
+        swal('Exito!', 'Operación exitosa', 'success');
         me.listarCliente(1, '', 'nombre');
       }).catch(function (error) {
         console.log(error);
+        me.cerrarModal();
+        swal('Error!', 'Error interno contacte al administrador', 'error');
+        me.listarCliente(1, '', 'nombre');
       });
     },
     abrirModal: function abrirModal(modelo, accion) {
@@ -57771,9 +57795,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         'telefono_contacto': me.telefono_contacto
       }).then(function (response) {
         me.cerrarModal();
+        swal('Exito!', 'Operación exitosa', 'success');
         me.listarProveedor(1, '', 'nombre');
       }).catch(function (error) {
         console.log(error);
+        me.cerrarModal();
+        swal('Error!', 'Error interno contacte al administrador', 'error');
+        me.listarProveedor(1, '', 'nombre');
       });
     },
     actualizarProveedor: function actualizarProveedor() {
@@ -57793,9 +57821,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         'telefono_contacto': me.telefono_contacto
       }).then(function (response) {
         me.cerrarModal();
+        swal('Exito!', 'Operación exitosa', 'success');
         me.listarProveedor(1, '', 'nombre');
       }).catch(function (error) {
         console.log(error);
+        me.cerrarModal();
+        swal('Error!', 'Error interno contacte al administrador', 'error');
+        me.listarProveedor(1, '', 'nombre');
       });
     },
     abrirModal: function abrirModal(modelo, accion) {
@@ -59070,7 +59102,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         swal('Exito!', 'Usuario Creado', 'success');
         me.listarUsuario(1, '', 'nombre');
       }).catch(function (error) {
-        console.log(error);
+        me.cerrarModal();
+        swal('Error!', 'Error interno contacte al administrador', 'error');
+        me.listarUsuario(1, '', 'nombre');
       });
     },
     actualizarUsuario: function actualizarUsuario() {
@@ -59095,6 +59129,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         me.listarUsuario(1, '', 'nombre');
       }).catch(function (error) {
         console.log(error);
+        me.cerrarModal();
+        swal('Error!', 'Error interno contacte al administrador', 'error');
+        me.listarUsuario(1, '', 'nombre');
       });
     },
     abrirModal: function abrirModal(modelo, accion) {

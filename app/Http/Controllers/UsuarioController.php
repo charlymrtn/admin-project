@@ -98,6 +98,7 @@ class UsuarioController extends Controller
       } catch (\Exception $e) {
         DB::rollback();
         Log::error($e->getMessage());
+        return response()->json(['error'=>$e->getMessage()],500);
       }
 
   }

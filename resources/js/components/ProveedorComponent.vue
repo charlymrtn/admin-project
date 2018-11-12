@@ -261,10 +261,22 @@
               'telefono_contacto': me.telefono_contacto
             }).then(function (response){
               me.cerrarModal();
+              swal(
+                'Exito!',
+                'Operación exitosa',
+                'success'
+              );
               me.listarProveedor(1,'','nombre');
             })
             .catch(function (error){
               console.log(error);
+              me.cerrarModal();
+              swal(
+                'Error!',
+                'Error interno contacte al administrador',
+                'error'
+              );
+              me.listarProveedor(1,'','nombre');
             });
           },
           actualizarProveedor(){
@@ -284,10 +296,22 @@
               'telefono_contacto': me.telefono_contacto
             }).then(function (response){
               me.cerrarModal();
+              swal(
+                'Exito!',
+                'Operación exitosa',
+                'success'
+              );
               me.listarProveedor(1,'','nombre');
             })
             .catch(function (error){
               console.log(error);
+              me.cerrarModal();
+              swal(
+                'Error!',
+                'Error interno contacte al administrador',
+                'error'
+              );
+              me.listarProveedor(1,'','nombre');
             });
           },
           abrirModal(modelo, accion, data = []){

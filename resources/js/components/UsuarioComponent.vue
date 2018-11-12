@@ -312,7 +312,13 @@
               me.listarUsuario(1,'','nombre');
             })
             .catch(function (error){
-              console.log(error);
+              me.cerrarModal();
+              swal(
+                'Error!',
+                'Error interno contacte al administrador',
+                'error'
+              );
+              me.listarUsuario(1,'','nombre');
             });
           },
           actualizarUsuario(){
@@ -342,6 +348,13 @@
             })
             .catch(function (error){
               console.log(error);
+              me.cerrarModal();
+              swal(
+                'Error!',
+                'Error interno contacte al administrador',
+                'error'
+              );
+              me.listarUsuario(1,'','nombre');
             });
           },
           abrirModal(modelo, accion, data = []){
