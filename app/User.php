@@ -7,6 +7,7 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
 use Webpatser\Uuid\Uuid;
+use App\Models\Rol;
 
 class User extends Authenticatable
 {
@@ -46,6 +47,34 @@ class User extends Authenticatable
     public function persona()
     {
       return $this->belongsTo('App\Models\Persona','uuid','uuid');
+    }
+
+    public funcion getRolIdAttribute()
+    {
+      $rol == Rol::where($this->rol_uuid)->first();
+
+      if ($rol) {
+        if ($rol->nombre == 'Administrador') {
+          return 1;
+        }elseif ($rol->nombre == 'Vendedor') {
+          return 2;
+        }elseif ($rol->nombre == 'Vendedor') {
+          return 3;
+        }
+      }
+
+      return 0;
+    }
+
+    public funcion getRolNombreAttribute()
+    {
+      $rol == Rol::where($this->rol_uuid)->first();
+
+      if ($rol) {
+        return $rol->nombre;
+      }
+
+      return 'Desconocido';
     }
 
 }

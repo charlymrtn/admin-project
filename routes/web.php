@@ -11,50 +11,51 @@
 |
 */
 
-Route::get('principal', function () {
-    return view('contenido.contenido');
-})->name('principal');
 
-Route::resource('categorias', 'CategoriaController')->parameters([
-    'categorias' => 'categoria'
-])->only(['index','store','update']);
 
-Route::put('categorias/activar/{categoria_uuid}','CategoriaController@activar')->name('categorias.active');
-Route::put('categorias/desactivar/{categoria_uuid}','CategoriaController@desactivar')->name('categorias.desactive');
-
-Route::get('categorias/seleccionar','CategoriaController@select')->name('categorias.select');
-
-//Route::get('categorias/{uuid}','CategoriaController@show')->name('categorias.show');
-
-Route::resource('articulos', 'ArticuloController')->parameters([
-    'articulos' => 'articulo'
-])->only(['index','store','update']);
-
-Route::put('articulos/activar/{articulo_uuid}','ArticuloController@activar')->name('articulos.active');
-Route::put('articulos/desactivar/{articulo_uuid}','ArticuloController@desactivar')->name('articulos.desactive');
-
-Route::resource('clientes', 'ClienteController')->parameters([
-    'clientes' => 'cliente'
-])->only(['index','store','update']);
-
-Route::resource('proveedores', 'ProveedorController')->parameters([
-    'proveedores' => 'proveedor'
-])->only(['index','store','update']);
-
-Route::get('roles','RolController@index')->name('roles.index');
-Route::get('roles/select','RolController@select')->name('roles.select');
-
-Route::put('usuarios/activar/{usuario_uuid}','UsuarioController@activar')->name('usuarios.active');
-Route::put('usuarios/desactivar/{usuario_uuid}','UsuarioController@desactivar')->name('usuarios.desactive');
-
-Route::resource('usuarios', 'UsuarioController')->parameters([
-    'usuarios' => 'usuario'
-])->only(['index','store','update']);
-
-Route::namespace('Auth')->group(function () {
-  Route::get('/', 'LoginController@showLoginForm')->name('home');
-  Route::post('ingresar', 'LoginController@login')->name('login');
-  Route::post('salir', 'LoginController@logout')->name('logout');
+Route::middleware(['guest'])->namespace('Auth')->group(function(){
+    Route::get('/', 'LoginController@showLoginForm')->name('home');
+    Route::post('ingresar', 'LoginController@login')->name('login');
+    Route::post('salir', 'LoginController@logout')->name('logout');
 });
 
-//Route::get('/home', 'HomeController@index')->name('home');
+Route::middleware('auth')->group(function(){
+  Route::get('principal', function () {
+      return view('contenido.contenido');
+  })->name('principal');
+
+  Route::middleware('Almacen')->group(function(){
+    require base_path('routes/routes/categoria.php');
+
+    require base_path('routes/routes/articulo.php');
+
+    require base_path('routes/routes/proveedor.php');
+  });
+
+  Route::middleware('Vendedor')->group(function(){
+    require base_path('routes/routes/cliente.php');
+  });
+
+  Route::middleware('Administrador')->group(function(){
+    require base_path('routes/routes/categoria.php');
+
+    require base_path('routes/routes/articulo.php');
+
+    require base_path('routes/routes/proveedor.php');
+
+    require base_path('routes/routes/cliente.php');
+
+    Route::get('roles','RolController@index')->name('roles.index');
+    Route::get('roles/select','RolController@select')->name('roles.select');
+
+    Route::put('usuarios/activar/{usuario_uuid}','UsuarioController@activar')->name('usuarios.active');
+    Route::put('usuarios/desactivar/{usuario_uuid}','UsuarioController@desactivar')->name('usuarios.desactive');
+
+    Route::resource('usuarios', 'UsuarioController')->parameters([
+        'usuarios' => 'usuario'
+    ])->only(['index','store','update']);
+    
+  });
+
+
+});

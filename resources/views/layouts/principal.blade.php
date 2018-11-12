@@ -20,7 +20,17 @@
       @include('contenido.cabecera')
 
       <div class="app-body">
-          @include('contenido.barra-lateral')
+          @if (Auth::check())
+            @if (Auth::user()->rol_id == 1)
+              @include('contenido.barra-lateral-admin')
+            @elseif(Auth::user()->rol_id == 2)
+              @include('contenido.barra-lateral-vendedor')
+            @elseif(Auth::user()->rol_id == 3)
+              @include('contenido.barra-lateral-almacen')
+            @else
+              
+            @endif
+          @endif
 
           @yield('content')
       </div>
