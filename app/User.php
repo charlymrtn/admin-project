@@ -49,9 +49,9 @@ class User extends Authenticatable
       return $this->belongsTo('App\Models\Persona','uuid','uuid');
     }
 
-    public funcion getRolIdAttribute()
+    public function getRolIdAttribute()
     {
-      $rol == Rol::where($this->rol_uuid)->first();
+      $rol = Rol::findOrFail($this->rol_uuid);
 
       if ($rol) {
         if ($rol->nombre == 'Administrador') {
@@ -66,9 +66,9 @@ class User extends Authenticatable
       return 0;
     }
 
-    public funcion getRolNombreAttribute()
+    public function getRolNombreAttribute()
     {
-      $rol == Rol::where($this->rol_uuid)->first();
+      $rol = Rol::findOrFail($this->rol_uuid);
 
       if ($rol) {
         return $rol->nombre;

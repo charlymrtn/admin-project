@@ -16,7 +16,6 @@
 Route::middleware(['guest'])->namespace('Auth')->group(function(){
     Route::get('/', 'LoginController@showLoginForm')->name('home');
     Route::post('ingresar', 'LoginController@login')->name('login');
-    Route::post('salir', 'LoginController@logout')->name('logout');
 });
 
 Route::middleware('auth')->group(function(){
@@ -24,6 +23,10 @@ Route::middleware('auth')->group(function(){
       return view('contenido.contenido');
   })->name('principal');
 
+  Route::namespace('Auth')->group(function(){
+    Route::post('salir', 'LoginController@logout')->name('logout');
+  });
+  
   Route::middleware('Almacen')->group(function(){
     require base_path('routes/routes/categoria.php');
 
@@ -54,7 +57,7 @@ Route::middleware('auth')->group(function(){
     Route::resource('usuarios', 'UsuarioController')->parameters([
         'usuarios' => 'usuario'
     ])->only(['index','store','update']);
-    
+
   });
 
 
