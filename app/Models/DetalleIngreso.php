@@ -4,21 +4,18 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Uuid;
-
-class Articulo extends Model
+class DetalleIngreso extends Model
 {
   use SoftDeletes;
 
-  protected $table = "articulos";
+  protected $table = "detalle_ingresos";
 
   public $incrementing = false;
   protected $primaryKey = 'uuid';
   protected $keyType = 'uuid';
 
   protected $fillable = [
-      'nombre', 'categoria_uuid', 'codigo', 'descripcion', 'condicion', 'existencias', 'precio'
+      'ingreso_uuid', 'articulo_uuid', 'cantidad', 'precio'
   ];
 
   protected $dates = [
@@ -40,8 +37,13 @@ class Articulo extends Model
     });
   }
 
-  public function categoria()
+  public function ingreso()
   {
-    return $this->belongsTo('App\Models\Categoria','categoria_uuid','uuid');
+    return $this->belongsTo('App\Models\Ingreso','ingreso_uuid','uuid');
+  }
+
+  public function articulo()
+  {
+    return $this->belongsTo('App\Models\Articulo','articulo_uuid','uuid');
   }
 }
