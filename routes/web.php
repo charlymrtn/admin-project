@@ -26,13 +26,15 @@ Route::middleware('auth')->group(function(){
   Route::namespace('Auth')->group(function(){
     Route::post('salir', 'LoginController@logout')->name('logout');
   });
-  
+
   Route::middleware('Almacen')->group(function(){
     require base_path('routes/routes/categoria.php');
 
     require base_path('routes/routes/articulo.php');
 
     require base_path('routes/routes/proveedor.php');
+
+    require base_path('routes/routes/ingreso.php');
   });
 
   Route::middleware('Vendedor')->group(function(){
@@ -48,15 +50,11 @@ Route::middleware('auth')->group(function(){
 
     require base_path('routes/routes/cliente.php');
 
-    Route::get('roles','RolController@index')->name('roles.index');
-    Route::get('roles/select','RolController@select')->name('roles.select');
+    require base_path('routes/routes/ingreso.php');
 
-    Route::put('usuarios/activar/{usuario_uuid}','UsuarioController@activar')->name('usuarios.active');
-    Route::put('usuarios/desactivar/{usuario_uuid}','UsuarioController@desactivar')->name('usuarios.desactive');
+    require base_path('routes/routes/rol.php');
 
-    Route::resource('usuarios', 'UsuarioController')->parameters([
-        'usuarios' => 'usuario'
-    ])->only(['index','store','update']);
+    require base_path('routes/routes/usuario.php');
 
   });
 
