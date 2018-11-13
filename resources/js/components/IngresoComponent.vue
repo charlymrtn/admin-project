@@ -1,198 +1,263 @@
 <template>
-  <!-- Contenido Principal -->
   <main class="main">
-      <!-- Breadcrumb -->
-      <ol class="breadcrumb">
-          <li class="breadcrumb-item"><a href="/">Escritorio</a></li>
-      </ol>
-
-      <div class="container-fluid">
-          <!-- Ejemplo de tabla Listado -->
-          <div class="card">
-              <div class="card-header">
-                  <i class="fa fa-align-justify"></i> Ingresos
-                  <button type="button" @click="abrirModal('ingreso','registrar')" class="btn btn-secondary">
-                      <i class="icon-plus"></i>&nbsp;Nuevo
-                  </button>
+  <!-- Breadcrumb -->
+  <ol class="breadcrumb">
+      <li class="breadcrumb-item"><a href="/">Escritorio</a></li>
+  </ol>
+  <div class="container-fluid">
+      <!-- Ejemplo de tabla Listado -->
+      <div class="card">
+          <div class="card-header">
+              <i class="fa fa-align-justify"></i> Ingresos
+              <button type="button" @click="mostrarDetalle()" class="btn btn-secondary">
+                  <i class="icon-plus"></i>&nbsp;Nuevo
+              </button>
+          </div>
+          <!-- Listado-->
+          <template v-if="listado">
+          <div class="card-body">
+              <div class="form-group row">
+                  <div class="col-md-6">
+                      <div class="input-group">
+                          <select class="form-control col-md-3" v-model="criterio">
+                            <option value="tipo_comprobante">Tipo Comprobante</option>
+                            <option value="num_comprobante">Número Comprobante</option>
+                            <option value="fecha_hora">Fecha-Hora</option>
+                          </select>
+                          <input type="text" v-model="buscar" @keyup.enter="listarIngreso(1,buscar,criterio)" class="form-control" placeholder="Texto a buscar">
+                          <button type="submit" @click="listarIngreso(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                      </div>
+                  </div>
               </div>
-              <div class="card-body">
-                  <div class="form-group row">
-                      <div class="col-md-6">
-                          <div class="input-group">
-                              <select class="form-control col-md-3" v-model="criterio">
-                                <option value="tipo_comprobante">Tipo Comprobante</option>
-                                <option value="num_comprobante">Número de Comprobante</option>
-                                <option value="fecha_ingreso">Fecha</option>
-                              </select>
-                              <input type="text" class="form-control" placeholder="Texto a buscar" v-model="buscar" @keyup.enter="listarIngreso(1,buscar,criterio)">
-                              <button type="submit" @click="listarIngreso(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+              <div class="table-responsive">
+                  <table class="table table-bordered table-striped table-sm">
+                      <thead>
+                          <tr>
+                              <th>Opciones</th>
+                              <th>Usuario</th>
+                              <th>Proveedor</th>
+                              <th>Tipo Comprobante</th>
+                              <th>Serie Comprobante</th>
+                              <th>Número Comprobante</th>
+                              <th>Fecha Hora</th>
+                              <th>Total</th>
+                              <th>Impuesto</th>
+                              <th>Estado</th>
+                          </tr>
+                      </thead>
+                      <tbody>
+                          <tr v-for="ingreso in ingresos" :key="ingreso.id">
+                              <td>
+                                  <button type="button" @click="abrirModal('ingreso','actualizar',ingreso)" class="btn btn-success btn-sm">
+                                  <i class="icon-eye"></i>
+                                  </button> &nbsp;
+                                  <template v-if="ingreso.estado=='Registrado'">
+                                      <button type="button" class="btn btn-danger btn-sm" @click="desactivarIngreso(ingreso.id)">
+                                          <i class="icon-trash"></i>
+                                      </button>
+                                  </template>
+                              </td>
+                              <td v-text="ingreso.usuario"></td>
+                              <td v-text="ingreso.nombre"></td>
+                              <td v-text="ingreso.tipo_comprobante"></td>
+                              <td v-text="ingreso.serie_comprobante"></td>
+                              <td v-text="ingreso.num_comprobante"></td>
+                              <td v-text="ingreso.fecha_hora"></td>
+                              <td v-text="ingreso.total"></td>
+                              <td v-text="ingreso.impuesto"></td>
+                              <td v-text="ingreso.estado"></td>
+                          </tr>
+                      </tbody>
+                  </table>
+              </div>
+              <nav>
+                  <ul class="pagination">
+                      <li class="page-item" v-if="pagination.current_page > 1">
+                          <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1,buscar,criterio)">Ant</a>
+                      </li>
+                      <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
+                          <a class="page-link" href="#" @click.prevent="cambiarPagina(page,buscar,criterio)" v-text="page"></a>
+                      </li>
+                      <li class="page-item" v-if="pagination.current_page < pagination.last_page">
+                          <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1,buscar,criterio)">Sig</a>
+                      </li>
+                  </ul>
+              </nav>
+          </div>
+          </template>
+          <!--Fin Listado-->
+          <!-- Detalle-->
+          <template v-else>
+          <div class="card-body">
+              <div class="form-group row border">
+                  <div class="col-md-9">
+                      <div class="form-group">
+                          <label for="">Proveedor(*)</label>
+                          <select class="form-control">
+
+                          </select>
+                      </div>
+                  </div>
+                  <div class="col-md-3">
+                      <label for="">Impuesto(*)</label>
+                      <input type="text" class="form-control" v-model="impuesto">
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label>Tipo Comprobante(*)</label>
+                          <select class="form-control" v-model="tipo_comprobante">
+                              <option value="" disabled>Seleccione</option>
+                              <option value="RECIBO">Recibo</option>
+                              <option value="FACTURA">Factura</option>
+                              <option value="TICKET">Ticket</option>
+                          </select>
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label>Serie Comprobante</label>
+                          <input type="text" class="form-control" v-model="serie_comprobante" placeholder="000x">
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label>Número Comprobante(*)</label>
+                          <input type="text" class="form-control" v-model="num_comprobante" placeholder="000xx">
+                      </div>
+                  </div>
+              </div>
+              <div class="form-group row border">
+                  <div class="col-md-6">
+                      <div class="form-group">
+                          <label>Artículo</label>
+                          <div class="form-inline">
+                              <input type="text" class="form-control" v-model="articulo_uuid" placeholder="Ingrese artículo">
+                              <button class="btn btn-primary">...</button>
                           </div>
                       </div>
                   </div>
-                  <div class="table-responsive">
-                    <table class="table table-bordered table-striped table-sm">
-                        <thead>
+                  <div class="col-md-2">
+                      <div class="form-group">
+                          <label>Precio</label>
+                          <input type="number" value="0" step="any" class="form-control" v-model="precio">
+                      </div>
+                  </div>
+                  <div class="col-md-2">
+                      <div class="form-group">
+                          <label>Cantidad</label>
+                          <input type="number" value="0" class="form-control" v-model="cantidad">
+                      </div>
+                  </div>
+                  <div class="col-md-2">
+                      <div class="form-group">
+                          <button class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
+                      </div>
+                  </div>
+              </div>
+              <div class="form-group row border">
+                  <div class="table-responsive col-md-12">
+                      <table class="table table-bordered table-striped table-sm">
+                          <thead>
                             <tr>
-                                <th>Opciones</th>
-                                <th>Usuario</th>
-                                <th>Proveedor</th>
-                                <th>Tipo Comprobante</th>
-                                <th>Serie Comprobante</th>
-                                <th>Número de Comprobante</th>
-                                <th>Fecha Ingreso</th>
-                                <th>Total</th>
-                                <th>Impuesto</th>
-                                <th>Estado</th>
+                              <th>Opciones</th>
+                              <th>Artículo</th>
+                              <th>Precio</th>
+                              <th>Cantidad</th>
+                              <th>Subtotal</th>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <tr v-for="ingreso in ingresos" :key="ingreso.uuid">
-                                <td>
-                                    <button type="button" @click="abrirModal('ingreso','actualizar',ingreso)" class="btn btn-success btn-sm">
-                                      <i class="icon-eye"></i>
-                                    </button> &nbsp;
-                                    <template v-if="ingreso.estado=='Registrado'">
-                                      <button type="button" @click="desactivar(ingreso.uuid)" class="btn btn-danger btn-sm">
-                                        <i class="icon-trash"></i>
-                                      </button>
-                                    </template>
-                                </td>
-                                <td v-text="ingreso.usuario.nombre"></td>
-                                <td v-text="ingreso.proveedor.nombre"></td>
-                                <td v-text="ingreso.tipo_comprobante"></td>
-                                <td v-text="ingreso.serie_comprobante"></td>
-                                <td v-text="ingreso.num_comprobante"></td>
-                                <td v-text="ingreso.fecha_ingreso"></td>
-                                <td v-text="ingreso.total"></td>
-                                <td v-text="ingreso.impuesto"></td>
-                                <td>
-                                    <div v-if="ingreso.estado=='Registrado'">
-                                      <span class="badge badge-success">Registrado</span>
-                                    </div>
-                                    <div v-else>
-                                      <span class="badge badge-danger">Anulado</span>
-                                    </div>
-                                </td>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>
+                                  <button type="button" class="btn btn-danger btn-sm">
+                                      <i class="icon-close"></i>
+                                  </button>
+                              </td>
+                              <td>
+                                  Artículo n
+                              </td>
+                              <td>
+                                  <input type="number" value="3" class="form-control">
+                              </td>
+                              <td>
+                                  <input type="number" value="2" class="form-control">
+                              </td>
+                              <td>
+                                  $ 6.00
+                              </td>
                             </tr>
-                        </tbody>
-                    </table>
-                  </div>
-                  <nav>
-                      <ul class="pagination">
-                          <li class="page-item" v-if="pagination.current_page > 1">
-                              <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page - 1, buscar, criterio)">Ant</a>
-                          </li>
-                          <li class="page-item" v-for="page in pagesNumber" :key="page" :class="[page == isActived ? 'active' : '']">
-                              <a class="page-link" href="#" @click.prevent="cambiarPagina(page, buscar, criterio)" v-text="page"></a>
-                          </li>
-                          <li class="page-item" v-if="pagination.current_page < pagination.last_page">
-                              <a class="page-link" href="#" @click.prevent="cambiarPagina(pagination.current_page + 1, buscar, criterio)">Sig</a>
-                          </li>
-                      </ul>
-                  </nav>
-              </div>
-          </div>
-          <!-- Fin ejemplo de tabla Listado -->
-      </div>
-
-      <!--Inicio del modal agregar/actualizar-->
-      <div class="modal fade" tabindex="-1" :class="{'mostrar': modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
-          <div class="modal-dialog modal-primary modal-lg" role="document">
-              <div class="modal-content">
-                  <div class="modal-header">
-                      <h4 class="modal-title" v-text="tituloModal"></h4>
-                      <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                      </button>
-                  </div>
-                  <div class="modal-body">
-                      <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
-                          <div class="form-group row">
-                              <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
-                              <div class="col-md-9">
-                                  <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del usuario">
-                              </div>
-                          </div>
-                          <div class="form-group row">
-                              <label class="col-md-3 form-control-label" for="text-input">Correo electrónico</label>
-                              <div class="col-md-9">
-                                  <input type="text" v-model="email" class="form-control" placeholder="Correo electrónico">
-                              </div>
-                          </div>
-                          <div class="form-group row">
-                              <label class="col-md-3 form-control-label" for="text-input">Tipo de documento</label>
-                              <div class="col-md-9">
-                                  <select v-model="tipo_documento" class="form-control">
-                                    <option value="INE">INE</option>
-                                    <option value="pasaporte">Pasaporte</option>
-                                    <option value="RFC">RFC</option>
-                                    <option value="cedula">Cédula Profesional</option>
-                                  </select>
-                              </div>
-                          </div>
-                          <div class="form-group row">
-                              <label class="col-md-3 form-control-label" for="text-input">Número de documento</label>
-                              <div class="col-md-9">
-                                  <input type="text" v-model="num_documento" class="form-control" placeholder="Número de documento">
-                              </div>
-                          </div>
-                          <div class="form-group row">
-                              <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
-                              <div class="col-md-9">
-                                  <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
-                              </div>
-                          </div>
-                          <div class="form-group row">
-                              <label class="col-md-3 form-control-label" for="text-input">Teléfono</label>
-                              <div class="col-md-9">
-                                  <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono">
-                              </div>
-                          </div>
-                          <div class="form-group row">
-                              <label class="col-md-3 form-control-label" for="text-input">Nombre de Usuario (*)</label>
-                              <div class="col-md-9">
-                                  <input type="text" v-model="nombre_usuario" class="form-control" placeholder="id de usuario">
-                              </div>
-                          </div>
-                          <div class="form-group row">
-                              <label class="col-md-3 form-control-label" for="text-input">Contraseña (*)</label>
-                              <div class="col-md-9">
-                                  <input type="password" v-model="password" class="form-control" placeholder="Contraseña">
-                              </div>
-                          </div>
-                          <div class="form-group row">
-                              <label class="col-md-3 form-control-label" for="text-input">Rol (*)</label>
-                              <div class="col-md-9">
-                                  <select class="form-control" v-model="rol_uuid">
-                                    <option value="" disabled>Selecciona un rol</option>
-                                    <option v-for="rol in roles" :key="rol.uuid" :value="rol.uuid" v-text="rol.nombre">
-
-                                    </option>
-                                  </select>
-                              </div>
-                          </div>
-                          <div v-show="error" class="form-group row div-error">
-                            <div class="text-center text-error">
-                              <div v-for="error in errors" :key="error" v-text="error">
-
-                              </div>
-                            </div>
-                          </div>
-                      </form>
-                  </div>
-                  <div class="modal-footer">
-                      <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cerrar</button>
-                      <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarIngreso()">Guardar</button>
-                      <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarUsuario()">Actualizar</button>
+                            <tr>
+                              <td>
+                                  <button type="button" class="btn btn-danger btn-sm">
+                                      <i class="icon-close"></i>
+                                  </button>
+                              </td>
+                              <td>
+                                  Artículo n
+                              </td>
+                              <td>
+                                  <input type="number" value="3" class="form-control">
+                              </td>
+                              <td>
+                                  <input type="number" value="2" class="form-control">
+                              </td>
+                              <td>
+                                  $ 6.00
+                              </td>
+                            </tr>
+                            <tr style="background-color: #CEECF5;">
+                                <td colspan="4" align="right"><strong>Total Parcial:</strong></td>
+                                <td>$ 5</td>
+                            </tr>
+                            <tr style="background-color: #CEECF5;">
+                                <td colspan="4" align="right"><strong>Total Impuesto:</strong></td>
+                                <td>$ 1</td>
+                            </tr>
+                            <tr style="background-color: #CEECF5;">
+                                <td colspan="4" align="right"><strong>Total Neto:</strong></td>
+                                <td>$ 6</td>
+                            </tr>
+                          </tbody>
+                      </table>
                   </div>
               </div>
-              <!-- /.modal-content -->
+              <div class="form-group row">
+                  <div class="col-md-12">
+                      <button type="button" @click="ocultarDetalle()" class="btn btn-secondary">Cerrar</button>
+                      <button type="button" class="btn btn-primary" @click="registrarIngreso()">Registrar Compra</button>
+                  </div>
+              </div>
           </div>
-          <!-- /.modal-dialog -->
+          </template>
+          <!-- Fin Detalle-->
       </div>
-      <!--Fin del modal-->
+      <!-- Fin ejemplo de tabla Listado -->
+  </div>
+  <!--Inicio del modal agregar/actualizar-->
+  <div class="modal fade" tabindex="-1" :class="{'mostrar' : modal}" role="dialog" aria-labelledby="myModalLabel" style="display: none;" aria-hidden="true">
+      <div class="modal-dialog modal-primary modal-lg" role="document">
+          <div class="modal-content">
+              <div class="modal-header">
+                  <h4 class="modal-title" v-text="tituloModal"></h4>
+                  <button type="button" class="close" @click="cerrarModal()" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                  </button>
+              </div>
+              <div class="modal-body">
 
-  </main>
+              </div>
+              <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
+                  <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarPersona()">Guardar</button>
+                  <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPersona()">Actualizar</button>
+              </div>
+          </div>
+          <!-- /.modal-content -->
+      </div>
+      <!-- /.modal-dialog -->
+  </div>
+  <!--Fin del modal-->
+</main>
 </template>
 
 <script>
@@ -200,7 +265,7 @@
         data() {
           return{
             nombre: '',
-            tipo_comprobante: 'Recibo',
+            tipo_comprobante: 'RECIBO',
             serie_comprobante: '',
             num_comprobante: '',
             impuesto: 0.16,
@@ -214,6 +279,10 @@
             errors: [],
             ingreso_uuid: '',
             proveedor_uuid: '',
+            articulo_uuid: '',
+            precio: 0.0,
+            cantidad: 0,
+            listado: 1,
             pagination: {
               'total': 0,
               'current_page': 0,
@@ -416,7 +485,7 @@
 
                 let me = this;
                 axios.put('ingresos/desactivar/'+ingreso_uuid).then(function (response){
-                  me.registrarIngreso(1,'','tipo_comprobante');
+                  me.listarIngreso(1,'','tipo_comprobante');
 
                   swalWithBootstrapButtons(
                     'Desactivado!',
@@ -497,8 +566,15 @@
               this.error = 1;
             }
             return this.error;
+          },
+          mostrarDetalle(){
+              this.listado=0;
+          },
+          ocultarDetalle(){
+              this.listado=1;
           }
         },
+
         mounted() {
             this.listarIngreso(1,this.buscar,this.criterio);
 
@@ -523,5 +599,10 @@
   .text-error{
     color: red !important;
     font-weight: bold;
+  }
+  @media (min-width: 600px) {
+    .btnagregar {
+      margin-top: 2rem;
+    }
   }
 </style>

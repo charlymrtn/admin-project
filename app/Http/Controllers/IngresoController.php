@@ -68,7 +68,7 @@ class IngresoController extends Controller
 
         DB::beginTransaction();
 
-        $time = Carbon::now('America/Mexico_City')
+        $time = Carbon::now('America/Mexico_City');
 
         $ingreso = new Ingreso();
         $ingreso->proveedor_uuid = $request->proveedor_uuid;
