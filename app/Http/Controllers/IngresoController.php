@@ -78,12 +78,27 @@ class IngresoController extends Controller
         $ingreso->num_comprobante = $request->num_comprobante;
         $ingreso->impuesto = $request->impuesto;
         $ingreso->total = $request->total;
-        $ingreso->estado = 'registrado';
+        $ingreso->estado = 'Registrado';
         $ingreso->fecha_ingreso = $time->toDateString();
+
+        $ingreso->save();
+
+        $detalles = $request->data;
+
+        foreach ($detalles as $key => $det) {
+          $detalle = new DetalleIngreso();
+          $detalle->ingreso_uuid = $ingreso->uuid;
+          $detalle->articulo_uuid = $det->articulo_uuid;
+          $detalle->cantidad = $det->cantidad;
+          $detalle->precio = $det->precio;
+
+          $detalle->save();
+
+        }
 
         DB::commit();
 
-        return response()->json($usuario);
+        return response()->json($ingreso);
 
       } catch (\Exception $e) {
         DB::rollback();
@@ -93,58 +108,6 @@ class IngresoController extends Controller
 
   }
 
-  /**
-   * Update the specified resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @param  \App\Models\Categoria  $categoria
-   * @return \Illuminate\Http\Response
-   */
-  public function update(Request $request, User $usuario)
-  {
-    if (!request()->ajax()) return redirect('/');
-
-    try {
-
-      $rules = [
-        'nombre' => 'required|string|min:5|max:100',
-        'email' => 'required|email',
-        'tipo_documento' => 'sometimes|string|min:3|max:20',
-        'num_documento' => 'required_with:tipo_documento|string|min:5|max:20',
-        'direccion' => 'sometimes|string|min:5|max:70',
-        'telefono' => 'sometimes|string|min:10|max:20',
-        'password' => 'sometimes|string|min:3|max:10',
-        'usuario' => 'sometimes|string|min:3|max:10',
-        'rol_uuid' => 'required|uuid'
-      ];
-
-      $this->validate($request,$rules);
-
-      DB::beginTransaction();
-
-      $persona = Persona::where('uuid',$usuario->uuid)->firstOrFail();
-
-      $persona->fill($request->only('nombre','tipo_documento','num_documento','direccion','telefono','email'));
-
-      if ($persona->isDirty()) $persona->save();
-
-      $usuario->usuario = $request->usuario;
-      if ($request->has('password') && $request->password) {
-        $usuario->password = bcrypt($request->password);
-      }
-      $usuario->rol_uuid = $request->rol_uuid;
-
-      if ($usuario->isDirty()) $usuario->save();
-
-      DB::commit();
-
-      return response()->json($usuario);
-
-    } catch (\Exception $e) {
-      DB::rollback();
-      return response()-json($e->getMessage());
-    }
-  }
 
   //Funciones personalizadas
 
@@ -152,11 +115,10 @@ class IngresoController extends Controller
   {
     if (!request()->ajax()) return redirect('/');
 
-    $usuario = User::findOrFail($ingreso_uuid);
+    $ingreso = Ingreso::findOrFail($ingreso_uuid);
 
-    if ($usuario->condicion) {
-      $usuario->condicion = 0;
-      $usuario->save();
-    }
+    $ingreso->estado = 'Anulado';
+
+    $ingreso->save();
   }
 }

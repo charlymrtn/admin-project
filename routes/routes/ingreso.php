@@ -4,4 +4,4 @@ Route::put('ingresos/desactivar/{ingreso_uuid}','IngresoController@desactivar')-
 
 Route::resource('ingresos', 'IngresoController')->parameters([
     'ingresos' => 'ingreso'
-])->only(['index','store','update']);
+])->only(['index','store']);
