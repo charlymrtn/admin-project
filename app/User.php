@@ -58,7 +58,7 @@ class User extends Authenticatable
           return 1;
         }elseif ($rol->nombre == 'Vendedor') {
           return 2;
-        }elseif ($rol->nombre == 'Vendedor') {
+        }elseif ($rol->nombre == 'Personal Almacén') {
           return 3;
         }
       }
