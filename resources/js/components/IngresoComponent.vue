@@ -137,7 +137,7 @@
                       <div class="form-group">
                           <label>Artículo</label>
                           <div class="form-inline">
-                              <input type="text" class="form-control" v-model="codigo" placeholder="Ingrese artículo">
+                              <input type="text" class="form-control" v-model="codigo" @keyup.enter="buscarArticulo()" placeholder="Ingrese artículo">
                               <button class="btn btn-primary">...</button>
                               <input type="text" readonly class="form-control" v-model="articulo">
                           </div>
@@ -157,7 +157,7 @@
                   </div>
                   <div class="col-md-2">
                       <div class="form-group">
-                          <button class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
+                          <button @click="agregarDetalle()" class="btn btn-success form-control btnagregar"><i class="icon-plus"></i></button>
                       </div>
                   </div>
               </div>
@@ -173,43 +173,22 @@
                               <th>Subtotal</th>
                             </tr>
                           </thead>
-                          <tbody>
-                            <tr>
+                          <tbody v-if="detalles.length">
+                            <tr v-for="detalle in detalles" :key="detalle.uuid">
                               <td>
                                   <button type="button" class="btn btn-danger btn-sm">
                                       <i class="icon-close"></i>
                                   </button>
                               </td>
+                              <td v-text="detalle.articulo"></td>
                               <td>
-                                  Artículo n
+                                  <input v-model="detalle.precio" type="number" step="any" class="form-control">
                               </td>
                               <td>
-                                  <input type="number" value="3" class="form-control">
+                                  <input v-model="detalle.cantidad" type="number" class="form-control">
                               </td>
                               <td>
-                                  <input type="number" value="2" class="form-control">
-                              </td>
-                              <td>
-                                  $ 6.00
-                              </td>
-                            </tr>
-                            <tr>
-                              <td>
-                                  <button type="button" class="btn btn-danger btn-sm">
-                                      <i class="icon-close"></i>
-                                  </button>
-                              </td>
-                              <td>
-                                  Artículo n
-                              </td>
-                              <td>
-                                  <input type="number" value="3" class="form-control">
-                              </td>
-                              <td>
-                                  <input type="number" value="2" class="form-control">
-                              </td>
-                              <td>
-                                  $ 6.00
+                                  $ {{detalle.precio*detalle.cantidad}}
                               </td>
                             </tr>
                             <tr style="background-color: #CEECF5;">
@@ -223,6 +202,13 @@
                             <tr style="background-color: #CEECF5;">
                                 <td colspan="4" align="right"><strong>Total Neto:</strong></td>
                                 <td>$ 6</td>
+                            </tr>
+                          </tbody>
+                          <tbody v-else>
+                            <tr>
+                              <td colspan="5">
+                                No hay artículos agregados
+                              </td>
                             </tr>
                           </tbody>
                       </table>
@@ -355,21 +341,27 @@
 
             me.listarIngreso(page,buscar,criterio);
           },
+          agregarDetalle(){
+            let me = this;
+            me.detalles.push({
+              articulo_uuid: me.articulo_uuid,
+              articulo: me.articulo,
+              cantidad: me.cantidad,
+              precio: me.precio
+            });
+          },
           registrarIngreso(){
             if (this.validar()) {
               return;
             }
             let me = this;
             axios.post('/ingresos',{
-              'nombre': me.nombre,
-              'email': me.email,
-              'tipo_documento': me.tipo_documento,
-              'num_documento': me.num_documento,
-              'direccion': me.direccion,
-              'telefono': me.telefono,
-              'usuario': me.nombre_usuario,
-              'password': me.password,
-              'rol_uuid': me.rol_uuid,
+              'proveedor_uuid': me.proveedor_uuid,
+              'tipo_comprobante': me.tipo_comprobante,
+              'serie_comprobante': me.serie_comprobante,
+              'num_comprobante': me.num_comprobante,
+              'impuesto': me.impuesto,
+              'total': me.total
             }).then(function (response){
               me.cerrarModal();
               swal(
@@ -380,42 +372,6 @@
               me.listarIngreso(1,'','tipo_comprobante');
             })
             .catch(function (error){
-              me.cerrarModal();
-              swal(
-                'Error!',
-                'Error interno contacte al administrador',
-                'error'
-              );
-              me.listarIngreso(1,'','tipo_comprobante');
-            });
-          },
-          actualizarIngreso(){
-            if (this.validar()) {
-              return;
-            }
-            let me = this;
-            var url = '/usuarios/'+this.usuario_uuid;
-            axios.put(url,{
-              'nombre': me.nombre,
-              'email': me.email,
-              'tipo_documento': me.tipo_documento,
-              'num_documento': me.num_documento,
-              'direccion': me.direccion,
-              'telefono': me.telefono,
-              'usuario': me.nombre_usuario,
-              'password': me.password,
-              'rol_uuid': me.rol_uuid,
-            }).then(function (response){
-              me.cerrarModal();
-              swal(
-                'Exito!',
-                'Ingreso Actualizado',
-                'success'
-              );
-              me.listarIngreso(1,'','tipo_comprobante');
-            })
-            .catch(function (error){
-              console.log(error);
               me.cerrarModal();
               swal(
                 'Error!',
@@ -445,6 +401,26 @@
             me.loading = true;
 
             me.proveedor_uuid = val.uuid;
+          },
+          buscarArticulo(){
+            let me = this;
+            var url = 'articulos/buscar?filtro='+me.codigo;
+
+            axios.get(url).then(function (response){
+              var respuesta =response.data;
+              me.articulos = respuesta.articulos;
+              if (me.articulos.length>0) {
+                var item = me.articulos[0];
+                me.articulo = item['nombre'];
+                me.articulo_uuid = item['uuid'];
+              }else{
+                me.articulo = 'No existe artículo';
+                me.articulo_uuid = '';
+              }
+            })
+            .catch(function (error){
+              console.log(error);
+            });
           },
           abrirModal(modelo, accion, data = []){
             switch (modelo) {
@@ -540,49 +516,6 @@
                 swalWithBootstrapButtons(
                   'Cancelado',
                   'El usuario sigue activo',
-                  'error'
-                )
-              }
-            })
-          },
-          activar(usuario_uuid){
-            const swalWithBootstrapButtons = swal.mixin({
-              confirmButtonClass: 'btn btn-success',
-              cancelButtonClass: 'btn btn-danger',
-              buttonsStyling: false,
-            })
-
-            swalWithBootstrapButtons({
-              title: '¿Estás segur@?',
-              type: 'warning',
-              showCancelButton: true,
-              confirmButtonText: 'Aceptar',
-              cancelButtonText: 'Cancelar',
-              reverseButtons: true
-            }).then((result) => {
-              if (result.value) {
-
-                let me = this;
-                axios.put('usuarios/activar/'+usuario_uuid).then(function (response){
-                  me.listarUsuario(1,'','nombre');
-
-                  swalWithBootstrapButtons(
-                    'Activado!',
-                    'El usuario ha sido activado.',
-                    'success'
-                  )
-                })
-                .catch(function (error){
-                  console.log(error);
-                });
-
-              } else if (
-                // Read more about handling dismissals
-                result.dismiss === swal.DismissReason.cancel
-              ) {
-                swalWithBootstrapButtons(
-                  'Cancelado',
-                  'El usuario sigue desactivado',
                   'error'
                 )
               }

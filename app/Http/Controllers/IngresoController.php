@@ -7,6 +7,7 @@ use App\Models\DetalleIngreso;
 use Illuminate\Http\Request;
 
 use DB;
+use Validator;
 use Carbon\Carbon;
 
 class IngresoController extends Controller
@@ -63,6 +64,19 @@ class IngresoController extends Controller
   public function store(Request $request)
   {
       if (!request()->ajax()) return redirect('/');
+
+      $validator = Validator::make($request->all(), [
+            'proveedor_uuid' => 'required|uuid',
+            'tipo_comprobante' => 'required|string',
+            'serie_comprobante' => 'sometimes|string',
+            'num_comprobante' => 'required|string',
+            'impuesto' => 'required|numeric',
+            'total' => 'required|numeric|min:1'
+        ]);
+
+      if ($validator->fails()) {
+        return response()->json($validator,500);
+      }
 
       try {
 
