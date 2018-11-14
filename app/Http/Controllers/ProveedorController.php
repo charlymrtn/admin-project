@@ -113,4 +113,19 @@ class ProveedorController extends Controller
       DB::rollback();
     }
   }
+
+  public function select(Request $request)
+  {
+    if (!request()->ajax()) return redirect('/');
+
+    $filtro = $request->filtro;
+
+    $proveedores = Proveedor::join('personas','proveedores.uuid','=','personas.uuid')
+                            ->where('personas.nombre','like','%'.$filtro.'%')
+                            ->orWhere('personas.num_documento','like','%'.$filtro.'%')
+                            ->select('personas.uuid','personas.nombre','personas.num_documento')
+                            ->orderBy('personas.nombre','asc')->get();
+
+    return ['proveedores' => $proveedores];
+  }
 }

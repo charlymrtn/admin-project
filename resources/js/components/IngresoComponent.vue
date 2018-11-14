@@ -93,9 +93,15 @@
                   <div class="col-md-9">
                       <div class="form-group">
                           <label for="">Proveedor(*)</label>
-                          <select class="form-control">
+                          <v-select
+                          :on-search="selectProveedor"
+                          label="nombre"
+                          :options="proveedores"
+                          placeholder="Buscar Proveedores..."
+                          :onChange="getDatosProveedor"
+                          >
 
-                          </select>
+                          </v-select>
                       </div>
                   </div>
                   <div class="col-md-3">
@@ -261,6 +267,7 @@
 </template>
 
 <script>
+    import vSelect from 'vue-select';
     export default {
         data() {
           return{
@@ -272,6 +279,7 @@
             total: 0.0,
             ingresos: [],
             detalles: [],
+            proveedores: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
@@ -295,6 +303,9 @@
             criterio: 'num_comprobante',
             buscar: ''
           }
+        },
+        components: {
+          vSelect
         },
         computed: {
           isActived: function(){
@@ -409,6 +420,27 @@
               );
               me.listarIngreso(1,'','tipo_comprobante');
             });
+          },
+          selectProveedor(search,loading){
+            let me = this;
+            loading(true)
+            var url = "/proveedores/seleccionar?filtro="+search;
+            axios.get(url).then(function (response){
+              let respuesta = response.data;
+              q: search
+              me.proveedores = respuesta.proveedores;
+              loading(false)
+            })
+            .catch(function (error){
+              console.log(error);
+
+            });
+          },
+          getDatosProveedor(val){
+            let me = this;
+            me.loading = true;
+
+            me.proveedor_uuid = val.uuid;
           },
           abrirModal(modelo, accion, data = []){
             switch (modelo) {
