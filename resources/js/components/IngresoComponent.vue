@@ -137,8 +137,9 @@
                       <div class="form-group">
                           <label>Artículo</label>
                           <div class="form-inline">
-                              <input type="text" class="form-control" v-model="articulo_uuid" placeholder="Ingrese artículo">
+                              <input type="text" class="form-control" v-model="codigo" placeholder="Ingrese artículo">
                               <button class="btn btn-primary">...</button>
+                              <input type="text" readonly class="form-control" v-model="articulo">
                           </div>
                       </div>
                   </div>
@@ -301,7 +302,10 @@
             },
             offset: 3,
             criterio: 'num_comprobante',
-            buscar: ''
+            buscar: '',
+            articulos: [],
+            codigo: '',
+            articulo: ''
           }
         },
         components: {

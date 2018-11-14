@@ -51,6 +51,18 @@ class ArticuloController extends Controller
          ];
      }
 
+     public function buscar(Request $request)
+     {
+       if (!request()->ajax()) return redirect('/');
+
+       $filtro = $request->filtro;
+       $articulos = Articulo::where('codigo',$filtro)
+                            ->select('uuid','nombre')
+                            ->orderBy('nombre','asc')->take(1)->get();
+
+      return ['articulos' => $articulos];
+     }
+
     /**
      * Store a newly created resource in storage.
      *

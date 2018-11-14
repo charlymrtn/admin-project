@@ -59492,6 +59492,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -59527,7 +59528,10 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       },
       offset: 3,
       criterio: 'num_comprobante',
-      buscar: ''
+      buscar: '',
+      articulos: [],
+      codigo: '',
+      articulo: ''
     };
   },
 
@@ -60335,8 +60339,8 @@ var render = function() {
                               {
                                 name: "model",
                                 rawName: "v-model",
-                                value: _vm.articulo_uuid,
-                                expression: "articulo_uuid"
+                                value: _vm.codigo,
+                                expression: "codigo"
                               }
                             ],
                             staticClass: "form-control",
@@ -60344,20 +60348,42 @@ var render = function() {
                               type: "text",
                               placeholder: "Ingrese artículo"
                             },
-                            domProps: { value: _vm.articulo_uuid },
+                            domProps: { value: _vm.codigo },
                             on: {
                               input: function($event) {
                                 if ($event.target.composing) {
                                   return
                                 }
-                                _vm.articulo_uuid = $event.target.value
+                                _vm.codigo = $event.target.value
                               }
                             }
                           }),
                           _vm._v(" "),
                           _c("button", { staticClass: "btn btn-primary" }, [
                             _vm._v("...")
-                          ])
+                          ]),
+                          _vm._v(" "),
+                          _c("input", {
+                            directives: [
+                              {
+                                name: "model",
+                                rawName: "v-model",
+                                value: _vm.articulo,
+                                expression: "articulo"
+                              }
+                            ],
+                            staticClass: "form-control",
+                            attrs: { type: "text", readonly: "" },
+                            domProps: { value: _vm.articulo },
+                            on: {
+                              input: function($event) {
+                                if ($event.target.composing) {
+                                  return
+                                }
+                                _vm.articulo = $event.target.value
+                              }
+                            }
+                          })
                         ])
                       ])
                     ]),
