@@ -135,7 +135,7 @@
               <div class="form-group row border">
                   <div class="col-md-6">
                       <div class="form-group">
-                          <label>Artículo</label>
+                          <label>Artículo <span style="color:red;" v-show="articulo_uuid==''">(*Seleccione)</span></label>
                           <div class="form-inline">
                               <input type="text" class="form-control" v-model="codigo" @keyup.enter="buscarArticulo()" placeholder="Ingrese artículo">
                               <button class="btn btn-primary">...</button>
@@ -145,13 +145,13 @@
                   </div>
                   <div class="col-md-2">
                       <div class="form-group">
-                          <label>Precio</label>
+                          <label>Precio <span style="color:red;" v-show="precio==0">(*Ingrese precio)</span></label>
                           <input type="number" value="0" step="any" class="form-control" v-model="precio">
                       </div>
                   </div>
                   <div class="col-md-2">
                       <div class="form-group">
-                          <label>Cantidad</label>
+                          <label>Cantidad <span style="color:red;" v-show="cantidad==0">(*Ingrese cantidad)</span></label>
                           <input type="number" value="0" class="form-control" v-model="cantidad">
                       </div>
                   </div>
@@ -174,9 +174,9 @@
                             </tr>
                           </thead>
                           <tbody v-if="detalles.length">
-                            <tr v-for="detalle in detalles" :key="detalle.uuid">
+                            <tr v-for="(detalle,index) in detalles" :key="detalle.uuid">
                               <td>
-                                  <button type="button" class="btn btn-danger btn-sm">
+                                  <button @click="eliminarDetalle(index)" type="button" class="btn btn-danger btn-sm">
                                       <i class="icon-close"></i>
                                   </button>
                               </td>
@@ -341,14 +341,63 @@
 
             me.listarIngreso(page,buscar,criterio);
           },
+          encuentra(uuid){
+            var sw = false;
+            for (var i = 0; i < this.detalles.length; i++) {
+              if (this.detalles[i].articulo_uuid == uuid) sw = true;
+            }
+            return sw;
+          },
           agregarDetalle(){
             let me = this;
-            me.detalles.push({
-              articulo_uuid: me.articulo_uuid,
-              articulo: me.articulo,
-              cantidad: me.cantidad,
-              precio: me.precio
-            });
+            if (me.articulo_uuid == '' || me.cantidad == 0 || me.precio == 0) {
+              swal({
+                type: 'error',
+                title: 'Error',
+                text: 'faltan datos! Verifique.'
+              })
+            }else{
+              if (me.encuentra(me.articulo_uuid)) {
+                swal({
+                  type: 'error',
+                  title: 'Error',
+                  text: 'Ese articulo ya se encuentra agregado!'
+                })
+              }else{
+                me.detalles.push({
+                  articulo_uuid: me.articulo_uuid,
+                  articulo: me.articulo,
+                  cantidad: me.cantidad,
+                  precio: me.precio
+                });
+                me.codigo = '';
+                me.articulo_uuid = '';
+                me.articulo = '';
+                me.cantidad = 0;
+                me.precio = 0.0;
+              }
+            }
+          },
+          eliminarDetalle(index){
+            const swalWithBootstrapButtons = swal.mixin({
+              confirmButtonClass: 'btn btn-success',
+              cancelButtonClass: 'btn btn-danger',
+              buttonsStyling: false,
+            })
+
+            swalWithBootstrapButtons({
+              title: '¿Estás segur@ de eliminar este elemento?',
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Aceptar',
+              cancelButtonText: 'Cancelar',
+              reverseButtons: true
+            }).then((result) => {
+              if (result.value) {
+                let me = this;
+                me.detalles.splice(index,1);
+              }
+            })
           },
           registrarIngreso(){
             if (this.validar()) {

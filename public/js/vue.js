@@ -59567,13 +59567,64 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
       me.listarIngreso(page, buscar, criterio);
     },
+    encuentra: function encuentra(uuid) {
+      var sw = false;
+      for (var i = 0; i < this.detalles.length; i++) {
+        if (this.detalles[i].articulo_uuid == uuid) sw = true;
+      }
+      return sw;
+    },
     agregarDetalle: function agregarDetalle() {
       var me = this;
-      me.detalles.push({
-        articulo_uuid: me.articulo_uuid,
-        articulo: me.articulo,
-        cantidad: me.cantidad,
-        precio: me.precio
+      if (me.articulo_uuid == '' || me.cantidad == 0 || me.precio == 0) {
+        swal({
+          type: 'error',
+          title: 'Error',
+          text: 'faltan datos! Verifique.'
+        });
+      } else {
+        if (me.encuentra(me.articulo_uuid)) {
+          swal({
+            type: 'error',
+            title: 'Error',
+            text: 'Ese articulo ya se encuentra agregado!'
+          });
+        } else {
+          me.detalles.push({
+            articulo_uuid: me.articulo_uuid,
+            articulo: me.articulo,
+            cantidad: me.cantidad,
+            precio: me.precio
+          });
+          me.codigo = '';
+          me.articulo_uuid = '';
+          me.articulo = '';
+          me.cantidad = 0;
+          me.precio = 0.0;
+        }
+      }
+    },
+    eliminarDetalle: function eliminarDetalle(index) {
+      var _this = this;
+
+      var swalWithBootstrapButtons = swal.mixin({
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        buttonsStyling: false
+      });
+
+      swalWithBootstrapButtons({
+        title: '¿Estás segur@ de eliminar este elemento?',
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true
+      }).then(function (result) {
+        if (result.value) {
+          var me = _this;
+          me.detalles.splice(index, 1);
+        }
       });
     },
     registrarIngreso: function registrarIngreso() {
@@ -59695,7 +59746,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.error = 0;
     },
     desactivar: function desactivar(ingreso_uuid) {
-      var _this = this;
+      var _this2 = this;
 
       var swalWithBootstrapButtons = swal.mixin({
         confirmButtonClass: 'btn btn-success',
@@ -59713,7 +59764,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       }).then(function (result) {
         if (result.value) {
 
-          var me = _this;
+          var me = _this2;
           axios.put('ingresos/desactivar/' + ingreso_uuid).then(function (response) {
             me.listarIngreso(1, '', 'tipo_comprobante');
 
@@ -60289,7 +60340,24 @@ var render = function() {
                   _c("div", { staticClass: "form-group row border" }, [
                     _c("div", { staticClass: "col-md-6" }, [
                       _c("div", { staticClass: "form-group" }, [
-                        _c("label", [_vm._v("Artículo")]),
+                        _c("label", [
+                          _vm._v("Artículo "),
+                          _c(
+                            "span",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: _vm.articulo_uuid == "",
+                                  expression: "articulo_uuid==''"
+                                }
+                              ],
+                              staticStyle: { color: "red" }
+                            },
+                            [_vm._v("(*Seleccione)")]
+                          )
+                        ]),
                         _vm._v(" "),
                         _c("div", { staticClass: "form-inline" }, [
                           _c("input", {
@@ -60363,7 +60431,24 @@ var render = function() {
                     _vm._v(" "),
                     _c("div", { staticClass: "col-md-2" }, [
                       _c("div", { staticClass: "form-group" }, [
-                        _c("label", [_vm._v("Precio")]),
+                        _c("label", [
+                          _vm._v("Precio "),
+                          _c(
+                            "span",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: _vm.precio == 0,
+                                  expression: "precio==0"
+                                }
+                              ],
+                              staticStyle: { color: "red" }
+                            },
+                            [_vm._v("(*Ingrese precio)")]
+                          )
+                        ]),
                         _vm._v(" "),
                         _c("input", {
                           directives: [
@@ -60391,7 +60476,24 @@ var render = function() {
                     _vm._v(" "),
                     _c("div", { staticClass: "col-md-2" }, [
                       _c("div", { staticClass: "form-group" }, [
-                        _c("label", [_vm._v("Cantidad")]),
+                        _c("label", [
+                          _vm._v("Cantidad "),
+                          _c(
+                            "span",
+                            {
+                              directives: [
+                                {
+                                  name: "show",
+                                  rawName: "v-show",
+                                  value: _vm.cantidad == 0,
+                                  expression: "cantidad==0"
+                                }
+                              ],
+                              staticStyle: { color: "red" }
+                            },
+                            [_vm._v("(*Ingrese cantidad)")]
+                          )
+                        ]),
                         _vm._v(" "),
                         _c("input", {
                           directives: [
@@ -60451,9 +60553,31 @@ var render = function() {
                             ? _c(
                                 "tbody",
                                 [
-                                  _vm._l(_vm.detalles, function(detalle) {
+                                  _vm._l(_vm.detalles, function(
+                                    detalle,
+                                    index
+                                  ) {
                                     return _c("tr", { key: detalle.uuid }, [
-                                      _vm._m(3, true),
+                                      _c("td", [
+                                        _c(
+                                          "button",
+                                          {
+                                            staticClass:
+                                              "btn btn-danger btn-sm",
+                                            attrs: { type: "button" },
+                                            on: {
+                                              click: function($event) {
+                                                _vm.eliminarDetalle(index)
+                                              }
+                                            }
+                                          },
+                                          [
+                                            _c("i", {
+                                              staticClass: "icon-close"
+                                            })
+                                          ]
+                                        )
+                                      ]),
                                       _vm._v(" "),
                                       _c("td", {
                                         domProps: {
@@ -60532,15 +60656,15 @@ var render = function() {
                                     ])
                                   }),
                                   _vm._v(" "),
+                                  _vm._m(3),
+                                  _vm._v(" "),
                                   _vm._m(4),
                                   _vm._v(" "),
-                                  _vm._m(5),
-                                  _vm._v(" "),
-                                  _vm._m(6)
+                                  _vm._m(5)
                                 ],
                                 2
                               )
-                            : _c("tbody", [_vm._m(7)])
+                            : _c("tbody", [_vm._m(6)])
                         ]
                       )
                     ])
@@ -60742,18 +60866,6 @@ var staticRenderFns = [
         _vm._v(" "),
         _c("th", [_vm._v("Subtotal")])
       ])
-    ])
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("td", [
-      _c(
-        "button",
-        { staticClass: "btn btn-danger btn-sm", attrs: { type: "button" } },
-        [_c("i", { staticClass: "icon-close" })]
-      )
     ])
   },
   function() {
