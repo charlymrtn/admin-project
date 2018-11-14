@@ -59764,7 +59764,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.listado = 1;
     }
   },
-
   mounted: function mounted() {
     this.listarIngreso(1, this.buscar, this.criterio);
   }

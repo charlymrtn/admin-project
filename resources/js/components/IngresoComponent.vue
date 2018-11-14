@@ -574,7 +574,6 @@
               this.listado=1;
           }
         },
-
         mounted() {
             this.listarIngreso(1,this.buscar,this.criterio);
 
