@@ -155,13 +155,23 @@ class ArticuloController extends Controller
          if ($buscar == '') {
            $articulos = Articulo::join('categorias','articulos.categoria_uuid','=','categorias.uuid')
                                  ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
-                                 ->orderBy('articulos.created_at','desc')->paginate(5);
+                                 ->where('articulos.condicion',1)
+                                 ->orderBy('articulos.nombre')->paginate(6);
          }else{
+           if ($criterio != 'categoria') {
+             $articulos = Articulo::join('categorias','articulos.categoria_uuid','=','categorias.uuid')
+                                   ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
+                                   ->where('articulos.'.$criterio,'like','%'.$buscar.'%')
+                                   ->where('articulos.condicion',1)
+                                   ->orderBy('articulos.nombre')->paginate(6);
+           }else{
+             $articulos = Articulo::join('categorias','articulos.categoria_uuid','=','categorias.uuid')
+                                   ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
+                                   ->where('categorias.nombre','like','%'.$buscar.'%')
+                                   ->where('articulos.condicion',1)
+                                   ->orderBy('articulos.nombre')->paginate(6);
+           }
 
-           $articulos = Articulo::join('categorias','articulos.categoria_uuid','=','categorias.uuid')
-                                 ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
-                                 ->where('articulos.'.$criterio,'like','%'.$buscar.'%')
-                                 ->orderBy('articulos.created_at','desc')->paginate(5);
          }
 
          return ['articulos' => $articulos];

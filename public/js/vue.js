@@ -59478,6 +59478,46 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -59516,6 +59556,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       offset: 3,
       criterio: 'num_comprobante',
       buscar: '',
+      criterio_articulo: 'nombre',
+      buscar_articulo: '',
       articulos: [],
       codigo: '',
       articulo: ''
@@ -59612,6 +59654,34 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         }
       }
     },
+    agregarDetalleModal: function agregarDetalleModal() {
+      var data = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : [];
+
+      var me = this;
+      if (me.encuentra(data['uuid'])) {
+        swal({
+          type: 'error',
+          title: 'Error',
+          text: 'Ese articulo ya se encuentra agregado!'
+        });
+      } else {
+        me.detalles.push({
+          articulo_uuid: data['uuid'],
+          articulo: data['nombre'],
+          cantidad: 1,
+          precio: 1
+        });
+      }
+    },
+    listarArticulo: function listarArticulo(buscar, criterio) {
+      var me = this;
+      var url = '/articulos/listar?buscar=' + buscar + '&criterio=' + criterio;
+      axios.get(url).then(function (response) {
+        me.articulos = response.data.articulos.data;
+      }).catch(function (error) {
+        console.log(error);
+      });
+    },
     eliminarDetalle: function eliminarDetalle(index) {
       var _this = this;
 
@@ -59696,6 +59766,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       });
     },
     abrirModal: function abrirModal() {
+      this.articulos = [];
       this.modal = 1;
       this.tituloModal = 'Seleccione artículo(s)';
     },
@@ -60364,7 +60435,10 @@ var render = function() {
                               staticClass: "btn btn-primary",
                               on: {
                                 click: function($event) {
-                                  _vm.abrirModal()
+                                  _vm.abrirModal(
+                                    _vm.buscar_articulo,
+                                    _vm.criterio_articulo
+                                  )
                                 }
                               }
                             },
@@ -60566,8 +60640,7 @@ var render = function() {
                                             "form-control text-right",
                                           attrs: {
                                             type: "number",
-                                            step: "any",
-                                            readonly: ""
+                                            step: "any"
                                           },
                                           domProps: { value: detalle.precio },
                                           on: {
@@ -60597,10 +60670,7 @@ var render = function() {
                                           ],
                                           staticClass:
                                             "form-control text-right",
-                                          attrs: {
-                                            type: "number",
-                                            readonly: ""
-                                          },
+                                          attrs: { type: "number" },
                                           domProps: { value: detalle.cantidad },
                                           on: {
                                             input: function($event) {
@@ -60621,7 +60691,10 @@ var render = function() {
                                         _vm._v(
                                           "\n                                  $ " +
                                             _vm._s(
-                                              detalle.precio * detalle.cantidad
+                                              (
+                                                detalle.precio *
+                                                detalle.cantidad
+                                              ).toFixed(2)
                                             ) +
                                             "\n                              "
                                         )
@@ -60690,7 +60763,9 @@ var render = function() {
                                         _vm._v(
                                           "$ " +
                                             _vm._s(
-                                              (_vm.total = _vm.calcularTotal)
+                                              (_vm.total = _vm.calcularTotal.toFixed(
+                                                2
+                                              ))
                                             )
                                         )
                                       ])
@@ -60790,7 +60865,179 @@ var render = function() {
                 )
               ]),
               _vm._v(" "),
-              _c("div", { staticClass: "modal-body" }),
+              _c("div", { staticClass: "modal-body" }, [
+                _c("div", { staticClass: "form-group row" }, [
+                  _c("div", { staticClass: "col-md-6" }, [
+                    _c("div", { staticClass: "input-group" }, [
+                      _c(
+                        "select",
+                        {
+                          directives: [
+                            {
+                              name: "model",
+                              rawName: "v-model",
+                              value: _vm.criterio_articulo,
+                              expression: "criterio_articulo"
+                            }
+                          ],
+                          staticClass: "form-control col-md-4",
+                          on: {
+                            change: function($event) {
+                              var $$selectedVal = Array.prototype.filter
+                                .call($event.target.options, function(o) {
+                                  return o.selected
+                                })
+                                .map(function(o) {
+                                  var val = "_value" in o ? o._value : o.value
+                                  return val
+                                })
+                              _vm.criterio_articulo = $event.target.multiple
+                                ? $$selectedVal
+                                : $$selectedVal[0]
+                            }
+                          }
+                        },
+                        [
+                          _c("option", { attrs: { value: "nombre" } }, [
+                            _vm._v("Nombre")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "codigo" } }, [
+                            _vm._v("Código")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "descripcion" } }, [
+                            _vm._v("Descripción")
+                          ]),
+                          _vm._v(" "),
+                          _c("option", { attrs: { value: "categoria" } }, [
+                            _vm._v("Categoría")
+                          ])
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c("input", {
+                        directives: [
+                          {
+                            name: "model",
+                            rawName: "v-model",
+                            value: _vm.buscar_articulo,
+                            expression: "buscar_articulo"
+                          }
+                        ],
+                        staticClass: "form-control",
+                        attrs: { type: "text", placeholder: "Texto a buscar" },
+                        domProps: { value: _vm.buscar_articulo },
+                        on: {
+                          keyup: function($event) {
+                            if (
+                              !("button" in $event) &&
+                              _vm._k(
+                                $event.keyCode,
+                                "enter",
+                                13,
+                                $event.key,
+                                "Enter"
+                              )
+                            ) {
+                              return null
+                            }
+                            _vm.listarArticulo(
+                              _vm.buscar_articulo,
+                              _vm.criterio_articulo
+                            )
+                          },
+                          input: function($event) {
+                            if ($event.target.composing) {
+                              return
+                            }
+                            _vm.buscar_articulo = $event.target.value
+                          }
+                        }
+                      }),
+                      _vm._v(" "),
+                      _c(
+                        "button",
+                        {
+                          staticClass: "btn btn-primary",
+                          attrs: { type: "submit" },
+                          on: {
+                            click: function($event) {
+                              _vm.listarArticulo(
+                                _vm.buscar_articulo,
+                                _vm.criterio_articulo
+                              )
+                            }
+                          }
+                        },
+                        [
+                          _c("i", { staticClass: "fa fa-search" }),
+                          _vm._v(" Buscar")
+                        ]
+                      )
+                    ])
+                  ])
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "table-responsive" }, [
+                  _c(
+                    "table",
+                    {
+                      staticClass: "table table-bordered table-striped table-sm"
+                    },
+                    [
+                      _vm._m(7),
+                      _vm._v(" "),
+                      _c(
+                        "tbody",
+                        _vm._l(_vm.articulos, function(articulo) {
+                          return _c("tr", { key: articulo.uuid }, [
+                            _c("td", [
+                              _c(
+                                "button",
+                                {
+                                  staticClass: "btn btn-success btn-sm",
+                                  attrs: { type: "button" },
+                                  on: {
+                                    click: function($event) {
+                                      _vm.agregarDetalleModal(articulo)
+                                    }
+                                  }
+                                },
+                                [_c("i", { staticClass: "icon-check" })]
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c("td", {
+                              domProps: { textContent: _vm._s(articulo.codigo) }
+                            }),
+                            _vm._v(" "),
+                            _c("td", {
+                              domProps: { textContent: _vm._s(articulo.nombre) }
+                            }),
+                            _vm._v(" "),
+                            _c("td", {
+                              domProps: {
+                                textContent: _vm._s(articulo.nombre_categoria)
+                              }
+                            }),
+                            _vm._v(" "),
+                            _c("td", {
+                              domProps: { textContent: _vm._s(articulo.precio) }
+                            }),
+                            _vm._v(" "),
+                            _c("td", {
+                              domProps: {
+                                textContent: _vm._s(articulo.existencias)
+                              }
+                            })
+                          ])
+                        })
+                      )
+                    ]
+                  )
+                ])
+              ]),
               _vm._v(" "),
               _c("div", { staticClass: "modal-footer" }, [
                 _c(
@@ -60805,16 +61052,6 @@ var render = function() {
                     }
                   },
                   [_vm._v("Cerrar")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "button",
-                  {
-                    staticClass: "btn btn-primary",
-                    attrs: { type: "button" },
-                    on: { click: function($event) {} }
-                  },
-                  [_vm._v("Guardar")]
                 )
               ])
             ])
@@ -60914,6 +61151,26 @@ var staticRenderFns = [
         _vm._v(
           "\n                                No hay artículos agregados\n                              "
         )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c("th", [_vm._v("Opciones")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Código")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Nombre")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Categoría")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Precio unitario")]),
+        _vm._v(" "),
+        _c("th", [_vm._v("Unidades en almácen")])
       ])
     ])
   }

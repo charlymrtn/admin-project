@@ -138,7 +138,7 @@
                           <label>Artículo <span style="color:red;" v-show="articulo_uuid==''">(*Seleccione)</span></label>
                           <div class="form-inline">
                               <input type="text" class="form-control" v-model="codigo" @keyup.enter="buscarArticulo()" placeholder="Ingrese artículo">
-                              <button @click="abrirModal()" class="btn btn-primary">...</button>
+                              <button @click="abrirModal(buscar_articulo,criterio_articulo)" class="btn btn-primary">...</button>
                               <input type="text" readonly class="form-control" v-model="articulo">
                           </div>
                       </div>
@@ -182,13 +182,13 @@
                               </td>
                               <td v-text="detalle.articulo"></td>
                               <td>
-                                  <input v-model="detalle.precio" type="number" step="any" class="form-control text-right" readonly>
+                                  <input v-model="detalle.precio" type="number" step="any" class="form-control text-right">
                               </td>
                               <td>
-                                  <input v-model="detalle.cantidad" type="number" class="form-control text-right" readonly>
+                                  <input v-model="detalle.cantidad" type="number" class="form-control text-right">
                               </td>
                               <td>
-                                  $ {{detalle.precio*detalle.cantidad}}
+                                  $ {{(detalle.precio*detalle.cantidad).toFixed(2)}}
                               </td>
                             </tr>
                             <tr style="background-color: #CEECF5;">
@@ -201,7 +201,7 @@
                             </tr>
                             <tr style="background-color: #CEECF5;">
                                 <td colspan="4" align="right"><strong>Total Neto:</strong></td>
-                                <td>$ {{total=calcularTotal}}</td>
+                                <td>$ {{total=calcularTotal.toFixed(2)}}</td>
                             </tr>
                           </tbody>
                           <tbody v-else>
@@ -237,11 +237,51 @@
                   </button>
               </div>
               <div class="modal-body">
-                
+                  <div class="form-group row">
+                      <div class="col-md-6">
+                          <div class="input-group">
+                              <select class="form-control col-md-4" v-model="criterio_articulo">
+                                <option value="nombre">Nombre</option>
+                                <option value="codigo">Código</option>
+                                <option value="descripcion">Descripción</option>
+                                <option value="categoria">Categoría</option>
+                              </select>
+                              <input type="text" class="form-control" placeholder="Texto a buscar" v-model="buscar_articulo" @keyup.enter="listarArticulo(buscar_articulo,criterio_articulo)">
+                              <button type="submit" @click="listarArticulo(buscar_articulo,criterio_articulo)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                          </div>
+                      </div>
+                  </div>
+                  <div class="table-responsive">
+                    <table class="table table-bordered table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>Opciones</th>
+                                <th>Código</th>
+                                <th>Nombre</th>
+                                <th>Categoría</th>
+                                <th>Precio unitario</th>
+                                <th>Unidades en almácen</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="articulo in articulos" :key="articulo.uuid">
+                                <td>
+                                    <button type="button" @click="agregarDetalleModal(articulo)" class="btn btn-success btn-sm">
+                                      <i class="icon-check"></i>
+                                    </button>
+                                </td>
+                                <td v-text="articulo.codigo"></td>
+                                <td v-text="articulo.nombre"></td>
+                                <td v-text="articulo.nombre_categoria"></td>
+                                <td v-text="articulo.precio"></td>
+                                <td v-text="articulo.existencias"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                  </div>
               </div>
               <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                  <button type="button" class="btn btn-primary" @click="">Guardar</button>
               </div>
           </div>
           <!-- /.modal-content -->
@@ -290,6 +330,8 @@
             offset: 3,
             criterio: 'num_comprobante',
             buscar: '',
+            criterio_articulo: 'nombre',
+            buscar_articulo: '',
             articulos: [],
             codigo: '',
             articulo: ''
@@ -386,6 +428,33 @@
               }
             }
           },
+          agregarDetalleModal(data = []){
+            let me = this;
+            if (me.encuentra(data['uuid'])) {
+              swal({
+                type: 'error',
+                title: 'Error',
+                text: 'Ese articulo ya se encuentra agregado!'
+              })
+            }else{
+              me.detalles.push({
+                articulo_uuid: data['uuid'],
+                articulo: data['nombre'],
+                cantidad: 1,
+                precio: 1
+              });
+            }
+          },
+          listarArticulo(buscar,criterio){
+            let me = this;
+            var url = '/articulos/listar?buscar=' + buscar + '&criterio=' + criterio;
+            axios.get(url).then(function (response){
+              me.articulos = response.data.articulos.data;
+            })
+            .catch(function (error){
+              console.log(error);
+            });
+          },
           eliminarDetalle(index){
             const swalWithBootstrapButtons = swal.mixin({
               confirmButtonClass: 'btn btn-success',
@@ -480,6 +549,7 @@
             });
           },
           abrirModal(){
+            this.articulos = [];
             this.modal = 1;
             this.tituloModal = 'Seleccione artículo(s)';
           },
