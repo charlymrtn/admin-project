@@ -144,4 +144,26 @@ class ArticuloController extends Controller
          $articulo->save();
        }
      }
+
+     public function listar(Request $request)
+     {
+         if (!$request->ajax()) return redirect('/');
+
+         $buscar = $request->buscar;
+         $criterio = $request->criterio;
+
+         if ($buscar == '') {
+           $articulos = Articulo::join('categorias','articulos.categoria_uuid','=','categorias.uuid')
+                                 ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
+                                 ->orderBy('articulos.created_at','desc')->paginate(5);
+         }else{
+
+           $articulos = Articulo::join('categorias','articulos.categoria_uuid','=','categorias.uuid')
+                                 ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
+                                 ->where('articulos.'.$criterio,'like','%'.$buscar.'%')
+                                 ->orderBy('articulos.created_at','desc')->paginate(5);
+         }
+
+         return ['articulos' => $articulos];
+     }
 }

@@ -138,7 +138,7 @@
                           <label>Artículo <span style="color:red;" v-show="articulo_uuid==''">(*Seleccione)</span></label>
                           <div class="form-inline">
                               <input type="text" class="form-control" v-model="codigo" @keyup.enter="buscarArticulo()" placeholder="Ingrese artículo">
-                              <button class="btn btn-primary">...</button>
+                              <button @click="abrirModal()" class="btn btn-primary">...</button>
                               <input type="text" readonly class="form-control" v-model="articulo">
                           </div>
                       </div>
@@ -237,12 +237,11 @@
                   </button>
               </div>
               <div class="modal-body">
-
+                
               </div>
               <div class="modal-footer">
                   <button type="button" class="btn btn-secondary" @click="cerrarModal()">Cerrar</button>
-                  <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarPersona()">Guardar</button>
-                  <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarPersona()">Actualizar</button>
+                  <button type="button" class="btn btn-primary" @click="">Guardar</button>
               </div>
           </div>
           <!-- /.modal-content -->
@@ -480,61 +479,13 @@
               console.log(error);
             });
           },
-          abrirModal(modelo, accion, data = []){
-            switch (modelo) {
-              case 'ingreso':
-              {
-                switch (accion) {
-                  case 'registrar':
-                  {
-                    this.modal = 1;
-                    this.tituloModal = 'Registrar Ingreso';
-                    this.nombre = '';
-                    this.tipo_documento = 'Recibo';
-                    this.num_documento = '';
-                    this.email = '';
-                    this.direccion = '';
-                    this.telefono = '';
-                    this.nombre_usuario = '';
-                    this.password = '';
-                    this.rol_uuid = '';
-                    this.tipoAccion = 1;
-                    break;
-                  }
-                  case 'actualizar':
-                  {
-                    this.modal = 1;
-                    this.tituloModal = 'Actualizar Usuario '+data.nombre;
-                    this.nombre = data.nombre;
-                    this.tipo_documento = data.tipo_documento;
-                    this.num_documento = data.num_documento;
-                    this.email = data.email;
-                    this.direccion = data.direccion;
-                    this.telefono = data.telefono;
-                    this.nombre_usuario = data.usuario;
-                    this.password = data.password;
-                    this.rol_uuid = data.rol_uuid;
-                    this.usuario_uuid = data.uuid;
-                    this.tipoAccion = 2;
-                    break;
-                  }
-                }
-              }
-            }
+          abrirModal(){
+            this.modal = 1;
+            this.tituloModal = 'Seleccione artículo(s)';
           },
           cerrarModal(){
             this.modal = 0;
-            this.tituloModal = "";
-            this.nombre = '';
-            this.tipo_documento = 'INE';
-            this.num_documento = '';
-            this.email = '';
-            this.direccion = '';
-            this.telefono = '';
-            this.nombre_usuario = 0;
-            this.password = '';
-            this.rol_uuid = '';
-            this.error = 0;
+            this.tituloModal = '';
           },
           desactivar(ingreso_uuid){
             const swalWithBootstrapButtons = swal.mixin({

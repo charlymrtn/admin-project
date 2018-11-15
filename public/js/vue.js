@@ -59478,7 +59478,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -59696,63 +59695,13 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         console.log(error);
       });
     },
-    abrirModal: function abrirModal(modelo, accion) {
-      var data = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : [];
-
-      switch (modelo) {
-        case 'ingreso':
-          {
-            switch (accion) {
-              case 'registrar':
-                {
-                  this.modal = 1;
-                  this.tituloModal = 'Registrar Ingreso';
-                  this.nombre = '';
-                  this.tipo_documento = 'Recibo';
-                  this.num_documento = '';
-                  this.email = '';
-                  this.direccion = '';
-                  this.telefono = '';
-                  this.nombre_usuario = '';
-                  this.password = '';
-                  this.rol_uuid = '';
-                  this.tipoAccion = 1;
-                  break;
-                }
-              case 'actualizar':
-                {
-                  this.modal = 1;
-                  this.tituloModal = 'Actualizar Usuario ' + data.nombre;
-                  this.nombre = data.nombre;
-                  this.tipo_documento = data.tipo_documento;
-                  this.num_documento = data.num_documento;
-                  this.email = data.email;
-                  this.direccion = data.direccion;
-                  this.telefono = data.telefono;
-                  this.nombre_usuario = data.usuario;
-                  this.password = data.password;
-                  this.rol_uuid = data.rol_uuid;
-                  this.usuario_uuid = data.uuid;
-                  this.tipoAccion = 2;
-                  break;
-                }
-            }
-          }
-      }
+    abrirModal: function abrirModal() {
+      this.modal = 1;
+      this.tituloModal = 'Seleccione artículo(s)';
     },
     cerrarModal: function cerrarModal() {
       this.modal = 0;
-      this.tituloModal = "";
-      this.nombre = '';
-      this.tipo_documento = 'INE';
-      this.num_documento = '';
-      this.email = '';
-      this.direccion = '';
-      this.telefono = '';
-      this.nombre_usuario = 0;
-      this.password = '';
-      this.rol_uuid = '';
-      this.error = 0;
+      this.tituloModal = '';
     },
     desactivar: function desactivar(ingreso_uuid) {
       var _this2 = this;
@@ -60409,9 +60358,18 @@ var render = function() {
                             }
                           }),
                           _vm._v(" "),
-                          _c("button", { staticClass: "btn btn-primary" }, [
-                            _vm._v("...")
-                          ]),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-primary",
+                              on: {
+                                click: function($event) {
+                                  _vm.abrirModal()
+                                }
+                              }
+                            },
+                            [_vm._v("...")]
+                          ),
                           _vm._v(" "),
                           _c("input", {
                             directives: [
@@ -60849,37 +60807,15 @@ var render = function() {
                   [_vm._v("Cerrar")]
                 ),
                 _vm._v(" "),
-                _vm.tipoAccion == 1
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            _vm.registrarPersona()
-                          }
-                        }
-                      },
-                      [_vm._v("Guardar")]
-                    )
-                  : _vm._e(),
-                _vm._v(" "),
-                _vm.tipoAccion == 2
-                  ? _c(
-                      "button",
-                      {
-                        staticClass: "btn btn-primary",
-                        attrs: { type: "button" },
-                        on: {
-                          click: function($event) {
-                            _vm.actualizarPersona()
-                          }
-                        }
-                      },
-                      [_vm._v("Actualizar")]
-                    )
-                  : _vm._e()
+                _c(
+                  "button",
+                  {
+                    staticClass: "btn btn-primary",
+                    attrs: { type: "button" },
+                    on: { click: function($event) {} }
+                  },
+                  [_vm._v("Guardar")]
+                )
               ])
             ])
           ]

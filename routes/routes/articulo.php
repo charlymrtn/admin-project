@@ -8,3 +8,4 @@ Route::put('articulos/activar/{articulo_uuid}','ArticuloController@activar')->na
 Route::put('articulos/desactivar/{articulo_uuid}','ArticuloController@desactivar')->name('articulos.desactive');
 
 Route::get('articulos/buscar','ArticuloController@buscar')->name('articulos.search');
+Route::get('articulos/listar','ArticuloController@listar')->name('articulos.list');
