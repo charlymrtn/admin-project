@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 
 use DB;
 use Validator;
+use Auth;
+use Log;
 use Carbon\Carbon;
 
 class IngresoController extends Controller
@@ -71,7 +73,8 @@ class IngresoController extends Controller
             'serie_comprobante' => 'sometimes|string',
             'num_comprobante' => 'required|string',
             'impuesto' => 'required|numeric',
-            'total' => 'required|numeric|min:1'
+            'total' => 'required|numeric|min:1',
+            'detalles' => 'required|array'
         ]);
 
       if ($validator->fails()) {
@@ -97,14 +100,12 @@ class IngresoController extends Controller
 
         $ingreso->save();
 
-        $detalles = $request->data;
-
-        foreach ($detalles as $key => $det) {
+        foreach ($request->detalles as $item) {
           $detalle = new DetalleIngreso();
           $detalle->ingreso_uuid = $ingreso->uuid;
-          $detalle->articulo_uuid = $det->articulo_uuid;
-          $detalle->cantidad = $det->cantidad;
-          $detalle->precio = $det->precio;
+          $detalle->articulo_uuid = $item->articulo_uuid;
+          $detalle->cantidad = $item->cantidad;
+          $detalle->precio = $item->precio;
 
           $detalle->save();
 
@@ -116,7 +117,7 @@ class IngresoController extends Controller
 
       } catch (\Exception $e) {
         DB::rollback();
-        Log::error($e->getMessage());
+        Log::error($e);
         return response()->json(['error'=>$e->getMessage()],500);
       }
 

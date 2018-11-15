@@ -59518,6 +59518,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ __webpack_exports__["default"] = ({
@@ -59716,13 +59725,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         'serie_comprobante': me.serie_comprobante,
         'num_comprobante': me.num_comprobante,
         'impuesto': me.impuesto,
-        'total': me.total
+        'total': me.total,
+        'detalles': me.detalles
       }).then(function (response) {
-        me.cerrarModal();
+        console.log(response);
         swal('Exito!', 'Ingreso Creado', 'success');
         me.listarIngreso(1, '', 'tipo_comprobante');
       }).catch(function (error) {
-        me.cerrarModal();
+        console.log(error);
         swal('Error!', 'Error interno contacte al administrador', 'error');
         me.listarIngreso(1, '', 'tipo_comprobante');
       });
@@ -59812,15 +59822,14 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
       this.error = 0;
       this.errors = [];
 
-      if (!this.nombre) this.errors.push('El nombre es obligatorio');
-      if (!this.email) this.errors.push('El correo es obligatorio');
-      if (!this.nombre_usuario) this.errors.push('El nombre de usuario es obligatorio');
-      if (!this.password && this.tipoAccion == 1) this.errors.push('La contraseña es obligatoria');
-      if (!this.rol_uuid) this.errors.push('El rol es obligatorio');
+      if (!this.proveedor_uuid) this.errors.push('Seleccione un proveedor');
+      if (!this.tipo_comprobante) this.errors.push('Seleccione el tipo de comprobante');
+      if (!this.num_comprobante) this.errors.push('Ingrese el número de comprobante');
+      if (!this.impuesto) this.errors.push('Ingrese el impreso');
+      if (this.detalles.length <= 0) this.errors.push('Ingrese detalles del ingreso');
 
-      if (this.errors.length) {
-        this.error = 1;
-      }
+      if (this.errors.length) this.error = 1;
+
       return this.error;
     },
     mostrarDetalle: function mostrarDetalle() {
@@ -60363,6 +60372,35 @@ var render = function() {
                           }
                         })
                       ])
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "col-md-12" }, [
+                      _c(
+                        "div",
+                        {
+                          directives: [
+                            {
+                              name: "show",
+                              rawName: "v-show",
+                              value: _vm.error,
+                              expression: "error"
+                            }
+                          ],
+                          staticClass: "form-group row div-error"
+                        },
+                        [
+                          _c(
+                            "div",
+                            { staticClass: "text-center text-error" },
+                            _vm._l(_vm.errors, function(error) {
+                              return _c("div", {
+                                key: error,
+                                domProps: { textContent: _vm._s(error) }
+                              })
+                            })
+                          )
+                        ]
+                      )
                     ])
                   ]),
                   _vm._v(" "),
