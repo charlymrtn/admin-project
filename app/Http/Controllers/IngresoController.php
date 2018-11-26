@@ -103,9 +103,9 @@ class IngresoController extends Controller
         foreach ($request->detalles as $item) {
           $detalle = new DetalleIngreso();
           $detalle->ingreso_uuid = $ingreso->uuid;
-          $detalle->articulo_uuid = $item->articulo_uuid;
-          $detalle->cantidad = $item->cantidad;
-          $detalle->precio = $item->precio;
+          $detalle->articulo_uuid = $item['articulo_uuid'];
+          $detalle->cantidad = $item['cantidad'];
+          $detalle->precio = $item['precio'];
 
           $detalle->save();
 

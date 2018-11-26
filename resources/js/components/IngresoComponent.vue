@@ -499,13 +499,24 @@
               'total': me.total,
               'detalles': me.detalles
             }).then(function (response){
-              console.log(response);
               swal(
                 'Exito!',
                 'Ingreso Creado',
                 'success'
               );
+              me.listado = 1;
               me.listarIngreso(1,'','tipo_comprobante');
+              me.proveedor_uuid ='';
+              me.tipo_comprobante= 'RECIBO',
+              me.serie_comprobante= '',
+              me.num_comprobante= '',
+              me.impuesto = 0.16;
+              me.total = 0.0;
+              me.articulo = '';
+              me.articulo_uuid = '';
+              me.cantidad = 0;
+              me.precio = 0.0;
+              me.detalles = [];
             })
             .catch(function (error){
               console.log(error);
@@ -625,7 +636,18 @@
             return this.error;
           },
           mostrarDetalle(){
-              this.listado=0;
+            this.listado=0;
+            this.proveedor_uuid ='';
+            this.tipo_comprobante= 'RECIBO',
+            this.serie_comprobante= '',
+            this.num_comprobante= '',
+            this.impuesto = 0.16;
+            this.total = 0.0;
+            this.articulo = '';
+            this.articulo_uuid = '';
+            this.cantidad = 0;
+            this.precio = 0.0;
+            this.detalles = [];
           },
           ocultarDetalle(){
               this.listado=1;
