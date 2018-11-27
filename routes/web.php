@@ -39,6 +39,8 @@ Route::middleware('auth')->group(function(){
 
   Route::middleware('Vendedor')->group(function(){
     require base_path('routes/routes/cliente.php');
+
+    require base_path('routes/routes/venta.php');
   });
 
   Route::middleware('Administrador')->group(function(){
@@ -56,6 +58,7 @@ Route::middleware('auth')->group(function(){
 
     require base_path('routes/routes/usuario.php');
 
+    require base_path('routes/routes/venta.php');
   });
 
 
