@@ -3,44 +3,101 @@
 @section('title', 'Sistema Ventas - PájaroIT')
 
 @section('content')
-  <template v-if="menu==0">
-    <h1>contenido del menu 0</h1>
-  </template>
-  <template v-if="menu==1">
-    <categoria-component></categoria-component>
-  </template>
-  <template v-if="menu==2">
-    <h1>contenido del menu 2</h1>
-  </template>
-  <template v-if="menu==3">
-    <h1>contenido del menu 3</h1>
-  </template>
-  <template v-if="menu==4">
-    <h1>contenido del menu 4</h1>
-  </template>
-  <template v-if="menu==5">
-    <h1>contenido del menu 5</h1>
-  </template>
-  <template v-if="menu==6">
-    <h1>contenido del menu 6</h1>
-  </template>
-  <template v-if="menu==7">
-    <h1>contenido del menu 7</h1>
-  </template>
-  <template v-if="menu==8">
-    <h1>contenido del menu 8</h1>
-  </template>
-  <template v-if="menu==9">
-    <h1>contenido del menu 9</h1>
-  </template>
-  <template v-if="menu==10">
-    <h1>contenido del menu 10</h1>
-  </template>
-  <template v-if="menu==11">
-    <h1>contenido del menu 11</h1>
-  </template>
-  <template v-if="menu==12">
-    <h1>contenido del menu 12</h1>
-  </template>
 
-@stop
+  @if (Auth::check())
+    @if (Auth::user()->rol_id == 1)
+
+      <template v-if="menu==0">
+        <h1>Escritorio</h1>
+      </template>
+      <template v-if="menu==1">
+        <categoria-component></categoria-component>
+      </template>
+      <template v-if="menu==2">
+        <articulo-component></articulo-component>
+      </template>
+      <template v-if="menu==3">
+        <ingreso-component></ingreso-component>
+      </template>
+      <template v-if="menu==4">
+        <proveedor-component></proveedor-component>
+      </template>
+      <template v-if="menu==5">
+        <h1>Ventas</h1>
+      </template>
+      <template v-if="menu==6">
+        <cliente-component></cliente-component>
+      </template>
+      <template v-if="menu==7">
+        <usuario-component></usuario-component>
+      </template>
+      <template v-if="menu==8">
+        <rol-component></rol-component>
+      </template>
+      <template v-if="menu==9">
+        <h1>reporte ingresos</h1>
+      </template>
+      <template v-if="menu==10">
+        <h1>reporte ventas</h1>
+      </template>
+      <template v-if="menu==11">
+        <h1>ayuda</h1>
+      </template>
+      <template v-if="menu==12">
+        <h1>acerca de..</h1>
+      </template>
+
+    @elseif(Auth::user()->rol_id == 2)
+
+      <template v-if="menu==0">
+        <h1>Escritorio</h1>
+      </template>
+      <template v-if="menu==5">
+        <h1>Ventas</h1>
+      </template>
+      <template v-if="menu==6">
+        <cliente-component></cliente-component>
+      </template>
+      <template v-if="menu==10">
+        <h1>reporte ventas</h1>
+      </template>
+      <template v-if="menu==11">
+        <h1>ayuda</h1>
+      </template>
+      <template v-if="menu==12">
+        <h1>acerca de..</h1>
+      </template>
+
+    @elseif(Auth::user()->rol_id == 3)
+
+      <template v-if="menu==0">
+        <h1>Escritorio</h1>
+      </template>
+      <template v-if="menu==1">
+        <categoria-component></categoria-component>
+      </template>
+      <template v-if="menu==2">
+        <articulo-component></articulo-component>
+      </template>
+      <template v-if="menu==3">
+        <ingreso-component></ingreso-component>
+      </template>
+      <template v-if="menu==4">
+        <proveedor-component></proveedor-component>
+      </template>
+      <template v-if="menu==9">
+        <h1>reporte ingresos</h1>
+      </template>
+      <template v-if="menu==11">
+        <h1>ayuda</h1>
+      </template>
+      <template v-if="menu==12">
+        <h1>acerca de..</h1>
+      </template>
+
+    @else
+
+    @endif
+  @endif
+
+@endsection

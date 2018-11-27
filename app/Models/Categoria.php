@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Webpatser\Uuid\Uuid;
+use Uuid;
 
 class Categoria extends Model
 {
@@ -30,6 +30,10 @@ class Categoria extends Model
         'created_at', 'updated_at', 'deleted_at'
     ];
 
+    protected $hidden = [
+        'deleted_at'
+    ];
+
     public static function boot()
     {
       parent::boot();
@@ -39,5 +43,10 @@ class Categoria extends Model
           $model->uuid = Uuid::generate(4)->string;
         }
       });
+    }
+
+    public function articulos()
+    {
+      return $this->hasMany('App\Models\Articulo','categoria_uud','uuid');
     }
 }

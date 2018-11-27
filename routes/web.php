@@ -11,15 +11,52 @@
 |
 */
 
-Route::get('/', function () {
-    return view('contenido.contenido');
+
+
+Route::middleware(['guest'])->namespace('Auth')->group(function(){
+    Route::get('/', 'LoginController@showLoginForm')->name('home');
+    Route::post('ingresar', 'LoginController@login')->name('login');
 });
 
-Route::resource('categorias', 'CategoriaController')->parameters([
-    'categorias' => 'categoria'
-])->only(['index','store','update']);
+Route::middleware('auth')->group(function(){
+  Route::get('principal', function () {
+      return view('contenido.contenido');
+  })->name('principal');
 
-Route::put('categorias/activar/{categoria_uuid}','CategoriaController@activar')->name('categorias.active');
-Route::put('categorias/desactivar/{categoria_uuid}','CategoriaController@desactivar')->name('categorias.desactive');
+  Route::namespace('Auth')->group(function(){
+    Route::post('salir', 'LoginController@logout')->name('logout');
+  });
 
-Route::get('categorias/{uuid}','CategoriaController@show')->name('categorias.show');
+  Route::middleware('Almacen')->group(function(){
+    require base_path('routes/routes/categoria.php');
+
+    require base_path('routes/routes/articulo.php');
+
+    require base_path('routes/routes/proveedor.php');
+
+    require base_path('routes/routes/ingreso.php');
+  });
+
+  Route::middleware('Vendedor')->group(function(){
+    require base_path('routes/routes/cliente.php');
+  });
+
+  Route::middleware('Administrador')->group(function(){
+    require base_path('routes/routes/categoria.php');
+
+    require base_path('routes/routes/articulo.php');
+
+    require base_path('routes/routes/proveedor.php');
+
+    require base_path('routes/routes/cliente.php');
+
+    require base_path('routes/routes/ingreso.php');
+
+    require base_path('routes/routes/rol.php');
+
+    require base_path('routes/routes/usuario.php');
+
+  });
+
+
+});

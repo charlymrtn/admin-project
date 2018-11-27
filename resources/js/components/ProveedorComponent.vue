@@ -10,8 +10,8 @@
           <!-- Ejemplo de tabla Listado -->
           <div class="card">
               <div class="card-header">
-                  <i class="fa fa-align-justify"></i> Categorías
-                  <button type="button" @click="abrirModal('categoria','registrar')" class="btn btn-secondary">
+                  <i class="fa fa-align-justify"></i> Proveedores
+                  <button type="button" @click="abrirModal('proveedor','registrar')" class="btn btn-secondary">
                       <i class="icon-plus"></i>&nbsp;Nuevo
                   </button>
               </div>
@@ -21,10 +21,12 @@
                           <div class="input-group">
                               <select class="form-control col-md-3" v-model="criterio">
                                 <option value="nombre">Nombre</option>
-                                <option value="descripcion">Descripción</option>
+                                <option value="email">Correo</option>
+                                <option value="tipo_documento">Tipo de documento</option>
+                                <option value="num_documento">Número de documento</option>
                               </select>
-                              <input type="text" class="form-control" placeholder="Texto a buscar" v-model="buscar" @keyup.enter="listarCategoria(1,buscar,criterio)">
-                              <button type="submit" @click="listarCategoria(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                              <input type="text" class="form-control" placeholder="Texto a buscar" v-model="buscar" @keyup.enter="listarProveedor(1,buscar,criterio)">
+                              <button type="submit" @click="listarProveedor(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                           </div>
                       </div>
                   </div>
@@ -33,38 +35,30 @@
                           <tr>
                               <th>Opciones</th>
                               <th>Nombre</th>
-                              <th>Descripción</th>
-                              <th>Estado</th>
+                              <th>Correo</th>
+                              <th>Tipo Documento</th>
+                              <th>Número Documento</th>
+                              <th>Dirección</th>
+                              <th>Teléfono</th>
+                              <th>Contacto</th>
+                              <th>Teléfono de contacto</th>
                           </tr>
                       </thead>
                       <tbody>
-                          <tr v-for="categoria in categorias" :key="categoria.uuid">
+                          <tr v-for="proveedor in proveedores" :key="proveedor.uuid">
                               <td>
-                                  <button type="button" @click="abrirModal('categoria','actualizar',categoria)" class="btn btn-warning btn-sm">
+                                  <button type="button" @click="abrirModal('proveedor','actualizar',proveedor)" class="btn btn-warning btn-sm">
                                     <i class="icon-pencil"></i>
                                   </button> &nbsp;
-                                  <template v-if="categoria.condicion">
-                                    <button type="button" @click="desactivar(categoria.uuid)" class="btn btn-danger btn-sm">
-                                      <i class="icon-trash"></i>
-                                    </button>
-                                  </template>
-                                  <template v-else>
-                                    <button type="button" @click="activar(categoria.uuid)" class="btn btn-success btn-sm">
-                                      <i class="icon-check"></i>
-                                    </button>
-                                  </template>
-
                               </td>
-                              <td v-text="categoria.nombre"></td>
-                              <td v-text="categoria.descripcion"></td>
-                              <td>
-                                  <div v-if="categoria.condicion">
-                                    <span class="badge badge-success">Activo</span>
-                                  </div>
-                                  <div v-else>
-                                    <span class="badge badge-danger">No Activo</span>
-                                  </div>
-                              </td>
+                              <td v-text="proveedor.nombre"></td>
+                              <td v-text="proveedor.email"></td>
+                              <td v-text="proveedor.tipo_documento"></td>
+                              <td v-text="proveedor.num_documento"></td>
+                              <td v-text="proveedor.direccion"></td>
+                              <td v-text="proveedor.telefono"></td>
+                              <td v-text="proveedor.contacto"></td>
+                              <td v-text="proveedor.telefono_contacto"></td>
                           </tr>
                       </tbody>
                   </table>
@@ -101,13 +95,54 @@
                           <div class="form-group row">
                               <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                               <div class="col-md-9">
-                                  <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de categoría">
+                                  <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de proveedor">
                               </div>
                           </div>
                           <div class="form-group row">
-                              <label class="col-md-3 form-control-label" for="text-input">Descripción</label>
+                              <label class="col-md-3 form-control-label" for="text-input">Correo electrónico</label>
                               <div class="col-md-9">
-                                  <input type="text" v-model="descripcion" class="form-control" placeholder="Descripción de la categoría">
+                                  <input type="text" v-model="email" class="form-control" placeholder="Correo electrónico">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Tipo de documento</label>
+                              <div class="col-md-9">
+                                  <select v-model="tipo_documento" class="form-control">
+                                    <option value="INE">INE</option>
+                                    <option value="pasaporte">Pasaporte</option>
+                                    <option value="RFC">RFC</option>
+                                    <option value="cedula">Cédula Profesional</option>
+                                  </select>
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Número de documento</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="num_documento" class="form-control" placeholder="Número de documento">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Teléfono</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Contacto</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="contacto" class="form-control" placeholder="Contacto">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Teléfono de contacto</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="telefono_contacto" class="form-control" placeholder="Teléfono de contacto">
                               </div>
                           </div>
                           <div v-show="error" class="form-group row div-error">
@@ -121,8 +156,8 @@
                   </div>
                   <div class="modal-footer">
                       <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cerrar</button>
-                      <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCategoria()">Guardar</button>
-                      <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarCategoria()">Actualizar</button>
+                      <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarProveedor()">Guardar</button>
+                      <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarProveedor()">Actualizar</button>
                   </div>
               </div>
               <!-- /.modal-content -->
@@ -139,14 +174,20 @@
         data() {
           return{
             nombre: '',
-            descripcion: '',
-            categorias: [],
+            tipo_documento: 'INE',
+            num_documento: '',
+            email: '',
+            direccion: '',
+            telefono: '',
+            contacto: '',
+            telefono_contacto: '',
+            proveedores: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
             error: 0,
             errors: [],
-            categoria_uuid: '',
+            proveedor_uuid: '',
             pagination: {
               'total': 0,
               'current_page': 0,
@@ -187,11 +228,11 @@
           }
         },
         methods: {
-          listarCategoria(page,buscar,criterio){
+          listarProveedor(page,buscar,criterio){
             let me = this;
-            var url = '/categorias?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+            var url = '/proveedores?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
             axios.get(url).then(function (response){
-              me.categorias = response.data.categorias.data;
+              me.proveedores = response.data.proveedores.data;
               me.pagination = response.data.pagination;
             })
             .catch(function (error){
@@ -202,16 +243,22 @@
             let me =this;
             me.pagination.current_page = page;
 
-            me.listarCategoria(page,buscar,criterio);
+            me.listarProveedor(page,buscar,criterio);
           },
-          registrarCategoria(){
+          registrarProveedor(){
             if (this.validar()) {
               return;
             }
             let me = this;
-            axios.post('/categorias',{
+            axios.post('/proveedores',{
               'nombre': me.nombre,
-              'descripcion': me.descripcion
+              'email': me.email,
+              'tipo_documento': me.tipo_documento,
+              'num_documento': me.num_documento,
+              'direccion': me.direccion,
+              'telefono': me.telefono,
+              'contacto': me.contacto,
+              'telefono_contacto': me.telefono_contacto
             }).then(function (response){
               me.cerrarModal();
               swal(
@@ -219,7 +266,7 @@
                 'Operación exitosa',
                 'success'
               );
-              me.listarCategoria(1,'','nombre');
+              me.listarProveedor(1,'','nombre');
             })
             .catch(function (error){
               console.log(error);
@@ -229,17 +276,24 @@
                 'Error interno contacte al administrador',
                 'error'
               );
-              me.listarCategoria(1,'','nombre');
+              me.listarProveedor(1,'','nombre');
             });
           },
-          actualizarCategoria(){
+          actualizarProveedor(){
             if (this.validar()) {
               return;
             }
             let me = this;
-            axios.put('/categorias/'+this.categoria_uuid,{
+            var url = '/proveedores/'+this.proveedor_uuid;
+            axios.put(url,{
               'nombre': me.nombre,
-              'descripcion': me.descripcion
+              'email': me.email,
+              'tipo_documento': me.tipo_documento,
+              'num_documento': me.num_documento,
+              'direccion': me.direccion,
+              'telefono': me.telefono,
+              'contacto': me.contacto,
+              'telefono_contacto': me.telefono_contacto
             }).then(function (response){
               me.cerrarModal();
               swal(
@@ -247,7 +301,7 @@
                 'Operación exitosa',
                 'success'
               );
-              me.listarCategoria(1,'','nombre');
+              me.listarProveedor(1,'','nombre');
             })
             .catch(function (error){
               console.log(error);
@@ -257,30 +311,42 @@
                 'Error interno contacte al administrador',
                 'error'
               );
-              me.listarCategoria(1,'','nombre');
+              me.listarProveedor(1,'','nombre');
             });
           },
           abrirModal(modelo, accion, data = []){
             switch (modelo) {
-              case 'categoria':
+              case 'proveedor':
               {
                 switch (accion) {
                   case 'registrar':
                   {
                     this.modal = 1;
-                    this.tituloModal = 'Registrar Categoría';
+                    this.tituloModal = 'Registrar Proveedor';
                     this.nombre = '';
-                    this.descripcion = '';
+                    this.tipo_documento = 'RFC';
+                    this.num_documento = '';
+                    this.email = '';
+                    this.direccion = '';
+                    this.telefono = '';
+                    this.contacto = '';
+                    this.telefono_contacto = '';
                     this.tipoAccion = 1;
                     break;
                   }
                   case 'actualizar':
                   {
                     this.modal = 1;
-                    this.tituloModal = 'Actualizar Categoría '+data.nombre;
+                    this.tituloModal = 'Actualizar Proveedor '+data.nombre;
                     this.nombre = data.nombre;
-                    this.descripcion = data.descripcion;
-                    this.categoria_uuid = data.uuid;
+                    this.tipo_documento = data.tipo_documento;
+                    this.num_documento = data.num_documento;
+                    this.email = data.email;
+                    this.direccion = data.direccion;
+                    this.telefono = data.telefono;
+                    this.contacto = data.contacto;
+                    this.telefono_contacto = data.telefono_contacto;
+                    this.proveedor_uuid = data.uuid;
                     this.tipoAccion = 2;
                     break;
                   }
@@ -291,100 +357,22 @@
           cerrarModal(){
             this.modal = 0;
             this.tituloModal = "";
-            this.nombre = "";
-            this.descripcion = "";
-          },
-          desactivar(categoria_uuid){
-            const swalWithBootstrapButtons = swal.mixin({
-              confirmButtonClass: 'btn btn-success',
-              cancelButtonClass: 'btn btn-danger',
-              buttonsStyling: false,
-            })
-
-            swalWithBootstrapButtons({
-              title: '¿Estás segur@?',
-              type: 'warning',
-              showCancelButton: true,
-              confirmButtonText: 'Aceptar',
-              cancelButtonText: 'Cancelar',
-              reverseButtons: true
-            }).then((result) => {
-              if (result.value) {
-
-                let me = this;
-                axios.put('/categorias/desactivar/'+categoria_uuid).then(function (response){
-                  me.listarCategoria(1,'','nombre');
-
-                  swalWithBootstrapButtons(
-                    'Desactivada!',
-                    'La categoría ha sido desactivada.',
-                    'success'
-                  )
-                })
-                .catch(function (error){
-                  console.log(error);
-                });
-
-              } else if (
-                // Read more about handling dismissals
-                result.dismiss === swal.DismissReason.cancel
-              ) {
-                swalWithBootstrapButtons(
-                  'Cancelada',
-                  'La categoría sigue activa',
-                  'error'
-                )
-              }
-            })
-          },
-          activar(categoria_uuid){
-            const swalWithBootstrapButtons = swal.mixin({
-              confirmButtonClass: 'btn btn-success',
-              cancelButtonClass: 'btn btn-danger',
-              buttonsStyling: false,
-            })
-
-            swalWithBootstrapButtons({
-              title: '¿Estás segur@?',
-              type: 'warning',
-              showCancelButton: true,
-              confirmButtonText: 'Aceptar',
-              cancelButtonText: 'Cancelar',
-              reverseButtons: true
-            }).then((result) => {
-              if (result.value) {
-
-                let me = this;
-                axios.put('/categorias/activar/'+categoria_uuid).then(function (response){
-                  me.listarCategoria(1,'','nombre');
-
-                  swalWithBootstrapButtons(
-                    'Activada!',
-                    'La categoría ha sido activada.',
-                    'success'
-                  )
-                })
-                .catch(function (error){
-                  console.log(error);
-                });
-
-              } else if (
-                // Read more about handling dismissals
-                result.dismiss === swal.DismissReason.cancel
-              ) {
-                swalWithBootstrapButtons(
-                  'Cancelado',
-                  'La categoría sigue desactivada',
-                  'error'
-                )
-              }
-            })
+            this.nombre = '';
+            this.tipo_documento = 'RFC';
+            this.num_documento = '';
+            this.email = '';
+            this.direccion = '';
+            this.telefono = '';
+            this.contacto = '';
+            this.telefono_contacto = '';
+            this.error = 0;
           },
           validar(){
             this.error = 0;
             this.errors = [];
 
             if(!this.nombre) this.errors.push('El nombre es obligatorio');
+            if(!this.email) this.errors.push('El correo es obligatorio');
 
             if (this.errors.length) {
               this.error = 1;
@@ -393,7 +381,7 @@
           }
         },
         mounted() {
-            this.listarCategoria(1,this.buscar,this.criterio);
+            this.listarProveedor(1,this.buscar,this.criterio);
 
         }
     }

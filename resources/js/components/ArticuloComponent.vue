@@ -10,8 +10,8 @@
           <!-- Ejemplo de tabla Listado -->
           <div class="card">
               <div class="card-header">
-                  <i class="fa fa-align-justify"></i> Categorías
-                  <button type="button" @click="abrirModal('categoria','registrar')" class="btn btn-secondary">
+                  <i class="fa fa-align-justify"></i> Artículos
+                  <button type="button" @click="abrirModal('articulo','registrar')" class="btn btn-secondary">
                       <i class="icon-plus"></i>&nbsp;Nuevo
                   </button>
               </div>
@@ -22,9 +22,10 @@
                               <select class="form-control col-md-3" v-model="criterio">
                                 <option value="nombre">Nombre</option>
                                 <option value="descripcion">Descripción</option>
+                                <option value="categoria">Categoría</option>
                               </select>
-                              <input type="text" class="form-control" placeholder="Texto a buscar" v-model="buscar" @keyup.enter="listarCategoria(1,buscar,criterio)">
-                              <button type="submit" @click="listarCategoria(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                              <input type="text" class="form-control" placeholder="Texto a buscar" v-model="buscar" @keyup.enter="listarArticulo(1,buscar,criterio)">
+                              <button type="submit" @click="listarArticulo(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                           </div>
                       </div>
                   </div>
@@ -32,33 +33,41 @@
                       <thead>
                           <tr>
                               <th>Opciones</th>
+                              <th>Código</th>
                               <th>Nombre</th>
+                              <th>Categoría</th>
+                              <th>Precio unitario</th>
+                              <th>Unidades en almácen</th>
                               <th>Descripción</th>
                               <th>Estado</th>
                           </tr>
                       </thead>
                       <tbody>
-                          <tr v-for="categoria in categorias" :key="categoria.uuid">
+                          <tr v-for="articulo in articulos" :key="articulo.uuid">
                               <td>
-                                  <button type="button" @click="abrirModal('categoria','actualizar',categoria)" class="btn btn-warning btn-sm">
+                                  <button type="button" @click="abrirModal('articulo','actualizar',articulo)" class="btn btn-warning btn-sm">
                                     <i class="icon-pencil"></i>
                                   </button> &nbsp;
-                                  <template v-if="categoria.condicion">
-                                    <button type="button" @click="desactivar(categoria.uuid)" class="btn btn-danger btn-sm">
+                                  <template v-if="articulo.condicion">
+                                    <button type="button" @click="desactivar(articulo.uuid)" class="btn btn-danger btn-sm">
                                       <i class="icon-trash"></i>
                                     </button>
                                   </template>
                                   <template v-else>
-                                    <button type="button" @click="activar(categoria.uuid)" class="btn btn-success btn-sm">
+                                    <button type="button" @click="activar(articulo.uuid)" class="btn btn-success btn-sm">
                                       <i class="icon-check"></i>
                                     </button>
                                   </template>
 
                               </td>
-                              <td v-text="categoria.nombre"></td>
-                              <td v-text="categoria.descripcion"></td>
+                              <td v-text="articulo.codigo"></td>
+                              <td v-text="articulo.nombre"></td>
+                              <td v-text="articulo.nombre_categoria"></td>
+                              <td v-text="articulo.precio"></td>
+                              <td v-text="articulo.existencias"></td>
+                              <td v-text="articulo.descripcion"></td>
                               <td>
-                                  <div v-if="categoria.condicion">
+                                  <div v-if="articulo.condicion">
                                     <span class="badge badge-success">Activo</span>
                                   </div>
                                   <div v-else>
@@ -99,15 +108,45 @@
                   <div class="modal-body">
                       <form action="" method="post" enctype="multipart/form-data" class="form-horizontal">
                           <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Categoría</label>
+                              <div class="col-md-9">
+                                  <select class="form-control" v-model="categoria_uuid">
+                                    <option value="" disabled>Seleccione</option>
+                                    <option v-for="categoria in categorias" :key="categoria.uuid" :value="categoria.uuid" v-text="categoria.nombre"></option>
+                                  </select>
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Código</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="codigo" class="form-control" placeholder="Código de barras">
+                                  <barcode :value="codigo" :options="{format: 'EAN-13'}">
+                                    Generando código de barras.
+                                  </barcode>
+                              </div>
+                          </div>
+                          <div class="form-group row">
                               <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                               <div class="col-md-9">
-                                  <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de categoría">
+                                  <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de artículo">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Precio unitario</label>
+                              <div class="col-md-9">
+                                  <input type="number" v-model="precio" class="form-control" placeholder="">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Piezas existentes</label>
+                              <div class="col-md-9">
+                                  <input type="number" v-model="existencias" class="form-control" placeholder="">
                               </div>
                           </div>
                           <div class="form-group row">
                               <label class="col-md-3 form-control-label" for="text-input">Descripción</label>
                               <div class="col-md-9">
-                                  <input type="text" v-model="descripcion" class="form-control" placeholder="Descripción de la categoría">
+                                  <input type="text" v-model="descripcion" class="form-control" placeholder="Descripción del artículo">
                               </div>
                           </div>
                           <div v-show="error" class="form-group row div-error">
@@ -121,8 +160,8 @@
                   </div>
                   <div class="modal-footer">
                       <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cerrar</button>
-                      <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCategoria()">Guardar</button>
-                      <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarCategoria()">Actualizar</button>
+                      <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarArticulo()">Guardar</button>
+                      <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarArticulo()">Actualizar</button>
                   </div>
               </div>
               <!-- /.modal-content -->
@@ -135,17 +174,23 @@
 </template>
 
 <script>
+    import VueBarcode from 'vue-barcode';
     export default {
         data() {
           return{
             nombre: '',
+            nombre_categoria: '',
+            codigo: '',
+            precio: 0,
+            existencias: 0,
             descripcion: '',
-            categorias: [],
+            articulos: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
             error: 0,
             errors: [],
+            articulo_uuid: '',
             categoria_uuid: '',
             pagination: {
               'total': 0,
@@ -157,8 +202,12 @@
             },
             offset: 3,
             criterio: 'nombre',
-            buscar: ''
+            buscar: '',
+            categorias: []
           }
+        },
+        components: {
+          'barcode': VueBarcode
         },
         computed: {
           isActived: function(){
@@ -187,12 +236,22 @@
           }
         },
         methods: {
-          listarCategoria(page,buscar,criterio){
+          listarArticulo(page,buscar,criterio){
             let me = this;
-            var url = '/categorias?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+            var url = '/articulos?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
             axios.get(url).then(function (response){
-              me.categorias = response.data.categorias.data;
+              me.articulos = response.data.articulos.data;
               me.pagination = response.data.pagination;
+            })
+            .catch(function (error){
+              console.log(error);
+            });
+          },
+          selectCategoria(){
+            let me = this;
+            var url = '/categorias/seleccionar';
+            axios.get(url).then(function (response){
+              me.categorias = response.data.categorias;
             })
             .catch(function (error){
               console.log(error);
@@ -202,14 +261,18 @@
             let me =this;
             me.pagination.current_page = page;
 
-            me.listarCategoria(page,buscar,criterio);
+            me.listarArticulo(page,buscar,criterio);
           },
-          registrarCategoria(){
+          registrarArticulo(){
             if (this.validar()) {
               return;
             }
             let me = this;
-            axios.post('/categorias',{
+            axios.post('/articulos',{
+              'categoria_uuid': me.categoria_uuid,
+              'codigo': me.codigo,
+              'precio': me.precio,
+              'existencias': me.existencias,
               'nombre': me.nombre,
               'descripcion': me.descripcion
             }).then(function (response){
@@ -219,7 +282,7 @@
                 'Operación exitosa',
                 'success'
               );
-              me.listarCategoria(1,'','nombre');
+              me.listarArticulo(1,'','nombre');
             })
             .catch(function (error){
               console.log(error);
@@ -229,15 +292,19 @@
                 'Error interno contacte al administrador',
                 'error'
               );
-              me.listarCategoria(1,'','nombre');
+              me.listarArticulo(1,'','nombre');
             });
           },
-          actualizarCategoria(){
+          actualizarArticulo(){
             if (this.validar()) {
               return;
             }
             let me = this;
-            axios.put('/categorias/'+this.categoria_uuid,{
+            axios.put('/articulos/'+this.articulo_uuid,{
+              'categoria_uuid': me.categoria_uuid,
+              'codigo': me.codigo,
+              'precio': me.precio,
+              'existencias': me.existencias,
               'nombre': me.nombre,
               'descripcion': me.descripcion
             }).then(function (response){
@@ -247,7 +314,7 @@
                 'Operación exitosa',
                 'success'
               );
-              me.listarCategoria(1,'','nombre');
+              me.listarArticulo(1,'','nombre');
             })
             .catch(function (error){
               console.log(error);
@@ -257,18 +324,23 @@
                 'Error interno contacte al administrador',
                 'error'
               );
-              me.listarCategoria(1,'','nombre');
+              me.listarArticulo(1,'','nombre');
             });
           },
           abrirModal(modelo, accion, data = []){
             switch (modelo) {
-              case 'categoria':
+              case 'articulo':
               {
                 switch (accion) {
                   case 'registrar':
                   {
                     this.modal = 1;
-                    this.tituloModal = 'Registrar Categoría';
+                    this.tituloModal = 'Registrar Artículo';
+                    this.categoria_uuid = '';
+                    this.nombre_categoria = '';
+                    this.codigo = '';
+                    this.precio = 0;
+                    this.existencias = 0;
                     this.nombre = '';
                     this.descripcion = '';
                     this.tipoAccion = 1;
@@ -277,24 +349,35 @@
                   case 'actualizar':
                   {
                     this.modal = 1;
-                    this.tituloModal = 'Actualizar Categoría '+data.nombre;
+                    this.tituloModal = 'Actualizar Artículo '+data.nombre;
                     this.nombre = data.nombre;
                     this.descripcion = data.descripcion;
-                    this.categoria_uuid = data.uuid;
+                    this.articulo_uuid = data.uuid;
+                    this.categoria_uuid = data.categoria_uuid;
+                    this.codigo = data.codigo;
+                    this.precio = data.precio;
+                    this.existencias = data.existencias;
                     this.tipoAccion = 2;
                     break;
                   }
                 }
               }
             }
+            this.selectCategoria();
           },
           cerrarModal(){
             this.modal = 0;
             this.tituloModal = "";
             this.nombre = "";
             this.descripcion = "";
+            this.categoria_uuid = "";
+            this.nombre_categoria = "";
+            this.codigo = "";
+            this.precio = 0;
+            this.existencias = 0;
+            this.error = 0;
           },
-          desactivar(categoria_uuid){
+          desactivar(articulo_uuid){
             const swalWithBootstrapButtons = swal.mixin({
               confirmButtonClass: 'btn btn-success',
               cancelButtonClass: 'btn btn-danger',
@@ -312,55 +395,12 @@
               if (result.value) {
 
                 let me = this;
-                axios.put('/categorias/desactivar/'+categoria_uuid).then(function (response){
-                  me.listarCategoria(1,'','nombre');
+                axios.put('/articulos/desactivar/'+articulo_uuid).then(function (response){
+                  me.listarArticulo(1,'','nombre');
 
                   swalWithBootstrapButtons(
                     'Desactivada!',
-                    'La categoría ha sido desactivada.',
-                    'success'
-                  )
-                })
-                .catch(function (error){
-                  console.log(error);
-                });
-
-              } else if (
-                // Read more about handling dismissals
-                result.dismiss === swal.DismissReason.cancel
-              ) {
-                swalWithBootstrapButtons(
-                  'Cancelada',
-                  'La categoría sigue activa',
-                  'error'
-                )
-              }
-            })
-          },
-          activar(categoria_uuid){
-            const swalWithBootstrapButtons = swal.mixin({
-              confirmButtonClass: 'btn btn-success',
-              cancelButtonClass: 'btn btn-danger',
-              buttonsStyling: false,
-            })
-
-            swalWithBootstrapButtons({
-              title: '¿Estás segur@?',
-              type: 'warning',
-              showCancelButton: true,
-              confirmButtonText: 'Aceptar',
-              cancelButtonText: 'Cancelar',
-              reverseButtons: true
-            }).then((result) => {
-              if (result.value) {
-
-                let me = this;
-                axios.put('/categorias/activar/'+categoria_uuid).then(function (response){
-                  me.listarCategoria(1,'','nombre');
-
-                  swalWithBootstrapButtons(
-                    'Activada!',
-                    'La categoría ha sido activada.',
+                    'El artículo ha sido desactivado.',
                     'success'
                   )
                 })
@@ -374,7 +414,51 @@
               ) {
                 swalWithBootstrapButtons(
                   'Cancelado',
-                  'La categoría sigue desactivada',
+                  'El artículo sigue activo',
+                  'error'
+                )
+              }
+            })
+          },
+          activar(articulo_uuid){
+
+            const swalWithBootstrapButtons = swal.mixin({
+              confirmButtonClass: 'btn btn-success',
+              cancelButtonClass: 'btn btn-danger',
+              buttonsStyling: false,
+            })
+
+            swalWithBootstrapButtons({
+              title: '¿Estás segur@?',
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Aceptar',
+              cancelButtonText: 'Cancelar',
+              reverseButtons: true
+            }).then((result) => {
+              if (result.value) {
+
+                let me = this;
+                axios.put('/articulos/activar/'+articulo_uuid).then(function (response){
+                  me.listarArticulo(1,'','nombre');
+
+                  swalWithBootstrapButtons(
+                    'Activada!',
+                    'El artículo ha sido activado.',
+                    'success'
+                  )
+                })
+                .catch(function (error){
+                  console.log(error);
+                });
+
+              } else if (
+                // Read more about handling dismissals
+                result.dismiss === swal.DismissReason.cancel
+              ) {
+                swalWithBootstrapButtons(
+                  'Cancelado',
+                  'El artículo sigue desactivado',
                   'error'
                 )
               }
@@ -384,7 +468,10 @@
             this.error = 0;
             this.errors = [];
 
+            if(this.categoria_uuid == '') this.errors.push('Seleccione una categoría');
             if(!this.nombre) this.errors.push('El nombre es obligatorio');
+            if(!this.existencias) this.errors.push('las piezas debe ser un valor númerico y no puede estar vacío');
+            if(!this.precio) this.errors.push('el precio debe ser un valor númerico y no puede estar vacío');
 
             if (this.errors.length) {
               this.error = 1;
@@ -393,8 +480,7 @@
           }
         },
         mounted() {
-            this.listarCategoria(1,this.buscar,this.criterio);
-
+            this.listarArticulo(1,this.buscar,this.criterio);
         }
     }
 </script>

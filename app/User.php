@@ -6,12 +6,12 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Webpatser\Uuid\Uuid;
+use App\Models\Rol;
 
 class User extends Authenticatable
 {
-    use Notifiable, SoftDeletes;
+    use Notifiable;
 
     protected $table = "usuarios";
 
@@ -25,7 +25,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'nombre', 'email', 'password',
+        'uuid', 'usuario', 'password', 'rol_uuid', 'condicion'
     ];
 
     /**
@@ -34,21 +34,47 @@ class User extends Authenticatable
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'deleted_at'
+        'password', 'remember_token'
     ];
 
-    protected $dates = [
-        'created_at', 'updated_at', 'deleted_at'
-    ];
+    public $timestamps = false;
 
-    public static function boot()
+    public function rol()
     {
-      parent::boot();
-      self::creating(function ($model){
-        if(empty($model->uuid))
-        {
-          $model->uuid = Uuid::generate(4)->string;
-        }
-      });
+      return $this->belongsTo('App\Models\Rol','rol_uuid','uuid');
     }
+
+    public function persona()
+    {
+      return $this->belongsTo('App\Models\Persona','uuid','uuid');
+    }
+
+    public function getRolIdAttribute()
+    {
+      $rol = Rol::findOrFail($this->rol_uuid);
+
+      if ($rol) {
+        if ($rol->nombre == 'Administrador') {
+          return 1;
+        }elseif ($rol->nombre == 'Vendedor') {
+          return 2;
+        }elseif ($rol->nombre == 'Personal Almacén') {
+          return 3;
+        }
+      }
+
+      return 0;
+    }
+
+    public function getRolNombreAttribute()
+    {
+      $rol = Rol::findOrFail($this->rol_uuid);
+
+      if ($rol) {
+        return $rol->nombre;
+      }
+
+      return 'Desconocido';
+    }
+
 }

@@ -10,8 +10,8 @@
           <!-- Ejemplo de tabla Listado -->
           <div class="card">
               <div class="card-header">
-                  <i class="fa fa-align-justify"></i> Categorías
-                  <button type="button" @click="abrirModal('categoria','registrar')" class="btn btn-secondary">
+                  <i class="fa fa-align-justify"></i> Usuarios
+                  <button type="button" @click="abrirModal('usuario','registrar')" class="btn btn-secondary">
                       <i class="icon-plus"></i>&nbsp;Nuevo
                   </button>
               </div>
@@ -21,10 +21,12 @@
                           <div class="input-group">
                               <select class="form-control col-md-3" v-model="criterio">
                                 <option value="nombre">Nombre</option>
-                                <option value="descripcion">Descripción</option>
+                                <option value="email">Correo</option>
+                                <option value="tipo_documento">Tipo de documento</option>
+                                <option value="num_documento">Número de documento</option>
                               </select>
-                              <input type="text" class="form-control" placeholder="Texto a buscar" v-model="buscar" @keyup.enter="listarCategoria(1,buscar,criterio)">
-                              <button type="submit" @click="listarCategoria(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
+                              <input type="text" class="form-control" placeholder="Texto a buscar" v-model="buscar" @keyup.enter="listarUsuario(1,buscar,criterio)">
+                              <button type="submit" @click="listarUsuario(1,buscar,criterio)" class="btn btn-primary"><i class="fa fa-search"></i> Buscar</button>
                           </div>
                       </div>
                   </div>
@@ -33,32 +35,43 @@
                           <tr>
                               <th>Opciones</th>
                               <th>Nombre</th>
-                              <th>Descripción</th>
+                              <th>Correo</th>
+                              <th>Tipo Documento</th>
+                              <th>Número Documento</th>
+                              <th>Dirección</th>
+                              <th>Teléfono</th>
+                              <th>Usuario</th>
+                              <th>Rol</th>
                               <th>Estado</th>
                           </tr>
                       </thead>
                       <tbody>
-                          <tr v-for="categoria in categorias" :key="categoria.uuid">
+                          <tr v-for="usuario in usuarios" :key="usuario.uuid">
                               <td>
-                                  <button type="button" @click="abrirModal('categoria','actualizar',categoria)" class="btn btn-warning btn-sm">
+                                  <button type="button" @click="abrirModal('usuario','actualizar',usuario)" class="btn btn-warning btn-sm">
                                     <i class="icon-pencil"></i>
                                   </button> &nbsp;
-                                  <template v-if="categoria.condicion">
-                                    <button type="button" @click="desactivar(categoria.uuid)" class="btn btn-danger btn-sm">
+                                  <template v-if="usuario.condicion">
+                                    <button type="button" @click="desactivar(usuario.uuid)" class="btn btn-danger btn-sm">
                                       <i class="icon-trash"></i>
                                     </button>
                                   </template>
                                   <template v-else>
-                                    <button type="button" @click="activar(categoria.uuid)" class="btn btn-success btn-sm">
+                                    <button type="button" @click="activar(usuario.uuid)" class="btn btn-success btn-sm">
                                       <i class="icon-check"></i>
                                     </button>
                                   </template>
-
                               </td>
-                              <td v-text="categoria.nombre"></td>
-                              <td v-text="categoria.descripcion"></td>
+                              <td v-text="usuario.nombre"></td>
+                              <td v-text="usuario.email"></td>
+                              <td v-text="usuario.tipo_documento"></td>
+                              <td v-text="usuario.num_documento"></td>
+                              <td v-text="usuario.direccion"></td>
+                              <td v-text="usuario.telefono"></td>
+                              <td v-text="usuario.usuario"></td>
+                              <td v-text="usuario.rol"></td>
                               <td>
-                                  <div v-if="categoria.condicion">
+                                  <div v-if="usuario.condicion">
                                     <span class="badge badge-success">Activo</span>
                                   </div>
                                   <div v-else>
@@ -101,13 +114,65 @@
                           <div class="form-group row">
                               <label class="col-md-3 form-control-label" for="text-input">Nombre</label>
                               <div class="col-md-9">
-                                  <input type="text" v-model="nombre" class="form-control" placeholder="Nombre de categoría">
+                                  <input type="text" v-model="nombre" class="form-control" placeholder="Nombre del usuario">
                               </div>
                           </div>
                           <div class="form-group row">
-                              <label class="col-md-3 form-control-label" for="text-input">Descripción</label>
+                              <label class="col-md-3 form-control-label" for="text-input">Correo electrónico</label>
                               <div class="col-md-9">
-                                  <input type="text" v-model="descripcion" class="form-control" placeholder="Descripción de la categoría">
+                                  <input type="text" v-model="email" class="form-control" placeholder="Correo electrónico">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Tipo de documento</label>
+                              <div class="col-md-9">
+                                  <select v-model="tipo_documento" class="form-control">
+                                    <option value="INE">INE</option>
+                                    <option value="pasaporte">Pasaporte</option>
+                                    <option value="RFC">RFC</option>
+                                    <option value="cedula">Cédula Profesional</option>
+                                  </select>
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Número de documento</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="num_documento" class="form-control" placeholder="Número de documento">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Dirección</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="direccion" class="form-control" placeholder="Dirección">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Teléfono</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="telefono" class="form-control" placeholder="Teléfono">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Nombre de Usuario (*)</label>
+                              <div class="col-md-9">
+                                  <input type="text" v-model="nombre_usuario" class="form-control" placeholder="id de usuario">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Contraseña (*)</label>
+                              <div class="col-md-9">
+                                  <input type="password" v-model="password" class="form-control" placeholder="Contraseña">
+                              </div>
+                          </div>
+                          <div class="form-group row">
+                              <label class="col-md-3 form-control-label" for="text-input">Rol (*)</label>
+                              <div class="col-md-9">
+                                  <select class="form-control" v-model="rol_uuid">
+                                    <option value="" disabled>Selecciona un rol</option>
+                                    <option v-for="rol in roles" :key="rol.uuid" :value="rol.uuid" v-text="rol.nombre">
+
+                                    </option>
+                                  </select>
                               </div>
                           </div>
                           <div v-show="error" class="form-group row div-error">
@@ -121,8 +186,8 @@
                   </div>
                   <div class="modal-footer">
                       <button type="button" @click="cerrarModal()" class="btn btn-secondary">Cerrar</button>
-                      <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarCategoria()">Guardar</button>
-                      <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarCategoria()">Actualizar</button>
+                      <button type="button" v-if="tipoAccion==1" class="btn btn-primary" @click="registrarUsuario()">Guardar</button>
+                      <button type="button" v-if="tipoAccion==2" class="btn btn-primary" @click="actualizarUsuario()">Actualizar</button>
                   </div>
               </div>
               <!-- /.modal-content -->
@@ -139,14 +204,22 @@
         data() {
           return{
             nombre: '',
-            descripcion: '',
-            categorias: [],
+            tipo_documento: 'INE',
+            num_documento: '',
+            email: '',
+            direccion: '',
+            telefono: '',
+            rol_uuid: '',
+            roles: [],
+            nombre_usuario: '',
+            password: '',
+            usuarios: [],
             modal: 0,
             tituloModal: '',
             tipoAccion: 0,
             error: 0,
             errors: [],
-            categoria_uuid: '',
+            usuario_uuid: '',
             pagination: {
               'total': 0,
               'current_page': 0,
@@ -187,12 +260,22 @@
           }
         },
         methods: {
-          listarCategoria(page,buscar,criterio){
+          listarUsuario(page,buscar,criterio){
             let me = this;
-            var url = '/categorias?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
+            var url = '/usuarios?page=' + page + '&buscar=' + buscar + '&criterio=' + criterio;
             axios.get(url).then(function (response){
-              me.categorias = response.data.categorias.data;
+              me.usuarios = response.data.usuarios.data;
               me.pagination = response.data.pagination;
+            })
+            .catch(function (error){
+              console.log(error);
+            });
+          },
+          listarRoles(){
+            let me = this;
+            var url = '/roles/select';
+            axios.get(url).then(function (response){
+              me.roles = response.data.roles;
             })
             .catch(function (error){
               console.log(error);
@@ -202,52 +285,66 @@
             let me =this;
             me.pagination.current_page = page;
 
-            me.listarCategoria(page,buscar,criterio);
+            me.listarUsuario(page,buscar,criterio);
           },
-          registrarCategoria(){
+          registrarUsuario(){
             if (this.validar()) {
               return;
             }
             let me = this;
-            axios.post('/categorias',{
+            axios.post('/usuarios',{
               'nombre': me.nombre,
-              'descripcion': me.descripcion
+              'email': me.email,
+              'tipo_documento': me.tipo_documento,
+              'num_documento': me.num_documento,
+              'direccion': me.direccion,
+              'telefono': me.telefono,
+              'usuario': me.nombre_usuario,
+              'password': me.password,
+              'rol_uuid': me.rol_uuid,
             }).then(function (response){
               me.cerrarModal();
               swal(
                 'Exito!',
-                'Operación exitosa',
+                'Usuario Creado',
                 'success'
               );
-              me.listarCategoria(1,'','nombre');
+              me.listarUsuario(1,'','nombre');
             })
             .catch(function (error){
-              console.log(error);
               me.cerrarModal();
               swal(
                 'Error!',
                 'Error interno contacte al administrador',
                 'error'
               );
-              me.listarCategoria(1,'','nombre');
+              me.listarUsuario(1,'','nombre');
             });
           },
-          actualizarCategoria(){
+          actualizarUsuario(){
             if (this.validar()) {
               return;
             }
             let me = this;
-            axios.put('/categorias/'+this.categoria_uuid,{
+            var url = '/usuarios/'+this.usuario_uuid;
+            axios.put(url,{
               'nombre': me.nombre,
-              'descripcion': me.descripcion
+              'email': me.email,
+              'tipo_documento': me.tipo_documento,
+              'num_documento': me.num_documento,
+              'direccion': me.direccion,
+              'telefono': me.telefono,
+              'usuario': me.nombre_usuario,
+              'password': me.password,
+              'rol_uuid': me.rol_uuid,
             }).then(function (response){
               me.cerrarModal();
               swal(
                 'Exito!',
-                'Operación exitosa',
+                'Usuario Actualizado',
                 'success'
               );
-              me.listarCategoria(1,'','nombre');
+              me.listarUsuario(1,'','nombre');
             })
             .catch(function (error){
               console.log(error);
@@ -257,30 +354,45 @@
                 'Error interno contacte al administrador',
                 'error'
               );
-              me.listarCategoria(1,'','nombre');
+              me.listarUsuario(1,'','nombre');
             });
           },
           abrirModal(modelo, accion, data = []){
+            this.listarRoles();
             switch (modelo) {
-              case 'categoria':
+              case 'usuario':
               {
                 switch (accion) {
                   case 'registrar':
                   {
                     this.modal = 1;
-                    this.tituloModal = 'Registrar Categoría';
+                    this.tituloModal = 'Registrar Usuario';
                     this.nombre = '';
-                    this.descripcion = '';
+                    this.tipo_documento = 'INE';
+                    this.num_documento = '';
+                    this.email = '';
+                    this.direccion = '';
+                    this.telefono = '';
+                    this.nombre_usuario = '';
+                    this.password = '';
+                    this.rol_uuid = '';
                     this.tipoAccion = 1;
                     break;
                   }
                   case 'actualizar':
                   {
                     this.modal = 1;
-                    this.tituloModal = 'Actualizar Categoría '+data.nombre;
+                    this.tituloModal = 'Actualizar Usuario '+data.nombre;
                     this.nombre = data.nombre;
-                    this.descripcion = data.descripcion;
-                    this.categoria_uuid = data.uuid;
+                    this.tipo_documento = data.tipo_documento;
+                    this.num_documento = data.num_documento;
+                    this.email = data.email;
+                    this.direccion = data.direccion;
+                    this.telefono = data.telefono;
+                    this.nombre_usuario = data.usuario;
+                    this.password = data.password;
+                    this.rol_uuid = data.rol_uuid;
+                    this.usuario_uuid = data.uuid;
                     this.tipoAccion = 2;
                     break;
                   }
@@ -291,10 +403,18 @@
           cerrarModal(){
             this.modal = 0;
             this.tituloModal = "";
-            this.nombre = "";
-            this.descripcion = "";
+            this.nombre = '';
+            this.tipo_documento = 'INE';
+            this.num_documento = '';
+            this.email = '';
+            this.direccion = '';
+            this.telefono = '';
+            this.nombre_usuario = 0;
+            this.password = '';
+            this.rol_uuid = '';
+            this.error = 0;
           },
-          desactivar(categoria_uuid){
+          desactivar(usuario_uuid){
             const swalWithBootstrapButtons = swal.mixin({
               confirmButtonClass: 'btn btn-success',
               cancelButtonClass: 'btn btn-danger',
@@ -312,55 +432,12 @@
               if (result.value) {
 
                 let me = this;
-                axios.put('/categorias/desactivar/'+categoria_uuid).then(function (response){
-                  me.listarCategoria(1,'','nombre');
+                axios.put('usuarios/desactivar/'+usuario_uuid).then(function (response){
+                  me.listarUsuario(1,'','nombre');
 
                   swalWithBootstrapButtons(
-                    'Desactivada!',
-                    'La categoría ha sido desactivada.',
-                    'success'
-                  )
-                })
-                .catch(function (error){
-                  console.log(error);
-                });
-
-              } else if (
-                // Read more about handling dismissals
-                result.dismiss === swal.DismissReason.cancel
-              ) {
-                swalWithBootstrapButtons(
-                  'Cancelada',
-                  'La categoría sigue activa',
-                  'error'
-                )
-              }
-            })
-          },
-          activar(categoria_uuid){
-            const swalWithBootstrapButtons = swal.mixin({
-              confirmButtonClass: 'btn btn-success',
-              cancelButtonClass: 'btn btn-danger',
-              buttonsStyling: false,
-            })
-
-            swalWithBootstrapButtons({
-              title: '¿Estás segur@?',
-              type: 'warning',
-              showCancelButton: true,
-              confirmButtonText: 'Aceptar',
-              cancelButtonText: 'Cancelar',
-              reverseButtons: true
-            }).then((result) => {
-              if (result.value) {
-
-                let me = this;
-                axios.put('/categorias/activar/'+categoria_uuid).then(function (response){
-                  me.listarCategoria(1,'','nombre');
-
-                  swalWithBootstrapButtons(
-                    'Activada!',
-                    'La categoría ha sido activada.',
+                    'Desactivado!',
+                    'El usuario ha sido desactivado.',
                     'success'
                   )
                 })
@@ -374,7 +451,50 @@
               ) {
                 swalWithBootstrapButtons(
                   'Cancelado',
-                  'La categoría sigue desactivada',
+                  'El usuario sigue activo',
+                  'error'
+                )
+              }
+            })
+          },
+          activar(usuario_uuid){
+            const swalWithBootstrapButtons = swal.mixin({
+              confirmButtonClass: 'btn btn-success',
+              cancelButtonClass: 'btn btn-danger',
+              buttonsStyling: false,
+            })
+
+            swalWithBootstrapButtons({
+              title: '¿Estás segur@?',
+              type: 'warning',
+              showCancelButton: true,
+              confirmButtonText: 'Aceptar',
+              cancelButtonText: 'Cancelar',
+              reverseButtons: true
+            }).then((result) => {
+              if (result.value) {
+
+                let me = this;
+                axios.put('usuarios/activar/'+usuario_uuid).then(function (response){
+                  me.listarUsuario(1,'','nombre');
+
+                  swalWithBootstrapButtons(
+                    'Activado!',
+                    'El usuario ha sido activado.',
+                    'success'
+                  )
+                })
+                .catch(function (error){
+                  console.log(error);
+                });
+
+              } else if (
+                // Read more about handling dismissals
+                result.dismiss === swal.DismissReason.cancel
+              ) {
+                swalWithBootstrapButtons(
+                  'Cancelado',
+                  'El usuario sigue desactivado',
                   'error'
                 )
               }
@@ -385,6 +505,10 @@
             this.errors = [];
 
             if(!this.nombre) this.errors.push('El nombre es obligatorio');
+            if(!this.email) this.errors.push('El correo es obligatorio');
+            if(!this.nombre_usuario) this.errors.push('El nombre de usuario es obligatorio');
+            if(!this.password && this.tipoAccion == 1) this.errors.push('La contraseña es obligatoria');
+            if(!this.rol_uuid) this.errors.push('El rol es obligatorio');
 
             if (this.errors.length) {
               this.error = 1;
@@ -393,7 +517,7 @@
           }
         },
         mounted() {
-            this.listarCategoria(1,this.buscar,this.criterio);
+            this.listarUsuario(1,this.buscar,this.criterio);
 
         }
     }
