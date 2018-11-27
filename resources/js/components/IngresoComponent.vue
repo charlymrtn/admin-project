@@ -14,7 +14,7 @@
               </button>
           </div>
           <!-- Listado-->
-          <template v-if="listado">
+          <template v-if="listado==1">
           <div class="card-body">
               <div class="form-group row">
                   <div class="col-md-6">
@@ -46,13 +46,13 @@
                           </tr>
                       </thead>
                       <tbody>
-                          <tr v-for="ingreso in ingresos" :key="ingreso.id">
+                          <tr v-for="ingreso in ingresos" :key="ingreso.uuid">
                               <td>
-                                  <button type="button" @click="abrirModal('ingreso','actualizar',ingreso)" class="btn btn-success btn-sm">
+                                  <button type="button" @click="verIngreso(ingreso.uuid)" class="btn btn-success btn-sm">
                                   <i class="icon-eye"></i>
                                   </button> &nbsp;
                                   <template v-if="ingreso.estado=='Registrado'">
-                                      <button type="button" class="btn btn-danger btn-sm" @click="desactivarIngreso(ingreso.id)">
+                                      <button type="button" class="btn btn-danger btn-sm" @click="desactivar(ingreso.uuid)">
                                           <i class="icon-trash"></i>
                                       </button>
                                   </template>
@@ -87,12 +87,12 @@
           </template>
           <!--Fin Listado-->
           <!-- Detalle-->
-          <template v-else>
+          <template v-else-if="listado==0">
           <div class="card-body">
               <div class="form-group row border">
                   <div class="col-md-9">
                       <div class="form-group">
-                          <label for="">Proveedor(*)</label>
+                          <label style="font-weight: bold;" for="">Proveedor(*)</label>
                           <v-select
                           :on-search="selectProveedor"
                           label="nombre"
@@ -105,12 +105,12 @@
                       </div>
                   </div>
                   <div class="col-md-3">
-                      <label for="">Impuesto(*)</label>
+                      <label style="font-weight: bold;" for="">Impuesto(*)</label>
                       <input type="text" class="form-control" v-model="impuesto">
                   </div>
                   <div class="col-md-4">
                       <div class="form-group">
-                          <label>Tipo Comprobante(*)</label>
+                          <label style="font-weight: bold;">Tipo Comprobante(*)</label>
                           <select class="form-control" v-model="tipo_comprobante">
                               <option value="" disabled>Seleccione</option>
                               <option value="RECIBO">Recibo</option>
@@ -121,13 +121,13 @@
                   </div>
                   <div class="col-md-4">
                       <div class="form-group">
-                          <label>Serie Comprobante</label>
+                          <label style="font-weight: bold;">Serie Comprobante</label>
                           <input type="text" class="form-control" v-model="serie_comprobante" placeholder="000x">
                       </div>
                   </div>
                   <div class="col-md-4">
                       <div class="form-group">
-                          <label>Número Comprobante(*)</label>
+                          <label style="font-weight: bold;">Número Comprobante(*)</label>
                           <input type="text" class="form-control" v-model="num_comprobante" placeholder="000xx">
                       </div>
                   </div>
@@ -144,7 +144,7 @@
               <div class="form-group row border">
                   <div class="col-md-6">
                       <div class="form-group">
-                          <label>Artículo <span style="color:red;" v-show="articulo_uuid==''">(*Seleccione)</span></label>
+                          <label style="font-weight: bold;">Artículo <span style="color:red; font-weight:normal;" v-show="articulo_uuid==''">(*Seleccione)</span></label>
                           <div class="form-inline">
                               <input type="text" class="form-control" v-model="codigo" @keyup.enter="buscarArticulo()" placeholder="Ingrese artículo">
                               <button @click="abrirModal(buscar_articulo,criterio_articulo)" class="btn btn-primary">...</button>
@@ -154,13 +154,13 @@
                   </div>
                   <div class="col-md-2">
                       <div class="form-group">
-                          <label>Precio <span style="color:red;" v-show="precio==0">(*Ingrese precio)</span></label>
+                          <label style="font-weight: bold;">Precio <span style="color:red; font-weight:normal;" v-show="precio==0">(*Ingrese precio)</span></label>
                           <input type="number" value="0" step="any" class="form-control" v-model="precio">
                       </div>
                   </div>
                   <div class="col-md-2">
                       <div class="form-group">
-                          <label>Cantidad <span style="color:red;" v-show="cantidad==0">(*Ingrese cantidad)</span></label>
+                          <label style="font-weight: bold;">Cantidad <span style="color:red; font-weight:normal;" v-show="cantidad==0">(*Ingrese cantidad)</span></label>
                           <input type="number" value="0" class="form-control" v-model="cantidad">
                       </div>
                   </div>
@@ -232,6 +232,89 @@
           </div>
           </template>
           <!-- Fin Detalle-->
+          <!-- Ver ingreso -->
+          <template v-else-if="listado==2">
+          <div class="card-body">
+              <div class="form-group row border">
+                  <div class="col-md-9">
+                      <div class="form-group">
+                          <label style="font-weight: bold;" for="">Proveedor</label>
+                          <p v-text="proveedor"></p>
+                      </div>
+                  </div>
+                  <div class="col-md-3">
+                      <label style="font-weight: bold;" for="">Impuesto</label>
+                      <p v-text="impuesto"></p>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label style="font-weight: bold;">Tipo Comprobante</label>
+                          <p v-text="tipo_comprobante"></p>
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label style="font-weight: bold;">Serie Comprobante</label>
+                          <p v-text="serie_comprobante"></p>
+                      </div>
+                  </div>
+                  <div class="col-md-4">
+                      <div class="form-group">
+                          <label style="font-weight: bold;">Número Comprobante</label>
+                          <p v-text="num_comprobante"></p>
+                      </div>
+                  </div>
+              </div>
+              <div class="form-group row border">
+                  <div class="table-responsive col-md-12">
+                      <table class="table table-bordered table-striped table-sm">
+                          <thead>
+                            <tr>
+                              <th>Artículo</th>
+                              <th>Precio</th>
+                              <th>Cantidad</th>
+                              <th>Subtotal</th>
+                            </tr>
+                          </thead>
+                          <tbody v-if="detalles.length">
+                            <tr v-for="detalle in detalles" :key="detalle.uuid">
+                              <td v-text="detalle.articulo"></td>
+                              <td v-text="detalle.precio"></td>
+                              <td v-text="detalle.cantidad"></td>
+                              <td>
+                                  $ {{(detalle.precio*detalle.cantidad).toFixed(2)}}
+                              </td>
+                            </tr>
+                            <tr style="background-color: #CEECF5;">
+                                <td colspan="3" align="right"><strong>Total Parcial:</strong></td>
+                                <td>$ {{total_parcial=(total-total_impuesto).toFixed(2)}}</td>
+                            </tr>
+                            <tr style="background-color: #CEECF5;">
+                                <td colspan="3" align="right"><strong>Total Impuesto:</strong></td>
+                                <td>$ {{total_impuesto=((total*impuesto).toFixed(2))}}</td>
+                            </tr>
+                            <tr style="background-color: #CEECF5;">
+                                <td colspan="3" align="right"><strong>Total Neto:</strong></td>
+                                <td>$ {{total}}</td>
+                            </tr>
+                          </tbody>
+                          <tbody v-else>
+                            <tr>
+                              <td colspan="4">
+                                No hay artículos agregados
+                              </td>
+                            </tr>
+                          </tbody>
+                      </table>
+                  </div>
+              </div>
+              <div class="form-group row">
+                  <div class="col-md-12">
+                      <button type="button" @click="ocultarDetalle()" class="btn btn-secondary">Cerrar</button>
+                  </div>
+              </div>
+          </div>
+          </template>
       </div>
       <!-- Fin ejemplo de tabla Listado -->
   </div>
@@ -324,6 +407,7 @@
             errors: [],
             ingreso_uuid: '',
             proveedor_uuid: '',
+            proveedor: '',
             articulo_uuid: '',
             precio: 0.0,
             cantidad: 0,
@@ -601,7 +685,7 @@
 
                   swalWithBootstrapButtons(
                     'Desactivado!',
-                    'El usuario ha sido desactivado.',
+                    'El ingreso ha sido anulado.',
                     'success'
                   )
                 })
@@ -615,7 +699,7 @@
               ) {
                 swalWithBootstrapButtons(
                   'Cancelado',
-                  'El usuario sigue activo',
+                  'El ingreso sigue activo',
                   'error'
                 )
               }
@@ -651,6 +735,35 @@
           },
           ocultarDetalle(){
               this.listado=1;
+          },
+          verIngreso(uuid){
+            this.listado=2;
+
+            var ingresoTemp = {};
+            var me =this;
+
+            //cabecera
+            axios.get('ingresos/cabecera/'+uuid).then(function (response){
+              ingresoTemp = response.data.ingreso;
+
+              me.proveedor = ingresoTemp.nombre;
+              me.tipo_comprobante = ingresoTemp.tipo_comprobante;
+              me.serie_comprobante = ingresoTemp.serie_comprobante;
+              me.num_comprobante = ingresoTemp.num_comprobante;
+              me.impuesto = ingresoTemp.impuesto;
+              me.total = ingresoTemp.total;
+            })
+            .catch(function (error){
+              console.log(error);
+            });
+
+            //detalles
+            axios.get('ingresos/detalles/'+uuid).then(function (response){
+              me.detalles = response.data.detalles;
+            })
+            .catch(function (error){
+              console.log(error);
+            });
           }
         },
         mounted() {

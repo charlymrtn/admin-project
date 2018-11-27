@@ -136,4 +136,31 @@ class IngresoController extends Controller
 
     $ingreso->save();
   }
+
+  public function cabecera(String $ingreso_uuid)
+  {
+    if (!request()->ajax()) return redirect('/');
+
+    $ingreso = Ingreso::join('personas','ingresos.proveedor_uuid','=','personas.uuid')
+                    ->join('usuarios','ingresos.usuario_uuid','=','usuarios.uuid')
+                    ->select('ingresos.uuid','ingresos.tipo_comprobante','ingresos.serie_comprobante',
+                    'ingresos.num_comprobante','ingresos.fecha_ingreso','ingresos.impuesto',
+                    'ingresos.total','ingresos.estado','personas.nombre','usuarios.usuario')
+                    ->where('ingresos.uuid','=',$ingreso_uuid)
+                    ->orderBy('ingresos.created_at')->first();
+
+    return ['ingreso' => $ingreso];
+  }
+
+  public function detalles(String $ingreso_uuid)
+  {
+    if (!request()->ajax()) return redirect('/');
+
+    $detalles = DetalleIngreso::join('articulos','detalle_ingresos.articulo_uuid','=','articulos.uuid')
+                    ->select('detalle_ingresos.cantidad','detalle_ingresos.precio','articulos.nombre as articulo')
+                    ->where('detalle_ingresos.ingreso_uuid','=',$ingreso_uuid)
+                    ->orderBy('detalle_ingresos.created_at')->get();
+
+    return ['detalles' => $detalles];
+  }
 }
