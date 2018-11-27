@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
+use Webpatser\Uuid\Uuid;
+
 class CreateUsersTable extends Migration
 {
     /**
@@ -26,6 +28,16 @@ class CreateUsersTable extends Migration
 
             $table->index(['uuid','rol_uuid']);
         });
+
+        $rol = DB::table('roles')->select('uuid')->where('nombre','=','Administrador')->first();
+        $rol = $rol->uuid;
+
+        DB::table('usuarios')->insert([
+          'uuid' => Uuid::generate(4)->string,
+          'usuario' => 'pajaro',
+          'password' => bcrypt('123'),
+          'rol_uuid' => $rol
+        ]);
     }
 
     /**
