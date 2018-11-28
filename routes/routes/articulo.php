@@ -10,3 +10,4 @@ Route::put('articulos/desactivar/{articulo_uuid}','ArticuloController@desactivar
 Route::get('articulos/buscar','ArticuloController@buscar')->name('articulos.search');
 Route::get('articulos/listar','ArticuloController@listar')->name('articulos.list');
 Route::get('articulos/buscarVenta','ArticuloController@buscarParaVenta')->name('articulos.searchPurchase');
+Route::get('articulos/listarVenta','ArticuloController@listarParaVenta')->name('articulos.listPurchase');

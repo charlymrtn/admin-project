@@ -551,7 +551,7 @@
           },
           listarArticulo(buscar,criterio){
             let me = this;
-            var url = '/articulos/listar?buscar=' + buscar + '&criterio=' + criterio;
+            var url = '/articulos/listarVenta?buscar=' + buscar + '&criterio=' + criterio;
             axios.get(url).then(function (response){
               me.articulos = response.data.articulos.data;
             })
@@ -723,7 +723,7 @@
             this.error = 0;
             this.errors = [];
 
-            if(!this.proveedor_uuid) this.errors.push('Seleccione un proveedor');
+            if(!this.cliente_uuid) this.errors.push('Seleccione un cliente');
             if(!this.tipo_comprobante) this.errors.push('Seleccione el tipo de comprobante');
             if(!this.num_comprobante) this.errors.push('Ingrese el número de comprobante');
             if(!this.impuesto) this.errors.push('Ingrese el impreso');
