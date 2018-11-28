@@ -91,4 +91,18 @@ class ClienteController extends Controller
     return $cliente;
   }
 
+  public function select(Request $request)
+  {
+    if (!$request->ajax()) return redirect('/');
+
+    $filtro = $request->filtro;
+
+    $clientes = Persona::where('nombre','like','%'.$filtro.'%')
+                        ->orWhere('num_documento','like','%'.$filtro.'%')
+                        ->select('uuid','.nombre','num_documento')
+                        ->orderBy('nombre','asc')->get();
+
+    return ['clientes' => $clientes];
+  }
+
 }

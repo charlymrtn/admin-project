@@ -65,10 +65,10 @@ class VentaController extends Controller
    */
   public function store(Request $request)
   {
-      if (!request()->ajax()) return redirect('/');
+      if (!$request->ajax()) return redirect('/');
 
       $validator = Validator::make($request->all(), [
-            'proveedor_uuid' => 'required|uuid',
+            'cliente_uuid' => 'required|uuid',
             'tipo_comprobante' => 'required|string',
             'serie_comprobante' => 'sometimes|string',
             'num_comprobante' => 'required|string',
@@ -87,25 +87,26 @@ class VentaController extends Controller
 
         $time = Carbon::now('America/Mexico_City');
 
-        $ingreso = new Ingreso();
-        $ingreso->proveedor_uuid = $request->proveedor_uuid;
-        $ingreso->usuario_uuid = Auth::user()->uuid;
-        $ingreso->tipo_comprobante = $request->tipo_comprobante;
-        $ingreso->serie_comprobante = $request->serie_comprobante;
-        $ingreso->num_comprobante = $request->num_comprobante;
-        $ingreso->impuesto = $request->impuesto;
-        $ingreso->total = $request->total;
-        $ingreso->estado = 'Registrado';
-        $ingreso->fecha_ingreso = $time->toDateString();
+        $venta = new Venta();
+        $venta->cliente_uuid = $request->cliente_uuid;
+        $venta->usuario_uuid = Auth::user()->uuid;
+        $venta->tipo_comprobante = $request->tipo_comprobante;
+        $venta->serie_comprobante = $request->serie_comprobante;
+        $venta->num_comprobante = $request->num_comprobante;
+        $venta->impuesto = $request->impuesto;
+        $venta->total = $request->total;
+        $venta->estado = 'Registrado';
+        $venta->fecha_venta = $time->toDateString();
 
-        $ingreso->save();
+        $venta->save();
 
         foreach ($request->detalles as $item) {
-          $detalle = new DetalleIngreso();
-          $detalle->ingreso_uuid = $ingreso->uuid;
+          $detalle = new DetalleVenta();
+          $detalle->venta_uuid = $venta->uuid;
           $detalle->articulo_uuid = $item['articulo_uuid'];
           $detalle->cantidad = $item['cantidad'];
           $detalle->precio = $item['precio'];
+          $detalle->descuento = $item['descuento'];
 
           $detalle->save();
 
@@ -113,7 +114,7 @@ class VentaController extends Controller
 
         DB::commit();
 
-        return response()->json($ingreso);
+        return response()->json($venta);
 
       } catch (\Exception $e) {
         DB::rollback();
@@ -126,40 +127,40 @@ class VentaController extends Controller
 
   //Funciones personalizadas
 
-  public function desactivar(String $ingreso_uuid)
+  public function desactivar(String $venta_uuid)
   {
     if (!request()->ajax()) return redirect('/');
 
-    $ingreso = Ingreso::findOrFail($ingreso_uuid);
+    $venta = Venta::findOrFail($venta_uuid);
 
-    $ingreso->estado = 'Anulado';
+    $venta->estado = 'Anulado';
 
-    $ingreso->save();
+    $venta->save();
   }
 
-  public function cabecera(String $ingreso_uuid)
+  public function cabecera(String $venta_uuid)
   {
     if (!request()->ajax()) return redirect('/');
 
-    $ingreso = Ingreso::join('personas','ingresos.proveedor_uuid','=','personas.uuid')
-                    ->join('usuarios','ingresos.usuario_uuid','=','usuarios.uuid')
-                    ->select('ingresos.uuid','ingresos.tipo_comprobante','ingresos.serie_comprobante',
-                    'ingresos.num_comprobante','ingresos.fecha_ingreso','ingresos.impuesto',
-                    'ingresos.total','ingresos.estado','personas.nombre','usuarios.usuario')
-                    ->where('ingresos.uuid','=',$ingreso_uuid)
-                    ->orderBy('ingresos.created_at')->first();
+    $venta = Venta ::join('personas','ventas.cliente_uuid','=','personas.uuid')
+                    ->join('usuarios','ventas.usuario_uuid','=','usuarios.uuid')
+                    ->select('ventas.uuid','ventas.tipo_comprobante','ventas.serie_comprobante',
+                    'ventas.num_comprobante','ventas.fecha_venta','ventas.impuesto',
+                    'ventas.total','ventas.estado','personas.nombre','usuarios.usuario')
+                    ->where('ventas.uuid','=',$venta_uuid)
+                    ->orderBy('ventas.created_at')->first();
 
-    return ['ingreso' => $ingreso];
+    return ['venta' => $venta];
   }
 
-  public function detalles(String $ingreso_uuid)
+  public function detalles(String $venta_uuid)
   {
     if (!request()->ajax()) return redirect('/');
 
-    $detalles = DetalleIngreso::join('articulos','detalle_ingresos.articulo_uuid','=','articulos.uuid')
-                    ->select('detalle_ingresos.cantidad','detalle_ingresos.precio','articulos.nombre as articulo')
-                    ->where('detalle_ingresos.ingreso_uuid','=',$ingreso_uuid)
-                    ->orderBy('detalle_ingresos.created_at')->get();
+    $detalles = DetalleVenta::join('articulos','detalle_ventas.articulo_uuid','=','articulos.uuid')
+                    ->select('detalle_ventas.cantidad','detalle_ventas.precio','detalle_ventas.descuento','articulos.nombre as articulo')
+                    ->where('detalle_ventas.venta_uuid','=',$venta_uuid)
+                    ->orderBy('detalle_ventas.created_at')->get();
 
     return ['detalles' => $detalles];
   }

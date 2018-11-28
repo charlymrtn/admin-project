@@ -63,6 +63,19 @@ class ArticuloController extends Controller
       return ['articulos' => $articulos];
      }
 
+     public function buscarParaVenta(Request $request)
+     {
+       if (!$request->ajax()) return redirect('/');
+
+       $filtro = $request->filtro;
+       $articulos = Articulo::where('codigo',$filtro)
+                            ->select('uuid','nombre','existencias','precio')
+                            ->where('existencias','>','0')
+                            ->orderBy('nombre','asc')->take(1)->get();
+
+      return ['articulos' => $articulos];
+     }
+
     /**
      * Store a newly created resource in storage.
      *

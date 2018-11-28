@@ -23,7 +23,7 @@
         <proveedor-component></proveedor-component>
       </template>
       <template v-if="menu==5">
-        <h1>Ventas</h1>
+        <venta-component></venta-component>
       </template>
       <template v-if="menu==6">
         <cliente-component></cliente-component>
@@ -53,7 +53,7 @@
         <h1>Escritorio</h1>
       </template>
       <template v-if="menu==5">
-        <h1>Ventas</h1>
+        <venta-component></venta-component>
       </template>
       <template v-if="menu==6">
         <cliente-component></cliente-component>
