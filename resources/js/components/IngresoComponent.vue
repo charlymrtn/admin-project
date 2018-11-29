@@ -712,7 +712,7 @@
             if(!this.proveedor_uuid) this.errors.push('Seleccione un proveedor');
             if(!this.tipo_comprobante) this.errors.push('Seleccione el tipo de comprobante');
             if(!this.num_comprobante) this.errors.push('Ingrese el número de comprobante');
-            if(!this.impuesto) this.errors.push('Ingrese el impreso');
+            if(!this.impuesto) this.errors.push('Ingrese el impuesto');
             if(this.detalles.length<=0) this.errors.push('Ingrese detalles del ingreso');
 
             if (this.errors.length) this.error = 1;
