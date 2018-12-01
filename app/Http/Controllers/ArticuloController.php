@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Articulo;
 use Illuminate\Http\Request;
 
+use PDF;
+
 class ArticuloController extends Controller
 {
     /**
@@ -224,4 +226,18 @@ class ArticuloController extends Controller
 
          return ['articulos' => $articulos];
      }
+
+      public function listarPDF($value='')
+      {
+        $articulos = Articulo::join('categorias','articulos.categoria_uuid','=','categorias.uuid')
+                              ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
+                              ->where('articulos.condicion',1)
+                              ->orderBy('articulos.nombre','desc')->get();
+
+        $count =$articulos->count();
+
+        $pdf = PDF::loadView('pdf.articulospdf',['articulos' => $articulos, 'count' => $count]);
+
+        return $pdf->download('reporte_articulos.pdf');
+      }
 }

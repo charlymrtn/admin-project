@@ -14,6 +14,9 @@
                   <button type="button" @click="abrirModal('articulo','registrar')" class="btn btn-secondary">
                       <i class="icon-plus"></i>&nbsp;Nuevo
                   </button>
+                  <button type="button" @click="cargarPDF()" class="btn btn-info">
+                      <i class="icon-doc"></i>&nbsp;Reporte
+                  </button>
               </div>
               <div class="card-body">
                   <div class="form-group row">
@@ -246,6 +249,10 @@
             .catch(function (error){
               console.log(error);
             });
+          },
+          cargarPDF(){
+            var url = window.location .protocol + "//" + window.location.host + '/articulos/pdf';
+            window.open(url);
           },
           selectCategoria(){
             let me = this;
