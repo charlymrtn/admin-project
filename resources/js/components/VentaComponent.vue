@@ -250,8 +250,8 @@
               <div class="form-group row border">
                   <div class="col-md-9">
                       <div class="form-group">
-                          <label style="font-weight: bold;" for="">Proveedor</label>
-                          <p v-text="proveedor"></p>
+                          <label style="font-weight: bold;" for="">Cliente</label>
+                          <p v-text="cliente"></p>
                       </div>
                   </div>
                   <div class="col-md-3">
@@ -285,6 +285,7 @@
                               <th>Artículo</th>
                               <th>Precio</th>
                               <th>Cantidad</th>
+                              <th>Descuento %</th>
                               <th>Subtotal</th>
                             </tr>
                           </thead>
@@ -293,26 +294,27 @@
                               <td v-text="detalle.articulo"></td>
                               <td v-text="detalle.precio"></td>
                               <td v-text="detalle.cantidad"></td>
+                              <td v-text="detalle.descuento"></td>
                               <td>
-                                  $ {{(detalle.precio*detalle.cantidad).toFixed(2)}}
+                                    $ {{(detalle.precio*detalle.cantidad-((detalle.descuento*(detalle.precio*detalle.cantidad))/100)).toFixed(2)}}
                               </td>
                             </tr>
                             <tr style="background-color: #CEECF5;">
-                                <td colspan="3" align="right"><strong>Total Parcial:</strong></td>
+                                <td colspan="4" align="right"><strong>Total Parcial:</strong></td>
                                 <td>$ {{total_parcial=(total-total_impuesto).toFixed(2)}}</td>
                             </tr>
                             <tr style="background-color: #CEECF5;">
-                                <td colspan="3" align="right"><strong>Total Impuesto:</strong></td>
+                                <td colspan="4" align="right"><strong>Total Impuesto:</strong></td>
                                 <td>$ {{total_impuesto=((total*impuesto).toFixed(2))}}</td>
                             </tr>
                             <tr style="background-color: #CEECF5;">
-                                <td colspan="3" align="right"><strong>Total Neto:</strong></td>
+                                <td colspan="4" align="right"><strong>Total Neto:</strong></td>
                                 <td>$ {{total}}</td>
                             </tr>
                           </tbody>
                           <tbody v-else>
                             <tr>
-                              <td colspan="4">
+                              <td colspan="5">
                                 No hay artículos agregados
                               </td>
                             </tr>
