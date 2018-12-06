@@ -251,7 +251,7 @@
             });
           },
           cargarPDF(){
-            var url = window.location .protocol + "//" + window.location.host + '/articulos/pdf';
+            var url = window.location.protocol + "//" + window.location.host + '/articulos/pdf';
             window.open(url);
           },
           selectCategoria(){

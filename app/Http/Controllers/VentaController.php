@@ -164,4 +164,16 @@ class VentaController extends Controller
 
     return ['detalles' => $detalles];
   }
+
+  public function pdf(Request $request, String $uuid)
+  {
+    $venta = Venta::join('personas','ventas.cliente_uuid','=','personas.uuid')
+                  ->join('usuarios','ventas.usuario_uuid';'=','usuarios.uuid')
+                  ->select('ventas.uuid','ventas.tipo_comprobante','ventas.serie_comprobante','ventas.num_comprobante','ventas.created_at',
+                  'ventas.impuesto','ventas.total','vemtas.estado','personas.nombre','personas.tipo_documento','personas.num_documento',
+                  'personas.direccion','personas.email','personas.telefono','usuarios.usuario')
+                  ->where('ventas.uuid','=',$uuid)
+                  ->orderBy('ventas.created_at','desc')
+                  ->first();
+  }
 }

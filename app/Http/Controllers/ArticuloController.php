@@ -227,7 +227,7 @@ class ArticuloController extends Controller
          return ['articulos' => $articulos];
      }
 
-      public function listarPDF($value='')
+      public function listarPDF()
       {
         $articulos = Articulo::join('categorias','articulos.categoria_uuid','=','categorias.uuid')
                               ->select('articulos.uuid','articulos.categoria_uuid','articulos.codigo','articulos.nombre','categorias.nombre as nombre_categoria','articulos.precio','articulos.existencias','articulos.condicion','articulos.descripcion')
