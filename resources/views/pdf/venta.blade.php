@@ -196,14 +196,14 @@
                             <th></th>
                             <th></th>
                             <th>SUBTOTAL</th>
-                            <td>$ {{round($venta->total-($venta->total*($venta->impuesto/100)),2)}}</td>
+                            <td>$ {{round($venta->total-($venta->total*($venta->impuesto)),2)}}</td>
                         </tr>
                         <tr>
                             <th></th>
                             <th></th>
                             <th></th>
                             <th>Impuesto</th>
-                            <td>$ {{round($venta->total*($venta->impuesto/100),2)}}</td>
+                            <td>$ {{round($venta->total*($venta->impuesto),2)}}</td>
                         </tr>
                         <tr>
                             <th></th>
