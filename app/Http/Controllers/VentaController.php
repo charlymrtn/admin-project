@@ -11,6 +11,7 @@ use Validator;
 use Auth;
 use Log;
 use Carbon\Carbon;
+use PDF;
 
 class VentaController extends Controller
 {
@@ -165,15 +166,29 @@ class VentaController extends Controller
     return ['detalles' => $detalles];
   }
 
-  public function pdf(Request $request, String $uuid)
+  public function pdf(String $uuid)
   {
+    //if (!request()->ajax()) return redirect('/');
+
     $venta = Venta::join('personas','ventas.cliente_uuid','=','personas.uuid')
-                  ->join('usuarios','ventas.usuario_uuid';'=','usuarios.uuid')
+                  ->join('usuarios','ventas.usuario_uuid','=','usuarios.uuid')
                   ->select('ventas.uuid','ventas.tipo_comprobante','ventas.serie_comprobante','ventas.num_comprobante','ventas.created_at',
-                  'ventas.impuesto','ventas.total','vemtas.estado','personas.nombre','personas.tipo_documento','personas.num_documento',
+                  'ventas.impuesto','ventas.total','ventas.estado','personas.nombre','personas.tipo_documento','personas.num_documento',
                   'personas.direccion','personas.email','personas.telefono','usuarios.usuario')
                   ->where('ventas.uuid','=',$uuid)
                   ->orderBy('ventas.created_at','desc')
                   ->first();
+
+    $detalles = DetalleVenta::join('articulos','detalle_ventas.articulo_uuid','=','articulos.uuid')
+                    ->select('detalle_ventas.cantidad','detalle_ventas.precio','detalle_ventas.descuento','articulos.nombre as articulo')
+                    ->where('detalle_ventas.venta_uuid','=',$uuid)
+                    ->orderBy('detalle_ventas.created_at','desc')->get();
+
+
+    $numVenta = Venta::select('num_comprobante')->where('uuid', $uuid)->first();
+
+    $pdf = PDF::loadView('pdf.venta',compact('venta','detalles'));
+
+    return $pdf->download('venta_'.$numVenta->num_comprobante.'.pdf');
   }
 }

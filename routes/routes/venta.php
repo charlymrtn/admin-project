@@ -7,3 +7,5 @@ Route::get('ventas/detalles/{ingreso_uuid}','VentaController@detalles')->name('v
 Route::resource('ventas', 'VentaController')->parameters([
     'ventas' => 'venta'
 ])->only(['index','store','update']);
+
+Route::get('ventas/{uuid}/pdf','VentaController@pdf')->name('ventas.pdf');
