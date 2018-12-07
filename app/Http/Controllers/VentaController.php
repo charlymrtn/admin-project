@@ -115,7 +115,7 @@ class VentaController extends Controller
 
         DB::commit();
 
-        return response()->json($venta);
+        return ['id' => $venta->uuid];
 
       } catch (\Exception $e) {
         DB::rollback();

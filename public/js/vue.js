@@ -62505,6 +62505,8 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
         me.codigo = '';
         me.descuento = 0;
         me.detalles = [];
+        var url = window.location.protocol + "//" + window.location.host + '/ventas/' + response.data.id + '/pdf';
+        window.open(url);
       }).catch(function (error) {
         console.log(error);
         swal('Error!', 'Error interno contacte al administrador', 'error');
