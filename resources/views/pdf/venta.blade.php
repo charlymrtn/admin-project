@@ -180,13 +180,15 @@
                         </tr>
                     </thead>
                     <tbody>
+                      @foreach ($detalles as $detalle)
                         <tr>
-                            <td>cant</td>
-                            <td>descripcion del producto descripcion del producto descripcion del producto</td>
-                            <td>precio uni</td>
-                            <td>descuento</td>
-                            <td>precio total</td>
+                            <td>{{$detalle->cantidad}}</td>
+                            <td>{{$detalle->articulo}}</td>
+                            <td>$ {{$detalle->precio}}</td>
+                            <td>% {{round($detalle->descuento,0)}}</td>
+                            <td>$ {{round(($detalle->cantidad*$detalle->precio)-($detalle->descuento*($detalle->precio*$detalle->cantidad/100)),2)}}</td>
                         </tr>
+                      @endforeach
                     </tbody>
                     <tfoot>
                         <tr>
@@ -194,21 +196,21 @@
                             <th></th>
                             <th></th>
                             <th>SUBTOTAL</th>
-                            <td>subtotal</td>
+                            <td>$ {{round($venta->total-($venta->total*($venta->impuesto/100)),2)}}</td>
                         </tr>
                         <tr>
                             <th></th>
                             <th></th>
                             <th></th>
-                            <th>IVA</th>
-                            <td>iva</td>
+                            <th>Impuesto</th>
+                            <td>$ {{round($venta->total*($venta->impuesto/100),2)}}</td>
                         </tr>
                         <tr>
                             <th></th>
                             <th></th>
                             <th></th>
                             <th>TOTAL</th>
-                            <td>total</td>
+                            <td>$ {{$venta->total}}</td>
                         </tr>
                     </tfoot>
                 </table>

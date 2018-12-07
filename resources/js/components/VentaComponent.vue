@@ -51,6 +51,9 @@
                                   <button type="button" @click="verVenta(venta.uuid)" class="btn btn-success btn-sm">
                                   <i class="icon-eye"></i>
                                   </button> &nbsp;
+                                  <button type="button" @click="pdfVenta(venta.uuid)" class="btn btn-info btn-sm">
+                                  <i class="icon-doc"></i>
+                                  </button> &nbsp;
                                   <template v-if="venta.estado=='Registrado'">
                                       <button type="button" class="btn btn-danger btn-sm" @click="desactivar(venta.uuid)">
                                           <i class="icon-trash"></i>
@@ -687,6 +690,10 @@
             .catch(function (error){
               console.log(error);
             });
+          },
+          pdfVenta(uuid){
+            var url = window.location.protocol + "//" + window.location.host + '/ventas/'+uuid+'/pdf';
+            window.open(url);
           },
           abrirModal(){
             this.articulos = [];
