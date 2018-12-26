@@ -38,7 +38,7 @@
           <consulta-ingreso-component></consulta-ingreso-component>
       </template>
       <template v-if="menu==10">
-        <h1>reporte ventas</h1>
+          <consulta-venta-component></consulta-venta-component>
       </template>
       <template v-if="menu==11">
         <h1>ayuda</h1>
@@ -59,7 +59,7 @@
         <cliente-component></cliente-component>
       </template>
       <template v-if="menu==10">
-        <h1>reporte ventas</h1>
+          <consulta-venta-component></consulta-venta-component>
       </template>
       <template v-if="menu==11">
         <h1>ayuda</h1>
