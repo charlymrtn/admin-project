@@ -27,6 +27,8 @@ Route::middleware('auth')->group(function(){
     Route::post('salir', 'LoginController@logout')->name('logout');
   });
 
+  Route::get('/dashboard','DashboardController')->name('dashboard');
+
   Route::middleware('Almacen')->group(function(){
     require base_path('routes/routes/categoria.php');
 
