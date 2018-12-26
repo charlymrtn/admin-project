@@ -64597,7 +64597,7 @@ exports = module.exports = __webpack_require__(2)(false);
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -64666,7 +64666,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     data: function data() {
-
         return {
             ingreso: null,
             charIngreso: null,
@@ -64690,19 +64689,25 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                 var respuesta = response.data;
                 me.ingresos = respuesta.ingresos;
                 me.ventas = respuesta.ventas;
-                me.loadIngresos();
-                me.loadVentas();
+                me.loadEstadisticas();
             }).catch(function (error) {
                 console.log(error);
             });
         },
-        loadIngresos: function loadIngresos() {
+        loadEstadisticas: function loadEstadisticas() {
             var me = this;
+
             me.ingresos.map(function (x) {
                 me.mesIngreso.push(x.mes);
                 me.totalIngreso.push(x.total);
             });
             me.ingreso = document.getElementById('ingresos').getContext('2d');
+
+            me.ventas.map(function (x) {
+                me.mesVenta.push(x.mes);
+                me.totalVenta.push(x.total);
+            });
+            me.venta = document.getElementById('ventas').getContext('2d');
 
             me.charIngreso = new Chart(me.ingreso, {
                 type: 'bar',
@@ -64726,14 +64731,6 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
                     }
                 }
             });
-        },
-        loadVentas: function loadVentas() {
-            var me = this;
-            me.ventas.map(function (x) {
-                me.mesVenta.push(x.mes);
-                me.totalVenta.push(x.total);
-            });
-            me.venta = document.getElementById('ventas').getContext('2d');
 
             me.charVenta = new Chart(me.venta, {
                 type: 'bar',

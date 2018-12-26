@@ -56,7 +56,6 @@
 <script>
 export default {
   data() {
-
       return {
           ingreso: null,
           charIngreso: null,
@@ -79,51 +78,49 @@ export default {
             var respuesta = response.data;
             me.ingresos = respuesta.ingresos;
             me.ventas = respuesta.ventas;
-            me.loadIngresos();
-            me.loadVentas();
+            me.loadEstadisticas();
         })
         .catch(function (error){
             console.log(error);
          })
     },
-    loadIngresos(){
-        let me = this;
-        me.ingresos.map(function(x){
-           me.mesIngreso.push(x.mes);
-           me.totalIngreso.push(x.total);
-        });
-        me.ingreso = document.getElementById('ingresos').getContext('2d');
-
-        me.charIngreso = new Chart(me.ingreso, {
-            type: 'bar',
-            data: {
-                labels: me.mesIngreso,
-                datasets: [{
-                    label: 'Ingresos',
-                    data: me.totalIngreso,
-                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                    borderColor: 'rgba(255, 99, 132, 0.2)',
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    yAxes: [{
-                        ticks: {
-                            beginAtZero:true
-                        }
-                    }]
-                }
-            }
-        });
-    },
-      loadVentas(){
+      loadEstadisticas(){
           let me = this;
+
+          me.ingresos.map(function(x){
+              me.mesIngreso.push(x.mes);
+              me.totalIngreso.push(x.total);
+          });
+          me.ingreso = document.getElementById('ingresos').getContext('2d');
+
           me.ventas.map(function(x){
               me.mesVenta.push(x.mes);
               me.totalVenta.push(x.total);
           });
           me.venta = document.getElementById('ventas').getContext('2d');
+
+          me.charIngreso = new Chart(me.ingreso, {
+              type: 'bar',
+              data: {
+                  labels: me.mesIngreso,
+                  datasets: [{
+                      label: 'Ingresos',
+                      data: me.totalIngreso,
+                      backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                      borderColor: 'rgba(255, 99, 132, 0.2)',
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero:true
+                          }
+                      }]
+                  }
+              }
+          });
 
           me.charVenta = new Chart(me.venta, {
               type: 'bar',
