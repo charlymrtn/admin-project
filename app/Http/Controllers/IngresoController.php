@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Models\Ingreso;
 use App\Models\DetalleIngreso;
+use App\Notifications\NotifiAdmin;
+use App\User;
 use Illuminate\Http\Request;
 
-use DB;
+use Illuminate\Support\Facades\DB;
 use Validator;
 use Auth;
 use Log;
@@ -110,6 +112,27 @@ class IngresoController extends Controller
           $detalle->save();
 
         }
+
+        $fechaActual = date('Y-m-d');
+        $numVentas = DB::table('ventas')->whereDate('created_at',$fechaActual)->count();
+        $numIngresos = DB::table('ingresos')->whereDate('created_at',$fechaActual)->count();
+
+        $arregloDatos = [
+            'ventas' => [
+                'numero' => $numVentas,
+                'msj' => 'ventas'
+            ],
+            'ingresos' => [
+                'numero' => $numIngresos,
+                'msj' => 'ingresos'
+            ]
+        ];
+
+        $allUsers = User::all();
+
+          foreach ($allUsers as $notificar) {
+              User::findOrFail($notificar->uuid)->notify(new NotifiAdmin($arregloDatos));
+          }
 
         DB::commit();
 
