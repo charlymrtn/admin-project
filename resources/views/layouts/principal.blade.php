@@ -11,7 +11,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="shortcut icon" href={{asset("img/favicon.png")}}>
     <title>@yield('title')</title>
-    <!-- Icons -->
+
+    {{-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.3/Chart.min.js"> --}}
     <link href="{{asset('css/app.css')}}" rel="stylesheet">
 </head>
 
