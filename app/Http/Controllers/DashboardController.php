@@ -11,15 +11,24 @@ class DashboardController extends Controller
     {
         $anio = date('Y');
         $ingresos = DB::table('ingresos as i')
-                        ->select(
-                                DB::raw('MONTH(i.fecha_ingreso) as mes'),
-                                DB::raw('YEAR(i.fecha_ingreso) as anio'),
-                                DB::raw('(SUM(i.total) as total')
-                        )->whereYear('i.fecha_ingreso',$anio)
-                        ->groupBy(DB::raw('MONTH(i.fecha_ingreso)'),DB::raw('YEAR(i.fecha_ingreso)'))
-                        ->get();
+                    ->select(
+                            DB::raw('MONTH(i.fecha_ingreso) as mes'),
+                            DB::raw('YEAR(i.fecha_ingreso) as anio'),
+                            DB::raw('SUM(i.total) as total')
+                    )->whereYear('i.fecha_ingreso',$anio)
+                    ->groupBy(DB::raw('MONTH(i.fecha_ingreso)'),DB::raw('YEAR(i.fecha_ingreso)'))
+                    ->get();
 
-        return ['imgresos'=>$ingresos,'anio'=>$anio];
+        $ventas = DB::table('ventas as v')
+                    ->select(
+                        DB::raw('MONTH(v.fecha_venta) as mes'),
+                        DB::raw('YEAR(v.fecha_venta) as anio'),
+                        DB::raw('SUM(v.total) as total')
+                    )->whereYear('v.fecha_venta',$anio)
+                    ->groupBy(DB::raw('MONTH(v.fecha_venta)'),DB::raw('YEAR(v.fecha_venta)'))
+                    ->get();
+
+        return ['ingresos'=>$ingresos,'anio'=>$anio,'ventas'=>$ventas];
     }
 
 }

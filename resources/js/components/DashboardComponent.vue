@@ -62,17 +62,25 @@ export default {
           charIngreso: null,
           ingresos: [],
           totalIngreso: [],
-          mesIngreso: []
+          mesIngreso: [],
+
+          venta: null,
+          charVenta: null,
+          ventas: [],
+          totalVenta: [],
+          mesVenta: []
       }
   },
   methods: {
-    getIngresos(){
+      getEstadisticas(){
         let me = this;
         var url = '/dashboard';
         axios.get(url).then(function (response){
             var respuesta = response.data;
             me.ingresos = respuesta.ingresos;
+            me.ventas = respuesta.ventas;
             me.loadIngresos();
+            me.loadVentas();
         })
         .catch(function (error){
             console.log(error);
@@ -108,10 +116,41 @@ export default {
                 }
             }
         });
-    }
+    },
+      loadVentas(){
+          let me = this;
+          me.ventas.map(function(x){
+              me.mesVenta.push(x.mes);
+              me.totalVenta.push(x.total);
+          });
+          me.venta = document.getElementById('ventas').getContext('2d');
+
+          me.charVenta = new Chart(me.venta, {
+              type: 'bar',
+              data: {
+                  labels: me.mesVenta,
+                  datasets: [{
+                      label: 'Ventas',
+                      data: me.totalVenta,
+                      backgroundColor: 'rgba(48, 78, 187, 0.2)',
+                      borderColor: 'rgba(48, 78, 187, 0.2)',
+                      borderWidth: 1
+                  }]
+              },
+              options: {
+                  scales: {
+                      yAxes: [{
+                          ticks: {
+                              beginAtZero:true
+                          }
+                      }]
+                  }
+              }
+          });
+      },
   },
   mounted() {
-    this.getIngresos();
+    this.getEstadisticas();
   }
 }
 </script>
