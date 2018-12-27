@@ -11,12 +11,12 @@
             <div v-if="notificaciones.length">
                 <li v-for="item in notificaciones" :key="item.id">
                     <a class="dropdown-item" href="#">
-                        <i class="fa fa-envelope-o"></i> {{item.data.datos.ingresos.msj}}
-                        <span class="badge badge-success">{{item.data.datos.ingresos.numero}}</span>
+                        <i class="fa fa-envelope-o"></i> {{JSON.parse(item.data).datos.ingresos.msj}}
+                        <span class="badge badge-success">{{JSON.parse(item.data).datos.ingresos.numero}}</span>
                     </a>
                     <a class="dropdown-item" href="#">
-                        <i class="fa fa-tasks"></i> {{item.data.datos.ventas.msj}}
-                        <span class="badge badge-danger">{{item.data.datos.ventas.numero}}</span>
+                        <i class="fa fa-tasks"></i> {{JSON.parse(item.data).datos.ventas.msj}}
+                        <span class="badge badge-danger">{{JSON.parse(item.data).datos.ventas.numero}}</span>
                     </a>
                 </li>
             </div>

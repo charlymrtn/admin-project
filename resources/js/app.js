@@ -41,6 +41,10 @@ const app = new Vue({
         let me = this;
         axios.post('notificacion/get').then(function(response){
             me.notificaciones = response.data;
+            var object = {};
+            me.notificaciones.forEach( function(valor, indice, array) {
+                object = JSON.parse(valor.data);
+            });
         }).catch(function(error){
            console.log(error);
         });
