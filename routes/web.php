@@ -29,6 +29,8 @@ Route::middleware('auth')->group(function(){
 
   Route::get('/dashboard','DashboardController')->name('dashboard');
 
+  Route::post('notificacion/get','NotificacionController@get')->name('notificaciones.get');
+
   Route::middleware('Almacen')->group(function(){
     require base_path('routes/routes/categoria.php');
 

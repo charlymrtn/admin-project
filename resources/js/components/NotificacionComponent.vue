@@ -8,14 +8,26 @@
             <div class="dropdown-header text-center">
                 <strong>Notificaciones</strong>
             </div>
-            <a class="dropdown-item" href="#">
-                <i class="fa fa-envelope-o"></i> Ingresos
-                <span class="badge badge-success">3</span>
-            </a>
-            <a class="dropdown-item" href="#">
-                <i class="fa fa-tasks"></i> Ventas
-                <span class="badge badge-danger">2</span>
-            </a>
+            <li v-for="item in notificaciones" :key="item.id">
+                <a class="dropdown-item" href="#">
+                    <i class="fa fa-envelope-o"></i> {{JSON.parse(item.data).datos.ingresos.msj}}
+                    <span class="badge badge-success">{{JSON.parse(item.data).datos.ingresos.numero}}</span>
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i class="fa fa-tasks"></i> {{JSON.parse(item.data).datos.ventas.msj}}
+                    <span class="badge badge-danger">{{JSON.parse(item.data).datos.ventas.numero}}</span>
+                </a>
+            </li>
         </div>
     </li>
 </template>
+<script>
+    export default {
+        props: ['notificaciones'],
+        data(){
+            return {
+
+            }
+        }
+    }
+</script>

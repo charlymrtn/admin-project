@@ -35,7 +35,7 @@
               </li>
           </ul>
           <ul class="nav navbar-nav ml-auto">
-
+              <notificacion-component :notificaciones="notificaciones"></notificacion-component>
               <li class="nav-item dropdown">
                   <a class="nav-link dropdown-toggle nav-link" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
                       <img src={{asset("img/avatars/6.jpg")}} class="img-avatar" alt="admin@bootstrapmaster.com">

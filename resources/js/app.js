@@ -27,11 +27,22 @@ Vue.component('venta-component', require('./components/VentaComponent.vue'));
 Vue.component('dashboard-component', require('./components/DashboardComponent.vue'));
 Vue.component('consulta-ingreso-component', require('./components/ConsultaIngresoComponent.vue'));
 Vue.component('consulta-venta-component', require('./components/ConsultaVentaComponent.vue'));
+Vue.component('notificacion-component', require('./components/NotificacionComponent.vue'));
 
 
 const app = new Vue({
     el: '#app',
     data: {
-      menu: 0
+        menu: 0,
+        notificaciones: []
+    },
+    created(){
+        let me = this;
+        axios.post('notificacion/get').then(function(response){
+            me.notificaciones = response.data;
+        }).catch(function(error){
+           console.log(error);
+        });
+
     }
 });

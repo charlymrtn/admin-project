@@ -2471,12 +2471,22 @@ Vue.component('venta-component', __webpack_require__(133));
 Vue.component('dashboard-component', __webpack_require__(138));
 Vue.component('consulta-ingreso-component', __webpack_require__(143));
 Vue.component('consulta-venta-component', __webpack_require__(148));
+Vue.component('notificacion-component', __webpack_require__(153));
 
 var app = new Vue({
-  el: '#app',
-  data: {
-    menu: 0
-  }
+    el: '#app',
+    data: {
+        menu: 0,
+        notificaciones: []
+    },
+    created: function created() {
+        var me = this;
+        axios.post('notificacion/get').then(function (response) {
+            me.notificaciones = response.data;
+        }).catch(function (error) {
+            console.log(error);
+        });
+    }
 });
 
 /***/ }),
@@ -77095,6 +77105,177 @@ if (false) {
     require("vue-hot-reload-api")      .rerender("data-v-36acea91", module.exports)
   }
 }
+
+/***/ }),
+/* 153 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+var normalizeComponent = __webpack_require__(4)
+/* script */
+var __vue_script__ = __webpack_require__(155)
+/* template */
+var __vue_template__ = __webpack_require__(154)
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = null
+/* scopeId */
+var __vue_scopeId__ = null
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/js/components/NotificacionComponent.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-5599d834", Component.options)
+  } else {
+    hotAPI.reload("data-v-5599d834", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+/* 154 */
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("li", { staticClass: "nav-item d-md-down-none" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "dropdown-menu dropdown-menu-right" },
+      [
+        _vm._m(1),
+        _vm._v(" "),
+        _vm._l(_vm.notificaciones, function(item) {
+          return _c("li", { key: item.id }, [
+            _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "fa fa-envelope-o" }),
+              _vm._v(
+                " " +
+                  _vm._s(JSON.parse(item.data).datos.ingresos.msj) +
+                  "\n                "
+              ),
+              _c("span", { staticClass: "badge badge-success" }, [
+                _vm._v(_vm._s(JSON.parse(item.data).datos.ingresos.numero))
+              ])
+            ]),
+            _vm._v(" "),
+            _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "fa fa-tasks" }),
+              _vm._v(
+                " " +
+                  _vm._s(JSON.parse(item.data).datos.ventas.msj) +
+                  "\n                "
+              ),
+              _c("span", { staticClass: "badge badge-danger" }, [
+                _vm._v(_vm._s(JSON.parse(item.data).datos.ventas.numero))
+              ])
+            ])
+          ])
+        })
+      ],
+      2
+    )
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "a",
+      {
+        staticClass: "nav-link",
+        attrs: { href: "#", "data-toggle": "dropdown" }
+      },
+      [
+        _c("i", { staticClass: "icon-bell" }),
+        _vm._v(" "),
+        _c("span", { staticClass: "badge badge-pill badge-danger" }, [
+          _vm._v("5")
+        ])
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "dropdown-header text-center" }, [
+      _c("strong", [_vm._v("Notificaciones")])
+    ])
+  }
+]
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-5599d834", module.exports)
+  }
+}
+
+/***/ }),
+/* 155 */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    props: ['notificaciones'],
+    data: function data() {
+        return {};
+    }
+});
 
 /***/ })
 /******/ ]);
