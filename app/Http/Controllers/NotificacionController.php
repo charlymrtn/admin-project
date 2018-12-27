@@ -10,14 +10,17 @@ class NotificacionController extends Controller
 {
     public function get()
     {
-        $unread = Auth::user()->unreadNotifications;
+        //$notificaciones = Notification::where('notifiable_id',Auth::user()->uuid);
+        $notificaciones = Notification::all();
+
         $fecha = date('Y-m-d');
-        foreach ($unread as $item) {
+        foreach ($notificaciones as $item) {
             if ($fecha != $item->created_at->toDateString()){
                 $item->maskAsRead();
             }
         }
-
-        return Auth::user()->unreadNotifications;
+        //
+        //return Auth::user()->unreadNotifications;
+        return response()->json($notificaciones);
     }
 }

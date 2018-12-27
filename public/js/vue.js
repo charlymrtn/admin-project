@@ -2451,6 +2451,7 @@ module.exports = __webpack_require__(29);
 
 __webpack_require__(30);
 
+window.$ = window.jQuery = __webpack_require__(34);
 window.Vue = __webpack_require__(57);
 window.swal = __webpack_require__(60);
 
@@ -2490,7 +2491,7 @@ var app = new Vue({
         var userId = $('meta[name="userId"]').attr('content');
 
         Echo.private('App.User.' + userId).notification(function (notification) {
-            console.log(notification);
+            me.notificaciones.unshift(notification);
         });
     }
 });

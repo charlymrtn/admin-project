@@ -7,6 +7,7 @@
 
 require('./bootstrap');
 
+window.$ = window.jQuery = require('jquery');
 window.Vue = require('vue');
 window.swal = require('sweetalert2');
 
@@ -47,7 +48,7 @@ const app = new Vue({
         var userId = $('meta[name="userId"]').attr('content');
 
         Echo.private('App.User.'+userId).notification((notification)=>{
-            console.log(notification);
+            me.notificaciones.unshift(notification);
         });
 
     }
