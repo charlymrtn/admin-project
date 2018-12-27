@@ -44,5 +44,11 @@ const app = new Vue({
            console.log(error);
         });
 
+        var userId = $('meta[name="userId"]').attr('content');
+
+        Echo.private('App.User.'+userId).notification((notification)=>{
+            console.log(notification);
+        });
+
     }
 });

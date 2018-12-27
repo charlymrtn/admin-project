@@ -2486,6 +2486,12 @@ var app = new Vue({
         }).catch(function (error) {
             console.log(error);
         });
+
+        var userId = $('meta[name="userId"]').attr('content');
+
+        Echo.private('App.User.' + userId).notification(function (notification) {
+            console.log(notification);
+        });
     }
 });
 
@@ -77162,52 +77168,7 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("li", { staticClass: "nav-item d-md-down-none" }, [
-    _vm._m(0),
-    _vm._v(" "),
     _c(
-      "div",
-      { staticClass: "dropdown-menu dropdown-menu-right" },
-      [
-        _vm._m(1),
-        _vm._v(" "),
-        _vm._l(_vm.notificaciones, function(item) {
-          return _c("li", { key: item.id }, [
-            _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
-              _c("i", { staticClass: "fa fa-envelope-o" }),
-              _vm._v(
-                " " +
-                  _vm._s(JSON.parse(item.data).datos.ingresos.msj) +
-                  "\n                "
-              ),
-              _c("span", { staticClass: "badge badge-success" }, [
-                _vm._v(_vm._s(JSON.parse(item.data).datos.ingresos.numero))
-              ])
-            ]),
-            _vm._v(" "),
-            _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
-              _c("i", { staticClass: "fa fa-tasks" }),
-              _vm._v(
-                " " +
-                  _vm._s(JSON.parse(item.data).datos.ventas.msj) +
-                  "\n                "
-              ),
-              _c("span", { staticClass: "badge badge-danger" }, [
-                _vm._v(_vm._s(JSON.parse(item.data).datos.ventas.numero))
-              ])
-            ])
-          ])
-        })
-      ],
-      2
-    )
-  ])
-}
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
       "a",
       {
         staticClass: "nav-link",
@@ -77217,11 +77178,58 @@ var staticRenderFns = [
         _c("i", { staticClass: "icon-bell" }),
         _vm._v(" "),
         _c("span", { staticClass: "badge badge-pill badge-danger" }, [
-          _vm._v("5")
+          _vm._v(_vm._s(_vm.notificaciones.length))
         ])
       ]
-    )
-  },
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "dropdown-menu dropdown-menu-right" }, [
+      _vm._m(0),
+      _vm._v(" "),
+      _vm.notificaciones.length
+        ? _c(
+            "div",
+            _vm._l(_vm.notificaciones, function(item) {
+              return _c("li", { key: item.id }, [
+                _c(
+                  "a",
+                  { staticClass: "dropdown-item", attrs: { href: "#" } },
+                  [
+                    _c("i", { staticClass: "fa fa-envelope-o" }),
+                    _vm._v(
+                      " " +
+                        _vm._s(item.data.datos.ingresos.msj) +
+                        "\n                    "
+                    ),
+                    _c("span", { staticClass: "badge badge-success" }, [
+                      _vm._v(_vm._s(item.data.datos.ingresos.numero))
+                    ])
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "a",
+                  { staticClass: "dropdown-item", attrs: { href: "#" } },
+                  [
+                    _c("i", { staticClass: "fa fa-tasks" }),
+                    _vm._v(
+                      " " +
+                        _vm._s(item.data.datos.ventas.msj) +
+                        "\n                    "
+                    ),
+                    _c("span", { staticClass: "badge badge-danger" }, [
+                      _vm._v(_vm._s(item.data.datos.ventas.numero))
+                    ])
+                  ]
+                )
+              ])
+            })
+          )
+        : _c("div", [_vm._m(1)])
+    ])
+  ])
+}
+var staticRenderFns = [
   function() {
     var _vm = this
     var _h = _vm.$createElement
@@ -77229,6 +77237,12 @@ var staticRenderFns = [
     return _c("div", { staticClass: "dropdown-header text-center" }, [
       _c("strong", [_vm._v("Notificaciones")])
     ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("a", [_c("span", [_vm._v("No tiene notificaciones.")])])
   }
 ]
 render._withStripped = true
@@ -77246,6 +77260,11 @@ if (false) {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+//
+//
+//
+//
+//
 //
 //
 //

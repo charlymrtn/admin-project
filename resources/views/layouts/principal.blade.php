@@ -9,6 +9,7 @@
     <meta name="author" content="pajaro.com">
     <meta name="keyword" content="Sistema ventas Laravel Vue Js, Sistema compras Laravel Vue Js">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="userId" content="{{ Auth::check() ? Auth::user()->uuid : ''}}">
     <link rel="shortcut icon" href={{asset("img/favicon.png")}}>
     <title>@yield('title')</title>
 
