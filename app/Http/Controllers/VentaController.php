@@ -13,182 +13,216 @@ use Log;
 use Carbon\Carbon;
 use PDF;
 
+use App\Notifications\NotifiAdmin;
+use App\User;
+
 class VentaController extends Controller
 {
-  /**
-   * Display a listing of the resource.
-   *
-   * @return \Illuminate\Http\Response
-   */
-  public function index(Request $request)
-  {
-      if (!$request->ajax()) return redirect('/');
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        if (! $request->ajax()) {
+            return redirect('/');
+        }
 
-      $buscar = $request->buscar;
-      $criterio = $request->criterio;
+        $buscar = $request->buscar;
+        $criterio = $request->criterio;
 
-      if ($buscar == '') {
-        $ventas = Venta::join('personas','ventas.cliente_uuid','=','personas.uuid')
-                        ->join('usuarios','ventas.usuario_uuid','=','usuarios.uuid')
-                        ->select('ventas.uuid','ventas.tipo_comprobante','ventas.serie_comprobante',
-                        'ventas.num_comprobante','ventas.fecha_venta','ventas.impuesto',
-                        'ventas.total','ventas.estado','personas.nombre','usuarios.usuario')
-                        ->orderBy('ventas.created_at')->paginate(4);
-      }else{
+        if ($buscar == '') {
+            $ventas = Venta::join('personas', 'ventas.cliente_uuid', '=', 'personas.uuid')
+                ->join('usuarios', 'ventas.usuario_uuid', '=', 'usuarios.uuid')
+                ->select('ventas.uuid', 'ventas.tipo_comprobante', 'ventas.serie_comprobante',
+                    'ventas.num_comprobante', 'ventas.fecha_venta', 'ventas.impuesto',
+                    'ventas.total', 'ventas.estado', 'personas.nombre', 'usuarios.usuario')
+                ->orderBy('ventas.created_at')->paginate(4);
+        } else {
 
-        $ventas = Venta::join('personas','ventas.cliente_uuid','=','personas.uuid')
-                        ->join('usuarios','ventas.usuario_uuid','=','usuarios.uuid')
-                        ->select('ventas.uuid','ventas.tipo_comprobante','ventas.serie_comprobante',
-                        'ventas.num_comprobante','ventas.fecha_venta','ventas.impuesto',
-                        'ventas.total','ventas.estado','personas.nombre','usuarios.usuario')
-                        ->where('ventas.'.$criterio,'like','%'.$buscar.'%')
-                        ->orderBy('ventas.created_at')->paginate(4);
-      }
+            $ventas = Venta::join('personas', 'ventas.cliente_uuid', '=', 'personas.uuid')
+                ->join('usuarios', 'ventas.usuario_uuid', '=', 'usuarios.uuid')
+                ->select('ventas.uuid', 'ventas.tipo_comprobante', 'ventas.serie_comprobante',
+                    'ventas.num_comprobante', 'ventas.fecha_venta', 'ventas.impuesto',
+                    'ventas.total', 'ventas.estado', 'personas.nombre', 'usuarios.usuario')
+                ->where('ventas.'.$criterio, 'like', '%'.$buscar.'%')
+                ->orderBy('ventas.created_at')->paginate(4);
+        }
 
-      return [
-        'pagination' => [
-          'total' => $ventas->total(),
-          'current_page' => $ventas->currentPage(),
-          'per_page' => $ventas->perPage(),
-          'last_page' => $ventas->lastPage(),
-          'from' => $ventas->firstItem(),
-          'to' => $ventas->lastItem(),
-        ],
-        'ventas' => $ventas
-      ];
-  }
+        return [
+            'pagination' => [
+                'total' => $ventas->total(),
+                'current_page' => $ventas->currentPage(),
+                'per_page' => $ventas->perPage(),
+                'last_page' => $ventas->lastPage(),
+                'from' => $ventas->firstItem(),
+                'to' => $ventas->lastItem(),
+            ],
+            'ventas' => $ventas,
+        ];
+    }
 
-  /**
-   * Store a newly created resource in storage.
-   *
-   * @param  \Illuminate\Http\Request  $request
-   * @return \Illuminate\Http\Response
-   */
-  public function store(Request $request)
-  {
-      if (!$request->ajax()) return redirect('/');
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        if (! $request->ajax()) {
+            return redirect('/');
+        }
 
-      $validator = Validator::make($request->all(), [
+        $validator = Validator::make($request->all(), [
             'cliente_uuid' => 'required|uuid',
             'tipo_comprobante' => 'required|string',
             'serie_comprobante' => 'sometimes|string',
             'num_comprobante' => 'required|string',
             'impuesto' => 'required|numeric',
             'total' => 'required|numeric|min:1',
-            'detalles' => 'required|array'
+            'detalles' => 'required|array',
         ]);
 
-      if ($validator->fails()) {
-        return response()->json($validator,500);
-      }
-
-      try {
-
-        DB::beginTransaction();
-
-        $time = Carbon::now('America/Mexico_City');
-
-        $venta = new Venta();
-        $venta->cliente_uuid = $request->cliente_uuid;
-        $venta->usuario_uuid = Auth::user()->uuid;
-        $venta->tipo_comprobante = $request->tipo_comprobante;
-        $venta->serie_comprobante = $request->serie_comprobante;
-        $venta->num_comprobante = $request->num_comprobante;
-        $venta->impuesto = $request->impuesto;
-        $venta->total = $request->total;
-        $venta->estado = 'Registrado';
-        $venta->fecha_venta = $time->toDateString();
-
-        $venta->save();
-
-        foreach ($request->detalles as $item) {
-          $detalle = new DetalleVenta();
-          $detalle->venta_uuid = $venta->uuid;
-          $detalle->articulo_uuid = $item['articulo_uuid'];
-          $detalle->cantidad = $item['cantidad'];
-          $detalle->precio = $item['precio'];
-          $detalle->descuento = $item['descuento'];
-
-          $detalle->save();
-
+        if ($validator->fails()) {
+            return response()->json($validator, 500);
         }
 
-        DB::commit();
+        try {
 
-        return ['id' => $venta->uuid];
+            DB::beginTransaction();
 
-      } catch (\Exception $e) {
-        DB::rollback();
-        Log::error($e);
-        return response()->json(['error'=>$e->getMessage()],500);
-      }
+            $time = Carbon::now('America/Mexico_City');
 
-  }
+            $venta = new Venta();
+            $venta->cliente_uuid = $request->cliente_uuid;
+            $venta->usuario_uuid = Auth::user()->uuid;
+            $venta->tipo_comprobante = $request->tipo_comprobante;
+            $venta->serie_comprobante = $request->serie_comprobante;
+            $venta->num_comprobante = $request->num_comprobante;
+            $venta->impuesto = $request->impuesto;
+            $venta->total = $request->total;
+            $venta->estado = 'Registrado';
+            $venta->fecha_venta = $time->toDateString();
 
+            $venta->save();
 
-  //Funciones personalizadas
+            foreach ($request->detalles as $item) {
+                $detalle = new DetalleVenta();
+                $detalle->venta_uuid = $venta->uuid;
+                $detalle->articulo_uuid = $item['articulo_uuid'];
+                $detalle->cantidad = $item['cantidad'];
+                $detalle->precio = $item['precio'];
+                $detalle->descuento = $item['descuento'];
 
-  public function desactivar(String $venta_uuid)
-  {
-    if (!request()->ajax()) return redirect('/');
+                $detalle->save();
+            }
 
-    $venta = Venta::findOrFail($venta_uuid);
+            $fechaActual = date('Y-m-d');
+            $numVentas = DB::table('ventas')->whereDate('created_at', $fechaActual)->count();
+            $numIngresos = DB::table('ingresos')->whereDate('created_at', $fechaActual)->count();
 
-    $venta->estado = 'Anulado';
+            $arregloDatos = [
+                'ventas' => [
+                    'numero' => $numVentas,
+                    'msj' => 'ventas',
+                ],
+                'ingresos' => [
+                    'numero' => $numIngresos,
+                    'msj' => 'ingresos',
+                ],
+            ];
 
-    $venta->save();
-  }
+            $allUsers = User::all();
 
-  public function cabecera(String $venta_uuid)
-  {
-    if (!request()->ajax()) return redirect('/');
+            foreach ($allUsers as $notificar) {
+                User::findOrFail($notificar->uuid)->notify(new NotifiAdmin($arregloDatos));
+            }
 
-    $venta = Venta ::join('personas','ventas.cliente_uuid','=','personas.uuid')
-                    ->join('usuarios','ventas.usuario_uuid','=','usuarios.uuid')
-                    ->select('ventas.uuid','ventas.tipo_comprobante','ventas.serie_comprobante',
-                    'ventas.num_comprobante','ventas.fecha_venta','ventas.impuesto',
-                    'ventas.total','ventas.estado','personas.nombre','usuarios.usuario')
-                    ->where('ventas.uuid','=',$venta_uuid)
-                    ->orderBy('ventas.created_at')->first();
+            DB::commit();
 
-    return ['venta' => $venta];
-  }
+            return ['id' => $venta->uuid];
+        } catch (\Exception $e) {
+            DB::rollback();
+            Log::error($e);
 
-  public function detalles(String $venta_uuid)
-  {
-    if (!request()->ajax()) return redirect('/');
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
-    $detalles = DetalleVenta::join('articulos','detalle_ventas.articulo_uuid','=','articulos.uuid')
-                    ->select('detalle_ventas.cantidad','detalle_ventas.precio','detalle_ventas.descuento','articulos.nombre as articulo')
-                    ->where('detalle_ventas.venta_uuid','=',$venta_uuid)
-                    ->orderBy('detalle_ventas.created_at')->get();
+    //Funciones personalizadas
 
-    return ['detalles' => $detalles];
-  }
+    public function desactivar(String $venta_uuid)
+    {
+        if (! request()->ajax()) {
+            return redirect('/');
+        }
 
-  public function pdf(String $uuid)
-  {
-    //if (!request()->ajax()) return redirect('/');
+        $venta = Venta::findOrFail($venta_uuid);
 
-    $venta = Venta::join('personas','ventas.cliente_uuid','=','personas.uuid')
-                  ->join('usuarios','ventas.usuario_uuid','=','usuarios.uuid')
-                  ->select('ventas.uuid','ventas.tipo_comprobante','ventas.serie_comprobante','ventas.num_comprobante','ventas.created_at',
-                  'ventas.impuesto','ventas.total','ventas.estado','personas.nombre','personas.tipo_documento','personas.num_documento',
-                  'personas.direccion','personas.email','personas.telefono','usuarios.usuario')
-                  ->where('ventas.uuid','=',$uuid)
-                  ->orderBy('ventas.created_at','desc')
-                  ->first();
+        $venta->estado = 'Anulado';
 
-    $detalles = DetalleVenta::join('articulos','detalle_ventas.articulo_uuid','=','articulos.uuid')
-                    ->select('detalle_ventas.cantidad','detalle_ventas.precio','detalle_ventas.descuento','articulos.nombre as articulo')
-                    ->where('detalle_ventas.venta_uuid','=',$uuid)
-                    ->orderBy('detalle_ventas.created_at','desc')->get();
+        $venta->save();
+    }
 
+    public function cabecera(String $venta_uuid)
+    {
+        if (! request()->ajax()) {
+            return redirect('/');
+        }
 
-    $numVenta = Venta::select('num_comprobante')->where('uuid', $uuid)->first();
+        $venta = Venta::join('personas', 'ventas.cliente_uuid', '=', 'personas.uuid')
+            ->join('usuarios', 'ventas.usuario_uuid', '=', 'usuarios.uuid')
+            ->select('ventas.uuid', 'ventas.tipo_comprobante', 'ventas.serie_comprobante',
+                'ventas.num_comprobante', 'ventas.fecha_venta', 'ventas.impuesto',
+                'ventas.total', 'ventas.estado', 'personas.nombre', 'usuarios.usuario')
+            ->where('ventas.uuid', '=', $venta_uuid)
+            ->orderBy('ventas.created_at')->first();
 
-    $pdf = PDF::loadView('pdf.venta',compact('venta','detalles'));
+        return ['venta' => $venta];
+    }
 
-    return $pdf->download('venta_'.$numVenta->num_comprobante.'.pdf');
-  }
+    public function detalles(String $venta_uuid)
+    {
+        if (! request()->ajax()) {
+            return redirect('/');
+        }
+
+        $detalles = DetalleVenta::join('articulos', 'detalle_ventas.articulo_uuid', '=', 'articulos.uuid')
+            ->select('detalle_ventas.cantidad', 'detalle_ventas.precio', 'detalle_ventas.descuento',
+                'articulos.nombre as articulo')
+            ->where('detalle_ventas.venta_uuid', '=', $venta_uuid)
+            ->orderBy('detalle_ventas.created_at')->get();
+
+        return ['detalles' => $detalles];
+    }
+
+    public function pdf(String $uuid)
+    {
+        //if (!request()->ajax()) return redirect('/');
+
+        $venta = Venta::join('personas', 'ventas.cliente_uuid', '=', 'personas.uuid')
+            ->join('usuarios', 'ventas.usuario_uuid', '=', 'usuarios.uuid')
+            ->select('ventas.uuid', 'ventas.tipo_comprobante', 'ventas.serie_comprobante', 'ventas.num_comprobante',
+                'ventas.created_at',
+                'ventas.impuesto', 'ventas.total', 'ventas.estado', 'personas.nombre', 'personas.tipo_documento',
+                'personas.num_documento',
+                'personas.direccion', 'personas.email', 'personas.telefono', 'usuarios.usuario')
+            ->where('ventas.uuid', '=', $uuid)
+            ->orderBy('ventas.created_at', 'desc')
+            ->first();
+
+        $detalles = DetalleVenta::join('articulos', 'detalle_ventas.articulo_uuid', '=', 'articulos.uuid')
+            ->select('detalle_ventas.cantidad', 'detalle_ventas.precio', 'detalle_ventas.descuento',
+                'articulos.nombre as articulo')
+            ->where('detalle_ventas.venta_uuid', '=', $uuid)
+            ->orderBy('detalle_ventas.created_at', 'desc')->get();
+
+        $numVenta = Venta::select('num_comprobante')->where('uuid', $uuid)->first();
+
+        $pdf = PDF::loadView('pdf.venta', compact('venta', 'detalles'));
+
+        return $pdf->download('venta_'.$numVenta->num_comprobante.'.pdf');
+    }
 }

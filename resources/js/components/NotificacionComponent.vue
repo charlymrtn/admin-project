@@ -8,7 +8,7 @@
             <div class="dropdown-header text-center">
                 <strong>Notificaciones</strong>
             </div>
-            <div v-if="listar">
+            <div v-if="listar.datos">
                 <a class="dropdown-item" href="#">
                     <i class="fa fa-envelope-o"></i> {{listar.datos.ingresos.msj}}
                     <span class="badge badge-success">{{listar.datos.ingresos.numero}}</span>

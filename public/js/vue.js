@@ -77249,7 +77249,7 @@ var render = function() {
     _c("div", { staticClass: "dropdown-menu dropdown-menu-right" }, [
       _vm._m(0),
       _vm._v(" "),
-      _vm.listar
+      _vm.listar.datos
         ? _c("div", [
             _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
               _c("i", { staticClass: "fa fa-envelope-o" }),
