@@ -77196,13 +77196,29 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     props: ['notificaciones'],
     data: function data() {
-        return {};
+        return {
+            arrayNotificaciones: []
+        };
+    },
+
+    computed: {
+        listar: function listar() {
+
+            if (this.notificaciones == '') {
+                return this.arrayNotificaciones = [];
+            } else {
+                this.arrayNotificaciones = Object.values(this.notificaciones[0]);
+                if (this.arrayNotificaciones.length > 3) {
+                    return JSON.parse(this.arrayNotificaciones[4]);
+                } else {
+                    return this.arrayNotificaciones[0];
+                }
+            }
+        }
     }
 });
 
@@ -77233,47 +77249,30 @@ var render = function() {
     _c("div", { staticClass: "dropdown-menu dropdown-menu-right" }, [
       _vm._m(0),
       _vm._v(" "),
-      _vm.notificaciones.length
-        ? _c(
-            "div",
-            _vm._l(_vm.notificaciones, function(item) {
-              return _c("li", { key: item.id }, [
-                _c(
-                  "a",
-                  { staticClass: "dropdown-item", attrs: { href: "#" } },
-                  [
-                    _c("i", { staticClass: "fa fa-envelope-o" }),
-                    _vm._v(
-                      " " +
-                        _vm._s(JSON.parse(item.data).datos.ingresos.msj) +
-                        "\n                    "
-                    ),
-                    _c("span", { staticClass: "badge badge-success" }, [
-                      _vm._v(
-                        _vm._s(JSON.parse(item.data).datos.ingresos.numero)
-                      )
-                    ])
-                  ]
-                ),
-                _vm._v(" "),
-                _c(
-                  "a",
-                  { staticClass: "dropdown-item", attrs: { href: "#" } },
-                  [
-                    _c("i", { staticClass: "fa fa-tasks" }),
-                    _vm._v(
-                      " " +
-                        _vm._s(JSON.parse(item.data).datos.ventas.msj) +
-                        "\n                    "
-                    ),
-                    _c("span", { staticClass: "badge badge-danger" }, [
-                      _vm._v(_vm._s(JSON.parse(item.data).datos.ventas.numero))
-                    ])
-                  ]
-                )
+      _vm.listar
+        ? _c("div", [
+            _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "fa fa-envelope-o" }),
+              _vm._v(
+                " " +
+                  _vm._s(_vm.listar.datos.ingresos.msj) +
+                  "\n                "
+              ),
+              _c("span", { staticClass: "badge badge-success" }, [
+                _vm._v(_vm._s(_vm.listar.datos.ingresos.numero))
               ])
-            })
-          )
+            ]),
+            _vm._v(" "),
+            _c("a", { staticClass: "dropdown-item", attrs: { href: "#" } }, [
+              _c("i", { staticClass: "fa fa-tasks" }),
+              _vm._v(
+                " " + _vm._s(_vm.listar.datos.ventas.msj) + "\n                "
+              ),
+              _c("span", { staticClass: "badge badge-danger" }, [
+                _vm._v(_vm._s(_vm.listar.datos.ventas.numero))
+              ])
+            ])
+          ])
         : _c("div", [_vm._m(1)])
     ])
   ])

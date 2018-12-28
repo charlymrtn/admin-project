@@ -8,17 +8,15 @@
             <div class="dropdown-header text-center">
                 <strong>Notificaciones</strong>
             </div>
-            <div v-if="notificaciones.length">
-                <li v-for="item in notificaciones" :key="item.id">
-                    <a class="dropdown-item" href="#">
-                        <i class="fa fa-envelope-o"></i> {{JSON.parse(item.data).datos.ingresos.msj}}
-                        <span class="badge badge-success">{{JSON.parse(item.data).datos.ingresos.numero}}</span>
-                    </a>
-                    <a class="dropdown-item" href="#">
-                        <i class="fa fa-tasks"></i> {{JSON.parse(item.data).datos.ventas.msj}}
-                        <span class="badge badge-danger">{{JSON.parse(item.data).datos.ventas.numero}}</span>
-                    </a>
-                </li>
+            <div v-if="listar">
+                <a class="dropdown-item" href="#">
+                    <i class="fa fa-envelope-o"></i> {{listar.datos.ingresos.msj}}
+                    <span class="badge badge-success">{{listar.datos.ingresos.numero}}</span>
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i class="fa fa-tasks"></i> {{listar.datos.ventas.msj}}
+                    <span class="badge badge-danger">{{listar.datos.ventas.numero}}</span>
+                </a>
             </div>
             <div v-else>
                 <a><span>No tiene notificaciones.</span></a>
@@ -31,7 +29,22 @@
         props: ['notificaciones'],
         data(){
             return {
+                arrayNotificaciones: []
+            }
+        },
+        computed:{
+            listar: function(){
 
+                if (this.notificaciones == ''){
+                    return this.arrayNotificaciones = [];
+                } else {
+                    this.arrayNotificaciones = Object.values(this.notificaciones[0]);
+                    if (this.arrayNotificaciones.length > 3){
+                        return JSON.parse(this.arrayNotificaciones[4]);
+                    } else{
+                        return this.arrayNotificaciones[0];
+                    }
+                }
             }
         }
     }

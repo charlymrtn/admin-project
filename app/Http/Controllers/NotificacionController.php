@@ -14,8 +14,6 @@ class NotificacionController extends Controller
     public function get()
     {
         $notificaciones = Notification::where('notifiable_id','=',Auth::user()->uuid)
-                                        ->take(1)
-                                        ->orderBy('created_at','desc')
                                         ->get();
 
         $fecha = date('Y-m-d');
