@@ -5,22 +5,26 @@ namespace App\Http\Controllers;
 use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Log;
+use Carbon\Carbon;
+use DB;
 
 class NotificacionController extends Controller
 {
     public function get()
     {
-        //$notificaciones = Notification::where('notifiable_id',Auth::user()->uuid);
-        $notificaciones = Notification::all();
+        $notificaciones = Notification::where('notifiable_id','=',Auth::user()->uuid)
+                                        ->take(1)
+                                        ->orderBy('created_at','desc')
+                                        ->get();
 
         $fecha = date('Y-m-d');
         foreach ($notificaciones as $item) {
             if ($fecha != $item->created_at->toDateString()){
-                $item->maskAsRead();
+                $item->read_at = Carbon::parse($fecha);
             }
         }
-        //
-        //return Auth::user()->unreadNotifications;
+
         return response()->json($notificaciones);
     }
 }

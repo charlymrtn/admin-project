@@ -23,9 +23,10 @@ class Notification extends Model
 
     protected $casts = [
         'type' => 'string',
-        'notifiable_id' => 'integer',
+        'notifiable_id' => 'uuid',
         'notifiable_type' => 'string',
-        'data' => 'string'
+        'data' => 'string',
+        'id' => 'uuid'
 
     ];
 }
